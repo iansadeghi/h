@@ -1,0 +1,236 @@
+/* ═══════════════════════════════════════════════════════════════
+   hojreh-access.css
+   ───────────────────────────────────────────────────────────────
+   استایل صفحهٔ «انتخاب بخش» حجره، وقتی داخل قاب وردپرس (index.html
+   در روت پروژه) نمایش داده می‌شود.
+
+   قواعد از hojreh/assets/css/access-pages.css و general.css گرفته
+   شده‌اند (مقادیر یکسان) ولی همه زیر کلاس `.hojreh-access` اسکوپ
+   شده‌اند، چون general.css ریست سراسری (* / html / body / header /
+   footer) دارد و نباید مستقیم کنار style.css وردپرس لینک شود —
+   همان رویکرد hojreh-formula.css.
+
+   توکن‌ها (رنگ/فونت) هم روی خود `.hojreh-access` تعریف شده‌اند و
+   به :root نشت نمی‌کنند. قاب وردپرس (style.css) فقط تم روشن دارد،
+   پس این صفحه هم عمداً فقط روشن است.
+   ═══════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Gramophone';
+  src: url('../../hojreh/assets/font/GramophoneFaNum-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── آیکون منوی حجره در ساید‌بار وردپرس ── */
+#adminmenu .menu-hojreh-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ── پنل اصلی (سفید، مثل postbox وردپرس) ── */
+.hojreh-access {
+  --green-dark: #00584D;
+  --black: #111111;
+  --gray-100: #f5f5f5;
+  --gray-200: #e8e8e8;
+  --gray-400: #a0a0a0;
+  --gray-600: #666666;
+  --white: #ffffff;
+  --font-display: 'Gramophone', 'Tahoma', sans-serif;
+  --font-body: 'YekanBakh', 'Tahoma', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: calc(100vh - 40px - 80px); /* ادمین‌بار + پدینگ #wpbody */
+  padding: 40px 24px 48px;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-feature-settings: "ss01" on, "ss02" on;
+  font-variation-settings: "DOTS" 1;
+}
+
+.hojreh-access h1,
+.hojreh-access h2,
+.hojreh-access p { margin: 0; }
+
+/* ── لوگو ── */
+.hojreh-access .logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hojreh-access .logo-svg {
+  width: 150px;
+  height: auto;
+  color: #111111;
+  shape-rendering: geometricPrecision;
+}
+
+.hojreh-access .logo-bg-rect { fill: var(--green-dark); }
+
+/* ── عنوان ── */
+.hojreh-access .access-choice-panel {
+  width: min(920px, 100%);
+}
+
+.hojreh-access .standalone-title-wrap {
+  text-align: center;
+  margin: 0 auto 28px;
+  max-width: 640px;
+}
+
+.hojreh-access .standalone-title-wrap h1 {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 850;
+  color: var(--black);
+  line-height: 1.35;
+}
+
+.hojreh-access .standalone-title-wrap p {
+  margin-top: 7px;
+  font-family: var(--font-body);
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-600);
+  line-height: 1.9;
+}
+
+/* ── کارت‌های انتخاب ── */
+.hojreh-access .access-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.hojreh-access a.access-choice-card {
+  position: relative;
+  min-height: 330px;
+  background: var(--gray-100);
+  color: var(--black);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 34px 44px 30px;
+  overflow: hidden;
+  outline: 0 solid transparent;
+  transition: background .22s ease, transform .28s cubic-bezier(.22,1,.36,1), outline-color .2s;
+}
+
+.hojreh-access a.access-choice-card::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 5px;
+  background: var(--green-dark);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+.hojreh-access a.access-choice-card:hover,
+.hojreh-access a.access-choice-card:focus-visible {
+  background: var(--gray-200);
+  color: var(--black);
+  text-decoration: none;
+  transform: translateY(-4px);
+}
+
+.hojreh-access a.access-choice-card:hover::before,
+.hojreh-access a.access-choice-card:focus-visible::before { transform: scaleX(1); }
+.hojreh-access a.access-choice-card:focus-visible { outline: 2px solid var(--green-dark); outline-offset: 3px; }
+
+.hojreh-access .access-card-icon {
+  width: 150px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--black);
+  margin-bottom: 24px;
+  transition: transform .35s cubic-bezier(.22,1,.36,1), color .2s;
+}
+
+.hojreh-access .access-card-icon .access-illustration { width: 100%; height: 100%; }
+.hojreh-access a.access-choice-card:hover .access-card-icon { transform: translateY(-4px) scale(1.025); color: var(--green-dark); }
+
+.hojreh-access .access-card-content h2 {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--black);
+}
+
+.hojreh-access .access-card-content p {
+  margin-top: 7px;
+  font-family: var(--font-body);
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+  color: var(--gray-600);
+  font-size: 13px;
+  line-height: 1.85;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hojreh-access a.access-choice-card,
+  .hojreh-access a.access-choice-card::before,
+  .hojreh-access .access-card-icon { transition: none; }
+}
+
+/* ── موبایل ── */
+@media (max-width: 720px) {
+  .hojreh-access {
+    min-height: 0;
+    padding: 22px 14px 26px;
+    gap: 12px;
+  }
+
+  .hojreh-access .logo-svg { width: 120px; }
+
+  .hojreh-access .standalone-title-wrap { margin-bottom: 16px; }
+  .hojreh-access .standalone-title-wrap h1 { font-size: 27px; }
+  .hojreh-access .standalone-title-wrap p { font-size: 13px; }
+
+  .hojreh-access .access-choice-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  .hojreh-access a.access-choice-card {
+    min-height: 112px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    text-align: right;
+    padding: 14px;
+  }
+
+  .hojreh-access .access-card-icon {
+    width: 78px;
+    height: 70px;
+    flex: 0 0 78px;
+    margin-bottom: 0;
+  }
+
+  .hojreh-access .access-card-content {
+    min-width: 0;
+    flex: 1;
+    padding-block: 3px;
+  }
+
+  .hojreh-access .access-card-content h2 { font-size: 16px; line-height: 1.55; }
+  .hojreh-access .access-card-content p { margin-top: 5px; font-size: 11.5px; line-height: 1.7; }
+}

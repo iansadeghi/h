@@ -1,0 +1,12 @@
+import './preloader.js';
+import './toast.js';
+import './save-dirty.js';
+import './general.js';
+import './custom-select.js';
+import './pricing-patterns.js';
+import './formula-test-modal.js';
+import './settings-panel.js';
+import './api-modal.js';
+import './pattern-fullscreen.js';
+import './dark-mode.js';
+import './sidebar-resizer.js';
