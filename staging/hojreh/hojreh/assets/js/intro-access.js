@@ -1,9 +1,4 @@
-/**
- * محتوای اینتروی صفحهٔ «انتخاب بخش» (index.html در روت پروژه)
- * هسته: intro-core.js — این فایل فقط ترتیب و متن مراحل را مشخص می‌کند.
- * برای تست دوباره در کنسول: HojrehIntro.reset('access'); location.reload();
- */
-HojrehIntro.start({
+﻿HojrehIntro.start({
   id: 'access',
   version: 1,
   steps: [

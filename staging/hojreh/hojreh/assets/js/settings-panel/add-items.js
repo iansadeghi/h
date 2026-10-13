@@ -1,4 +1,4 @@
-import { showToast } from '../general.js';
+﻿import { showToast } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { formulaTestModal } from '../formula-test-modal.js';
 import { nextAccordionId } from './id-utils.js';
@@ -11,8 +11,6 @@ import {
   createPatternBodyHtml
 } from './templates.js';
 import { refreshAccordionEmptyState } from './empty-state.js';
-
-/* ─── ADD NEW INDEPENDENT VARIABLE ─── */
 function initAddIndependentVarButton() {
   const addIndependentVarBtn = document.getElementById('addIndependentVarBtn');
   if (!addIndependentVarBtn) return;
@@ -37,8 +35,6 @@ function initAddIndependentVarButton() {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   });
 }
-
-/* ─── ADD NEW CONSTANT ─── */
 function initAddConstantButton() {
   const addConstantBtn = document.getElementById('addConstantBtn');
   if (!addConstantBtn) return;
@@ -63,8 +59,6 @@ function initAddConstantButton() {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   });
 }
-
-/* ─── ADD NEW ROUNDING MECHANISM ─── */
 function initAddRoundingButton() {
   const addRoundingBtn = document.getElementById('addRoundingBtn');
   if (!addRoundingBtn) return;
@@ -89,8 +83,6 @@ function initAddRoundingButton() {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   });
 }
-
-/* ─── ADD NEW PRICING PATTERN ─── */
 function initAddPatternButton() {
   const addPatternBtn = document.getElementById('addPatternBtn');
   if (!addPatternBtn) return;
@@ -119,8 +111,6 @@ function initAddPatternButton() {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   });
 }
-
-/* ─── ADD NEW APPRENTICE ─── */
 function initAddApprenticeButton() {
   const addApprenticeBtn = document.getElementById('addApprenticeBtn');
   if (!addApprenticeBtn) return;
@@ -144,7 +134,6 @@ function initAddApprenticeButton() {
     window._hojrehRefreshSettingsDot?.();
   });
 }
-
 function initAddItemButtons() {
   initAddIndependentVarButton();
   initAddConstantButton();
@@ -152,5 +141,4 @@ function initAddItemButtons() {
   initAddPatternButton();
   initAddApprenticeButton();
 }
-
 export { initAddItemButtons };

@@ -1,31 +1,10 @@
-/* ═══════════════════════════════════════════════════════════════
-   HojrehPatternController — DOM BINDING
-   ───────────────────────────────────────────────────────────────
-   Optional — every instance is fully usable headlessly. Everything
-   here reads this.state and writes into this.container. No other
-   instance's DOM or state is ever touched. Re-binding to a
-   different container is safe and simply re-points these local
-   refs; it never leaks into a shared cursor.
-
-   Exported as a plain mixin object (+ a small static-methods
-   object) and merged onto HojrehPatternController by controller.js
-   — see controller-core.js for why the class is split this way.
-   Method bodies are byte-for-byte identical to the original
-   monolithic pricing-patterns.js; only their location changed.
-   ═══════════════════════════════════════════════════════════════ */
-
-import {
+﻿import {
   showToast, formatNumberWithCommas as formatSharedNumber,
   normalizeUnitSelects
 } from '../general.js';
 import { HojrehFormulaEngine } from './formula-engine.js';
 import { HojrehPatternController } from './controller-core.js';
-
-/* Shared with settings-panel.js via HojrehGeneral (general.js loads
-   first on every page that includes this file) — single source of
-   truth for Persian-comma (،) thousands formatting. */
 function formatNumberWithCommas(num) { return formatSharedNumber(num); }
-
 const controllerDomMixin = {
   bindDom(container) {
     this.container = container;
@@ -39,28 +18,20 @@ const controllerDomMixin = {
     dom.previewLarge = container.querySelector('.formula-preview-large-box');
     dom.testInputsGrid = container.querySelector('.test-inputs-grid');
     dom.finalCalcValue = container.querySelector('[id^="finalCalculationValue"], .final-calculation-value');
-
     this._ensureWarningState();
     this._bindControls();
     return !!(dom.dropZone && dom.itemsContainer && dom.previewLarge);
   },
-
   isManualMode() {
     return !!this.container?.querySelector('.manual-formula-toggle')?.checked;
   },
-
-  /** Re-render the DOM tree from current state. Safe to call as
-   *  often as needed; guarded against re-entrancy per-instance
-   *  (this._isRendering), never against any other instance. */
   render(options = {}) {
     if (!this.container || this._isRendering) return;
     this._isRendering = true;
     const syncPreview = options.syncPreview !== false;
     const dom = this._dom;
-
     HojrehFormulaEngine.normalizeElementOperators(this.state.elements);
     dom.itemsContainer.innerHTML = '';
-
     if (!this.state.elements.length) {
       if (syncPreview) {
         if (this.isManualMode()) this._setManualPreviewText('');
@@ -75,16 +46,13 @@ const controllerDomMixin = {
       this._scheduleHydration();
       return;
     }
-
     this.state.elements.forEach((el, index) => {
       if (index > 0) dom.itemsContainer.appendChild(this._createOperatorConnectorDom(el));
       dom.itemsContainer.appendChild((el.isGroup || el.type === 'group') ? this._createGroupDom(el) : this._createItemDom(el));
     });
-
     this._attachDragEvents();
     this._showDropZoneState('normal');
     if (options.enterId != null) this._playEnterAnimation(options.enterId);
-
     if (syncPreview) {
       if (this.isManualMode()) {
         this._setManualPreviewText(this.buildFormulaText(true));
@@ -93,47 +61,26 @@ const controllerDomMixin = {
         this._updatePreview();
       }
     }
-
     this.updateSimulatorGrid();
     this.syncBackendFields();
     this._isRendering = false;
     this._scheduleHydration();
   },
-
-  /** Plays the exit transition on `box` (a .pattern-item-box or
-   *  .computational-group-box) and only removes the underlying
-   *  element + re-renders once that transition has actually run.
-   *  We pin an explicit pixel max-height first (its own current
-   *  height, read via scrollHeight) because `.collapsed-hide` drives
-   *  the collapse via `max-height: 0`, and a CSS transition can only
-   *  interpolate max-height from a concrete pixel value — not from
-   *  the default `none`. */
   _animateOutAndRemove(box, elementId, toastMessage) {
     const startHeight = box.scrollHeight;
     box.style.maxHeight = `${startHeight}px`;
-    void box.offsetWidth; // force the pixel value to be painted first
-
+    void box.offsetWidth;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         box.classList.add('collapsed-hide');
       });
     });
-
     setTimeout(() => {
       this.removeElementById(elementId);
       this.render({ syncPreview: true });
       showToast(toastMessage, 'green');
     }, 260);
   },
-
-  /** Plays a one-off "enter" transition for the just-added element
-   *  (and its operator connector, if any) right after a fresh render.
-   *  Every other element in the tree was also just recreated by
-   *  render()'s full innerHTML rebuild, but only this one should
-   *  visibly animate in — so we snap it to a "pre-enter" state
-   *  synchronously (before paint) and release it on the next frame,
-   *  letting the box's existing `transition: all .25s ease` carry it
-   *  to its normal resting state. */
   _playEnterAnimation(elementId) {
     const dom = this._dom;
     if (!dom.itemsContainer) return;
@@ -144,14 +91,9 @@ const controllerDomMixin = {
     const connector = target.previousElementSibling?.classList?.contains('operator-connector-row')
       ? target.previousElementSibling
       : null;
-
     target.classList.add('item-enter');
     connector?.classList.add('item-enter');
-    // Force a style flush so the "pre-enter" state above is actually
-    // painted before we remove it — otherwise the browser may coalesce
-    // both class changes into a single frame and skip the transition.
     void target.offsetWidth;
-
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         target.classList.remove('item-enter');
@@ -159,9 +101,6 @@ const controllerDomMixin = {
       });
     });
   },
-
-  /** Ensures/creates the hidden inputs WordPress reads on submit,
-   *  scoped to this instance's own container element only. */
   ensureBackendFields() {
     if (!this.container) return {};
     const pattern = this.container;
@@ -170,7 +109,6 @@ const controllerDomMixin = {
     let displayField = pattern.querySelector('.hojreh-formula-display-field');
     let dependenciesField = pattern.querySelector('.hojreh-formula-dependencies-field');
     let payloadField = pattern.querySelector('.hojreh-formula-payload-field');
-
     if (!formulaField) {
       formulaField = document.createElement('input');
       formulaField.type = 'hidden';
@@ -205,7 +143,6 @@ const controllerDomMixin = {
     }
     return { formulaField, displayField, dependenciesField, payloadField };
   },
-
   syncBackendFields() {
     const fields = this.ensureBackendFields();
     if (!fields.formulaField || !fields.payloadField) return;
@@ -214,16 +151,12 @@ const controllerDomMixin = {
     if (fields.displayField) fields.displayField.value = payload.displayFormula || '';
     if (fields.dependenciesField) fields.dependenciesField.value = JSON.stringify(payload.dependencies || {});
     fields.payloadField.value = JSON.stringify(payload);
-
     if (this.state.savedFormulaText === null) {
       this.state.savedFormulaText = fields.formulaField.value;
     } else {
       window._hojrehRefreshSettingsDot?.();
     }
   },
-
-  /* ── Internal DOM builders / control wiring ─────────────────── */
-
   _getSelectableOptions(subType) {
     const emptyLabelMap = {
       variable: 'انتخاب متغیر',
@@ -234,7 +167,6 @@ const controllerDomMixin = {
     };
     const options = [{ id: '', name: emptyLabelMap[subType] || 'انتخاب آیتم' }];
     const items = HojrehFormulaEngine.getRegisteredItems(this._registryOptions({ activeOnly: true }));
-
     if (subType === 'variable' || subType === 'independent-variable' || subType === 'api-variable') {
       const sourceFilter = subType === 'api-variable' ? 'api' : subType === 'independent-variable' ? 'independent' : null;
       items.variables
@@ -250,7 +182,6 @@ const controllerDomMixin = {
     }
     return options;
   },
-
   _resolveElementSubType(el) {
     if (el.subType && el.subType !== 'variable') return el.subType;
     if (el.type === 'variable' && el.selectedId) {
@@ -260,12 +191,10 @@ const controllerDomMixin = {
     }
     return el.type;
   },
-
   _getElementTargetInfo(elementId) {
     const id = Number(elementId);
     const idx = this.state.elements.findIndex(e => Number(e.id) === id);
     if (idx !== -1) return { array: this.state.elements, index: idx, parent: null };
-
     const search = (arr, parent) => {
       for (const el of arr) {
         if (el.type === 'group' || el.isGroup) {
@@ -279,7 +208,6 @@ const controllerDomMixin = {
     };
     return search(this.state.elements, null);
   },
-
   _ensureWarningState() {
     const dom = this._dom;
     if (!dom.dropZone || dom.dropZone.querySelector('.formula-warning-state')) return;
@@ -295,43 +223,33 @@ const controllerDomMixin = {
     `;
     dom.dropZone.appendChild(ws);
   },
-
   _showDropZoneState(state) {
     const emptyState = this.container?.querySelector('.formula-empty-state');
     const errorState = this.container?.querySelector('.formula-error-state');
     const warningState = this.container?.querySelector('.formula-warning-state');
     const dom = this._dom;
-
     if (emptyState) emptyState.style.display = 'none';
     if (errorState) errorState.classList.remove('active');
     if (warningState) { warningState.style.display = 'none'; warningState.classList.remove('active'); }
     dom.itemsContainer.style.display = 'none';
-
     if (state === 'empty') { if (emptyState) emptyState.style.display = 'flex'; }
     else if (state === 'warning') { if (warningState) { warningState.style.display = 'flex'; warningState.classList.add('active'); } }
     else if (state === 'error') { if (errorState) errorState.classList.add('active'); }
     else {
-      // .formula-items-container defaults to `display: none` in the
-      // stylesheet, so resetting the inline style to '' would just fall
-      // back to that hidden default. Force the actual layout value the
-      // container is designed for (flex-direction: column).
       dom.itemsContainer.style.display = 'flex';
     }
   },
-
   _setManualPreviewText(text) {
     const dom = this._dom;
     dom.previewLarge.textContent = text || '';
     dom.previewLarge.classList.toggle('has-formula', !!text);
   },
-
   _updatePreview() {
     const dom = this._dom;
     if (this.isManualMode()) return;
     dom.previewLarge.removeAttribute('contenteditable');
     dom.previewLarge.classList.remove('formula-valid', 'formula-invalid', 'formula-warning');
     dom.previewLarge.style.borderColor = '';
-
     if (!this.state.elements.length) {
       dom.previewLarge.classList.remove('has-formula');
       dom.previewLarge.textContent = 'برای نمایش فرمول، آیتم‌ها را به باکس بالا اضافه کنید.';
@@ -342,7 +260,6 @@ const controllerDomMixin = {
     dom.previewLarge.textContent = this.buildFormulaText(false);
     this._showDropZoneState('normal');
   },
-
   _applyStatusToDom(status, errorMsg) {
     const dom = this._dom;
     dom.previewLarge.classList.remove('formula-valid', 'formula-invalid', 'formula-warning');
@@ -366,7 +283,6 @@ const controllerDomMixin = {
     }
     this.syncBackendFields();
   },
-
   _createOperatorConnectorDom(el) {
     const row = document.createElement('div');
     row.className = 'operator-connector-row';
@@ -395,16 +311,13 @@ const controllerDomMixin = {
     row.appendChild(selector);
     return row;
   },
-
   _createItemDom(el) {
     const wrapper = document.createElement('div');
     wrapper.className = 'pattern-item-box';
     wrapper.dataset.elementId = el.id;
-
     const dragHandle = document.createElement('div');
     dragHandle.className = 'acc-drag-handle';
     dragHandle.innerHTML = `<svg viewBox="0 0 16 24" fill="currentColor"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="12" cy="20" r="2"/></svg>`;
-
     const searchWrapper = document.createElement('div');
     searchWrapper.className = 'pattern-item-search-wrapper';
     const select = document.createElement('select');
@@ -459,7 +372,6 @@ const controllerDomMixin = {
       this.refreshPreviewAndSimulator(true);
     });
     searchWrapper.appendChild(select);
-
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'pattern-item-delete-btn';
@@ -468,18 +380,15 @@ const controllerDomMixin = {
     deleteBtn.addEventListener('click', () => {
       this._animateOutAndRemove(wrapper, el.id, 'جزء مورد نظر از فرمول حذف شد.');
     });
-
     wrapper.appendChild(dragHandle);
     wrapper.appendChild(searchWrapper);
     wrapper.appendChild(deleteBtn);
     return wrapper;
   },
-
   _createGroupDom(el) {
     const groupDiv = document.createElement('div');
     groupDiv.className = 'computational-group-box';
     groupDiv.dataset.elementId = el.id;
-
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'pattern-item-delete-btn computational-group-delete-btn';
@@ -490,18 +399,15 @@ const controllerDomMixin = {
     deleteBtn.addEventListener('click', () => {
       this._animateOutAndRemove(groupDiv, el.id, 'گروه محاسباتی حذف شد.');
     });
-
     const dragHandle = document.createElement('div');
     dragHandle.className = 'acc-drag-handle computational-group-drag-handle';
     dragHandle.title = 'جابجایی';
     dragHandle.style.cursor = 'grab';
     dragHandle.innerHTML = `<svg viewBox="0 0 16 24" fill="currentColor"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="12" cy="20" r="2"/></svg>`;
-
     const controlsRow = document.createElement('div');
     controlsRow.className = 'computational-group-controls';
     controlsRow.appendChild(dragHandle);
     controlsRow.appendChild(deleteBtn);
-
     const groupHeader = document.createElement('div');
     groupHeader.className = 'computational-group-header';
     const groupLabel = document.createElement('span');
@@ -509,11 +415,9 @@ const controllerDomMixin = {
     groupLabel.textContent = 'گروه محاسباتی';
     groupHeader.appendChild(groupLabel);
     groupHeader.appendChild(controlsRow);
-
     const body = document.createElement('div');
     body.className = 'computational-group-body';
     body.dataset.groupId = el.id;
-
     if (!hasItems) {
       body.textContent = 'آیتم‌ها را به این داخل بکشید.';
     } else {
@@ -522,12 +426,10 @@ const controllerDomMixin = {
         body.appendChild((innerEl.isGroup || innerEl.type === 'group') ? this._createGroupDom(innerEl) : this._createItemDom(innerEl));
       });
     }
-
     groupDiv.appendChild(groupHeader);
     groupDiv.appendChild(body);
     return groupDiv;
   },
-
   refreshPreviewAndSimulator(forceTextSync) {
     if (this.isManualMode()) {
       if (forceTextSync) {
@@ -544,7 +446,6 @@ const controllerDomMixin = {
     this.updateSimulatorGrid();
     this.syncBackendFields();
   },
-
   refreshAfterRegistryChange() {
     HojrehPatternController.ensureUnifiedUnitSelectOptions(document);
     if (!this.state.elements.length) { this.syncBackendFields(); return; }
@@ -555,16 +456,10 @@ const controllerDomMixin = {
       this.render({ syncPreview: true });
     }
   },
-
-  /* ── Drag & drop ─────────────────────────────────────────────
-     Fully instance-scoped: reads/writes only this.state.elements
-     and this._dom.itemsContainer. Two controllers dragging at the
-     same time (e.g. two open accordions) never interfere. */
-
   _attachDragEvents() {
     const dom = this._dom;
     dom.itemsContainer.querySelectorAll('.acc-drag-handle').forEach(handle => {
-      handle.replaceWith(handle.cloneNode(true)); // drop any stale listeners
+      handle.replaceWith(handle.cloneNode(true));
     });
     dom.itemsContainer.querySelectorAll('.acc-drag-handle').forEach(handle => {
       const start = e => this._startDrag(e);
@@ -572,43 +467,29 @@ const controllerDomMixin = {
       handle.addEventListener('touchstart', start, { passive: false });
     });
   },
-
   _startDrag(e) {
     e.preventDefault();
     e.stopPropagation();
     const dom = this._dom;
-
     const item = e.currentTarget.closest('.pattern-item-box') || e.currentTarget.closest('.computational-group-box');
     if (!item) return;
-
     const elementId = Number(item.dataset.elementId);
     const info = this._getElementTargetInfo(elementId);
     const draggedElData = info ? info.array[info.index] : null;
     if (!draggedElData) return;
-
     const rect = item.getBoundingClientRect();
     const startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
     const offsetY = startY - rect.top;
-
-    /* Lock the ghost to the column it started in: fixed left/width,
-       only `top` tracks the pointer. This mirrors the accordion drag
-       behaviour and stops the item from drifting across the page. */
     const ghost = item.cloneNode(true);
     ghost.classList.add('formula-drag-ghost');
     ghost.style.cssText = `position:fixed;width:${rect.width}px;height:${rect.height}px;left:${rect.left}px;top:${rect.top}px;z-index:9999;pointer-events:none;margin:0;transition:none;`;
-
-    /* Force the grabbing cursor for the whole gesture — the ghost has
-       pointer-events:none and the live item is hidden, so nothing under
-       the pointer would otherwise show a drag cursor. */
     document.body.classList.add('formula-dragging');
-
     ghost.querySelectorAll('.pattern-item-search-wrapper').forEach(sw => {
       const liveSw = item.querySelector('.pattern-item-search-wrapper');
       const liveTrigger = liveSw && liveSw.querySelector('.custom-select-trigger');
       const labelText = liveTrigger ? liveTrigger.textContent.trim() : '';
       sw.querySelectorAll('.custom-select-wrapper').forEach(w => w.remove());
       sw.querySelectorAll('select').forEach(s => s.remove());
-
       const staticTrigger = document.createElement('div');
       staticTrigger.className = 'custom-select-wrapper rounded-select';
       staticTrigger.style.cssText = 'pointer-events:none;';
@@ -622,31 +503,14 @@ const controllerDomMixin = {
       staticTrigger.appendChild(staticArrow);
       sw.appendChild(staticTrigger);
     });
-
-    /* Keep a Woo-modal drag ghost inside the same scoped modal root.
-       The ghost is still position:fixed, so its viewport coordinates do not
-       change, but it now retains the exact modal-only drag-handle, trash,
-       typography and token styles instead of visually collapsing when moved
-       under <body>. On the settings page there is no modal root, so the
-       existing body-host behaviour is preserved. */
     const ghostHost = item.closest('.hojreh-formula-modal') || document.body;
     ghostHost.appendChild(ghost);
-
-    /* All operator-connector badges currently in play get pooled here so
-       they can be reused as we shuffle the placeholder around — a badge
-       always sits between two boxes, never attached to one specific item,
-       so on every move we rebuild the "one connector per gap" layout for
-       whichever container (top-level list or a group body) currently
-       holds the placeholder, reusing pooled nodes instead of recreating
-       them so nothing flickers or gets orphaned mid-drag. */
     const connectorPool = [...dom.itemsContainer.querySelectorAll('.operator-connector-row')];
-
     const ph = document.createElement('div');
     ph.className = 'formula-drag-placeholder';
     ph.style.cssText = `height:${rect.height}px;min-height:${rect.height}px;margin:0;box-sizing:border-box;`;
     item.style.display = 'none';
     item.after(ph);
-
     const getTargetGroup = (cx, cy) => {
       let found = null;
       dom.itemsContainer.querySelectorAll('.computational-group-body').forEach(gb => {
@@ -662,26 +526,9 @@ const controllerDomMixin = {
       });
       return found;
     };
-
-    /* Ensures `container` has exactly one connector badge between every
-       pair of adjacent boxes (item/group boxes, with `ph` standing in for
-       the dragged one) and none anywhere else — before the first box,
-       after the last, or inside any other container. Pulls badges from
-       connectorPool as needed and returns any it no longer needs there.
-       `item` itself is excluded on purpose: it's only display:none'd, not
-       removed from the DOM, so it's still sitting at its original spot
-       with the `pattern-item-box` class — counting it as well as `ph`
-       is what was producing one phantom extra gap (and an extra badge)
-       right where the dragged item used to live. */
     const layoutConnectors = container => {
       const boxes = [...container.children].filter(c =>
         c !== item && (c.classList.contains('pattern-item-box') || c.classList.contains('computational-group-box') || c === ph));
-      // strip every connector currently inside this container back into the pool.
-      // Must actually detach it from the DOM here (not just track it in the
-      // pool array) — otherwise a badge this container no longer needs (e.g.
-      // a group left with only one item after its sibling drags out) is
-      // never picked up by the re-insertion loop below and stays stuck
-      // wherever it physically was, instead of disappearing.
       [...container.querySelectorAll(':scope > .operator-connector-row')].forEach(c => {
         c.remove();
         if (!connectorPool.includes(c)) connectorPool.push(c);
@@ -691,38 +538,23 @@ const controllerDomMixin = {
         container.insertBefore(badge, boxes[i]);
       }
     };
-
     const onMove = ev => {
       ev.preventDefault();
       const cy = ev.type === 'touchmove' ? ev.touches[0].clientY : ev.clientY;
       const cx = ev.type === 'touchmove' ? ev.touches[0].clientX : ev.clientX;
-      /* left/width stay pinned to the starting column — only vertical
-         position tracks the pointer, so the item can't drift sideways
-         out of its own list the way it used to. */
       ghost.style.top = (cy - offsetY) + 'px';
-
       const tg = getTargetGroup(cx, cy);
       dom.itemsContainer.querySelectorAll('.computational-group-body').forEach(gb => gb.classList.remove('drag-over'));
-
       const targetContainer = tg || dom.itemsContainer;
       if (tg) tg.classList.add('drag-over');
-
       const directItems = [...targetContainer.children].filter(c =>
         (c.classList.contains('pattern-item-box') || c.classList.contains('computational-group-box')) && c !== item);
       const after = directItems.find(s => cy < s.getBoundingClientRect().top + s.getBoundingClientRect().height / 2);
       after ? targetContainer.insertBefore(ph, after) : targetContainer.appendChild(ph);
-
-      /* Re-lay every container, not just the one the placeholder just
-         entered — pulling a pooled badge out of another group's body
-         leaves a gap there that only that group's own pass will refill. */
       layoutConnectors(dom.itemsContainer);
       dom.itemsContainer.querySelectorAll('.computational-group-body').forEach(gb => layoutConnectors(gb));
     };
-
     const onUp = () => {
-      // Commit the placeholder's actual destination before restoring layout.
-      // The hidden original still occupies a DOM slot, but is not part of
-      // the destination index expected by moveElement().
       const targetContainer = ph.parentElement;
       const targetGroupId = targetContainer.classList.contains('computational-group-body')
         ? Number(targetContainer.dataset.groupId) : null;
@@ -730,19 +562,16 @@ const controllerDomMixin = {
       const phIdx = targetChildren.indexOf(ph);
       const insertIndex = targetChildren.slice(0, phIdx).filter(c =>
         c !== item && (c.classList.contains('pattern-item-box') || c.classList.contains('computational-group-box'))).length;
-
       ghost.remove();
       item.style.display = '';
       document.body.classList.remove('formula-dragging');
       dom.itemsContainer.querySelectorAll('.computational-group-body').forEach(gb => gb.classList.remove('drag-over'));
-
       ph.remove();
       const moved = this.moveElement(elementId, { targetGroupId, insertIndex });
       if (!moved) showToast('جابه‌جایی مجاز نیست؛ ثابت درصدی و رُندسازی باید بعد از یک متغیر یا گروه دارای متغیر باشند.', 'yellow');
       this.render({ syncPreview: true });
       cleanup();
     };
-
     const cleanup = () => {
       document.body.classList.remove('formula-dragging');
       document.removeEventListener('mousemove', onMove);
@@ -750,15 +579,11 @@ const controllerDomMixin = {
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('touchend', onUp);
     };
-
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
     document.addEventListener('touchmove', onMove, { passive: false });
     document.addEventListener('touchend', onUp);
   },
-
-  /* ── Simulator grid ──────────────────────────────────────────── */
-
   updateSimulatorGrid() {
     const dom = this._dom;
     if (!dom.testInputsGrid) return;
@@ -767,23 +592,19 @@ const controllerDomMixin = {
     const finalCalculationSummary = this.container?.querySelector('[id^="finalCalculationSummary"], .final-calculation-summary');
     const variablesAdded = [];
     const items = HojrehFormulaEngine.getRegisteredItems(this._registryOptions({ activeOnly: false }));
-
     const processEl = el => {
       if (el.isGroup || el.type === 'group') { (el.innerElements || []).forEach(processEl); return; }
       if (!el.selectedId || el.type !== 'variable') return;
       if (variablesAdded.includes(el.selectedId)) return;
       variablesAdded.push(el.selectedId);
-
       const varInfo = items.variables.find(v => v.id === el.selectedId);
       if (varInfo) Object.assign(el, {
         selectedName: varInfo.name, selectedUnit: varInfo.unit, selectedValue: varInfo.price,
         quantitySymbol: varInfo.quantitySymbol, subType: varInfo.subType || el.subType, source: varInfo.source || el.source || ''
       });
-
       const unitLabel = varInfo?.unit || el.selectedUnit || 'واحد';
       const displayName = varInfo?.name || el.selectedName || 'بدون نام';
       const currentPrice = Number.isFinite(varInfo?.price) ? varInfo.price : (el.selectedValue || 0);
-
       const priceGroup = document.createElement('div');
       priceGroup.className = 'form-group';
       priceGroup.innerHTML = `
@@ -798,7 +619,6 @@ const controllerDomMixin = {
         this.calculateSimulatorFinalPrice();
       });
       dom.testInputsGrid.appendChild(priceGroup);
-
       const quantityGroup = document.createElement('div');
       quantityGroup.className = 'form-group';
       quantityGroup.innerHTML = `
@@ -809,9 +629,7 @@ const controllerDomMixin = {
       quantityGroup.querySelector('input').addEventListener('input', () => this.calculateSimulatorFinalPrice());
       dom.testInputsGrid.appendChild(quantityGroup);
     };
-
     this.state.elements.forEach(processEl);
-
     if (variablesAdded.length) {
       if (testSectionLabel) testSectionLabel.style.display = 'block';
       if (finalCalculationSummary) finalCalculationSummary.classList.remove('hidden');
@@ -821,7 +639,6 @@ const controllerDomMixin = {
     }
     this.calculateSimulatorFinalPrice();
   },
-
   calculateSimulatorFinalPrice() {
     const values = {};
     this.container?.querySelectorAll('.simulator-price-input[data-id]').forEach(input => {
@@ -838,24 +655,16 @@ const controllerDomMixin = {
     const total = this.evaluate(values);
     if (this._dom.finalCalcValue) this._dom.finalCalcValue.textContent = formatNumberWithCommas(total) + ' تومان';
   },
-
-  /* ── Manual formula mode ─────────────────────────────────────── */
-
   setManualSensitiveFieldsVisibility(isManual) {
-    // Scoped to this instance's own container — document-wide selectors here
-    // would toggle fields belonging to *every* pattern accordion on the
-    // page, breaking multi-instance isolation.
     const scope = this.container || document;
     scope.querySelectorAll('.english-id-group').forEach(g => { g.style.display = isManual ? 'block' : 'none'; });
     scope.querySelectorAll('.quantity-symbol-group').forEach(g => { g.style.display = isManual ? 'block' : 'none'; });
   },
-
   enableManualFormulaMode() {
     const manual = this.isManualMode();
     const hint = this.container?.querySelector('[id^="formulaHint"], .formula-hint');
     this.setManualSensitiveFieldsVisibility(manual);
     const dom = this._dom;
-
     if (!manual) {
       const result = this.applyFormulaText(HojrehFormulaEngine.sanitizeBiDiCharacters(dom.previewLarge.textContent), { allowEmpty: true, preserveOnEmpty: true });
       this._applyStatusToDom(result.status, null);
@@ -869,7 +678,6 @@ const controllerDomMixin = {
       this.render({ syncPreview: true });
       return;
     }
-
     dom.previewLarge.setAttribute('contenteditable', 'true');
     if (hint) hint.style.display = 'block';
     this._setManualPreviewText(this.buildFormulaText(true));
@@ -882,13 +690,11 @@ const controllerDomMixin = {
       this._applyStatusToDom('empty', null);
     }
   },
-
   validateAndApplyFormula(options = {}) {
     const dom = this._dom;
     const text = HojrehFormulaEngine.sanitizeBiDiCharacters(dom.previewLarge.textContent).trim();
     const result = this.applyFormulaText(text, options);
     this._applyStatusToDom(result.status, options.silent ? null : (result.error || result.warning));
-
     if (result.status === 'empty') {
       dom.previewLarge.classList.remove('has-formula', 'formula-valid', 'formula-invalid', 'formula-warning');
       this.render({ syncPreview: false });
@@ -901,14 +707,10 @@ const controllerDomMixin = {
     }
     return result;
   },
-
-  /* ── Control wiring (add-item buttons, manual toggle, preview edits) ── */
-
   _bindControls() {
     const pattern = this.container;
     if (!pattern || pattern.dataset.patternControlsReady === 'true') return;
     pattern.dataset.patternControlsReady = 'true';
-
     const commitManualIfNeeded = () => {
       if (!this.isManualMode()) return true;
       const result = this.validateAndApplyFormula({ silent: true });
@@ -916,7 +718,6 @@ const controllerDomMixin = {
       showToast('فرمول دستی فعلی معتبر نیست؛ ابتدا آن را اصلاح کنید تا بتوان آیتم جدید اضافه کرد.', 'yellow');
       return false;
     };
-
     const addAndRender = (type, subType) => {
       if (!commitManualIfNeeded()) return;
       const result = this.addElement(type, subType);
@@ -932,14 +733,12 @@ const controllerDomMixin = {
       this.render({ syncPreview: true, enterId: result.id });
       showToast('آیتم جدید به فرمول‌ساز اضافه شد.', 'green');
     };
-
     const bind = (selector, callback) => {
       pattern.querySelector(selector)?.addEventListener('click', event => {
         event.preventDefault();
         callback();
       });
     };
-
     bind('[id^="btnGroupAdd"]', () => addAndRender('group'));
     bind('[id^="btnApiVariableAdd"]', () => addAndRender('variable', 'api-variable'));
     bind('[id^="btnIndependentAdd"]', () => addAndRender('variable', 'independent-variable'));
@@ -948,13 +747,11 @@ const controllerDomMixin = {
     pattern.querySelector('[id^="formulaTutorialBtn"]')?.addEventListener('click', () => {
       showToast('مستندات و آموزش‌های ویدیویی در آپدیت بعدی قرار خواهند گرفت.', 'yellow');
     });
-
     const manualToggle = pattern.querySelector('.manual-formula-toggle');
     if (manualToggle && manualToggle.dataset.hojrehManualHandler !== 'settings' && manualToggle.dataset.pricingManualReady !== 'true') {
       manualToggle.dataset.pricingManualReady = 'true';
       manualToggle.addEventListener('change', () => this.enableManualFormulaMode());
     }
-
     const preview = pattern.querySelector('.formula-preview-large-box');
     if (preview && preview.dataset.formulaPreviewReady !== 'true') {
       preview.dataset.formulaPreviewReady = 'true';
@@ -975,29 +772,21 @@ const controllerDomMixin = {
       });
     }
   },
-
   _scheduleHydration() {
     clearTimeout(this._hydrationTimer);
     this._hydrationTimer = setTimeout(() => this.hydrate(), 60);
   },
-
-  /** Reconciles DOM with state — cheap, idempotent, safe to call on
-   *  an interval per-instance if desired (see bootstrap below), but
-   *  never needs to "borrow" or restore any other instance's cursor
-   *  because there IS no shared cursor. */
   hydrate() {
     if (this._isRendering || !this.container) return;
     const manual = this.isManualMode();
     const dom = this._dom;
     this.setManualSensitiveFieldsVisibility(manual);
-
     if (manual && dom.previewLarge.getAttribute('contenteditable') !== 'true') {
       dom.previewLarge.setAttribute('contenteditable', 'true');
     }
     if (!manual && dom.previewLarge.hasAttribute('contenteditable')) {
       dom.previewLarge.removeAttribute('contenteditable');
     }
-
     if (this.state.elements.length > 0 && this.state.status !== 'red' && this.state.status !== 'yellow') {
       const hasVisualItems = !!dom.itemsContainer.querySelector('.pattern-item-box, .computational-group-box');
       if (!hasVisualItems) this.render({ syncPreview: !manual });
@@ -1008,23 +797,16 @@ const controllerDomMixin = {
     }
     this.syncBackendFields();
   },
-
   destroy() {
     clearTimeout(this._validateTimer);
     clearTimeout(this._hydrationTimer);
     HojrehPatternController.unregister(this.patternId);
   },
 };
-
-/* ── Shared, stateless registry helper kept on the class so every
-   instance's control-binding code can call it without depending
-   on a module-level function. Attached directly to the class (not
-   the prototype) by controller.js. ─────────────────────────────── */
 const controllerDomStatics = {
   ensureUnifiedUnitSelectOptions(root = document) {
     const unitOptions = HojrehFormulaEngine.getUnitOptions ? HojrehFormulaEngine.getUnitOptions() : [];
     const selects = (root || document).querySelectorAll ? (root || document).querySelectorAll('select.unit-select') : [];
-
     selects.forEach(select => {
       const currentValue = select.value || 'عدد';
       const exists = unitOptions.some(unit => unit.value === currentValue);
@@ -1044,10 +826,8 @@ const controllerDomStatics = {
         select.appendChild(customOption);
       }
     });
-
     normalizeUnitSelects(root);
     HojrehFormulaEngine.syncVariableQuantitySymbols();
   },
 };
-
 export { controllerDomMixin, controllerDomStatics };

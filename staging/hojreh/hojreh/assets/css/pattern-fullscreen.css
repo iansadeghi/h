@@ -1,20 +1,4 @@
-/* ==========================================================================
-   PATTERN FULLSCREEN — دکمه تمام‌صفحه برای آکاردئون «الگوهای قیمت‌گذاری»
-   فقط .accordion-item[data-type="pattern"] را تحت تأثیر قرار می‌دهد.
-   بقیه‌ی انواع آکاردئون (متغیر، متغیر API، ثابت، رُندسازی، شاگرد حجره)
-   دست‌نخورده باقی می‌مانند.
-   ========================================================================== */
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۱) گروه دکمه‌های toggle/fullscreen — .acc-toggle-group
-   ───────────────────────────────────────────────────────────────────────── */
-/* توجه: این‌جا عمداً از absolute-positioning صرف‌نظر شد. چون chevron و
-   دکمه‌ی فول‌اسکرین هر دو از یک نقطه‌ی یکسان (لبه‌ی گروه وقتی عرض 56px است)
-   انکر می‌شدند، در طول کل بازه‌ی رشدِ عرض (نه فقط یک فریم) روی هم می‌افتادند.
-   با flex به‌جایش، دو دکمه واقعاً دو آیتم مجزا در یک ردیف‌اند و از نظر
-   جبر چیدمان فلکس، هیچ‌وقت — حتی یک میلی‌ثانیه — نمی‌توانند هم‌پوشانی
-   داشته باشند؛ فقط عرض دکمه‌ی فول‌اسکرین از 0 به 56px رشد می‌کند. */
-.accordion-item[data-type="pattern"] .acc-toggle-group {
+﻿.accordion-item[data-type="pattern"] .acc-toggle-group {
   display: flex;
   align-items: center;
   height: 56px;
@@ -22,79 +6,56 @@
   overflow: hidden;
   background: var(--gray-200);
 }
-
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-toggle-btn,
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-fullscreen-btn {
   height: 56px;
   flex-shrink: 0;
-  background: transparent; /* پس‌زمینه حالا روی خود گروه است، نه دکمه‌ها */
+  background: transparent; 
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  position: relative; /* لنگرگاه برای اسپن‌های absolute آیکون داخل acc-fullscreen-btn */
+  position: relative; 
   transition: background .15s;
 }
-
-/* chevron: آخرین فرزند DOM یعنی در RTL همیشه لبه‌ی چپِ گروه — عرض ثابت،
-   هرگز جمع نمی‌شود (فقط در حالت فول‌اسکرین صفر می‌شود، پایین‌تر) */
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-toggle-btn {
   width: 56px;
   transition: background .15s, opacity .2s ease, width .35s cubic-bezier(.4, 0, .2, 1);
 }
-
-/* دکمه‌ی فول‌اسکرین: اولین فرزند DOM، عرضش بین 0 (بسته) و 56 (باز) انیمیشن
-   می‌شود؛ چون flex-item مجزاست، رشدش هیچ‌وقت با chevron هم‌پوشانی ندارد */
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-fullscreen-btn {
   width: 0;
   transition: background .15s, width .35s cubic-bezier(.4, 0, .2, 1);
 }
-
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-toggle-btn:hover,
 .accordion-item[data-type="pattern"] .acc-toggle-group .acc-fullscreen-btn:hover {
   background: var(--gray-300);
 }
-
-/* حالت بسته: دکمه فول‌اسکرین نامرئی و غیرقابل‌کلیک است (عرض 0، پوشیده با overflow:hidden) */
 .accordion-item[data-type="pattern"] .acc-fullscreen-btn {
   opacity: 0;
   pointer-events: none;
   transition: background .15s, width .35s cubic-bezier(.4, 0, .2, 1), opacity .3s ease .12s;
 }
-
-/* حالت باز (بدون تمام‌صفحه) یا در حین انیمیشن رفتن/برگشتن از تمام‌صفحه:
-   دکمه‌ی فول‌اسکرین به 56px رشد می‌کند تا هر دو دکمه دیده شوند */
 .accordion-item[data-type="pattern"].open:not(.pattern-fullscreen) .acc-fullscreen-btn,
 .accordion-item[data-type="pattern"].pattern-fullscreen-animating .acc-fullscreen-btn,
 .accordion-item[data-type="pattern"].pattern-fullscreen .acc-fullscreen-btn {
   width: 56px;
 }
-
 .accordion-item[data-type="pattern"].open .acc-fullscreen-btn,
 .accordion-item[data-type="pattern"].pattern-fullscreen-animating .acc-fullscreen-btn,
 .accordion-item[data-type="pattern"].pattern-fullscreen .acc-fullscreen-btn {
   opacity: 1;
   pointer-events: auto;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۲) حالت تمام‌صفحه — شورون جمع می‌شود، فقط دکمه فول‌اسکرین می‌ماند
-   ───────────────────────────────────────────────────────────────────────── */
 .accordion-item[data-type="pattern"].pattern-fullscreen .acc-toggle-group {
-  width: auto; /* عرض از مجموع دو فرزند (اکنون فقط فول‌اسکرین‌بتن) به‌دست می‌آید */
+  width: auto; 
 }
-
 .accordion-item[data-type="pattern"].pattern-fullscreen .acc-toggle-btn {
   width: 0;
   opacity: 0;
   pointer-events: none;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۳) کراس‌فید دو آیکون داخل .acc-fullscreen-btn (Expand ⇄ Collapse)
-   ───────────────────────────────────────────────────────────────────────── */
 .acc-fullscreen-btn .fs-icon {
   position: absolute;
   inset: 0;
@@ -103,34 +64,26 @@
   justify-content: center;
   transition: opacity .3s ease, transform .3s cubic-bezier(.4, 0, .2, 1);
 }
-
 .acc-fullscreen-btn .fs-icon svg {
   width: 18px;
   height: 18px;
 }
-
 .acc-fullscreen-btn .fs-icon-collapse {
   opacity: 0;
   transform: scale(.6) rotate(-20deg);
 }
-
 .accordion-item.pattern-fullscreen .acc-fullscreen-btn .fs-icon-expand {
   opacity: 0;
   transform: scale(.6) rotate(20deg);
 }
-
 .accordion-item.pattern-fullscreen .acc-fullscreen-btn .fs-icon-collapse {
   opacity: 1;
   transform: scale(1) rotate(0);
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۴) لایه‌بندی حالت تمام‌صفحه (استاتیک، بدون در حال انیمیشن)
-   ───────────────────────────────────────────────────────────────────────── */
 .accordion-item[data-type="pattern"].pattern-fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 1000; /* بالاتر از هدر سایت (z-index:100)؛ عمداً کل صفحه از جمله هدر را می‌پوشاند */
+  z-index: 1000; 
   margin: 0;
   background: var(--white);
   display: flex;
@@ -138,60 +91,32 @@
   overflow: hidden;
   border-radius: 0;
 }
-
 .accordion-item[data-type="pattern"] .accordion-header {
-  transition: padding-right .35s cubic-bezier(.4, 0, .2, 1); /* هم‌زمان با جمع‌شدن acc-drag-handle */
+  transition: padding-right .35s cubic-bezier(.4, 0, .2, 1); 
 }
-
 .accordion-item[data-type="pattern"].pattern-fullscreen .accordion-header {
   flex-shrink: 0;
   width: 100%;
-  /* عمداً بدون background/border override: هدر باید دقیقاً همان استایل
-     همیشگی‌اش (var(--gray-100)، بدون بوردر) را حفظ کند، فقط تمام‌عرض شود. */
-  padding-right: 15px; /* گپ نهایی از لبه‌ی صفحه، بعد از جمع‌شدن نرم acc-drag-handle */
+  padding-right: 15px; 
 }
-
-/* margin-top پایه‌ی accordion-body (توی settings-panel.css) فقط max-height رو
-   ترنزیشن می‌کنه، نه margin-top رو؛ یعنی تغییرش (چه 0→7 موقع باز شدن، چه
-   7→25 موقع رفتن به تمام‌صفحه) بدون انیمیشن و آنی اتفاق می‌افته. قانون زیر
-   با اسپسیفیسیتی بالاتر (فقط برای data-type="pattern") آن transition پایه
-   رو بازنویسی می‌کنه و margin-top رو هم بهش اضافه می‌کنه — بدون این‌که خودِ
-   مقدارها رو تغییر بده. چون max-height در حالت تمام‌صفحه با !important به
-   none می‌ره (نه یک عدد)، ترنزیشنش عملاً بی‌اثره؛ اما margin-top یک مقدار
-   واقعی به مقدار واقعی دیگه‌ست (7px → 25px)، پس نرم انیمیت می‌شه. */
 .accordion-item[data-type="pattern"] .accordion-body {
   transition: max-height .3s cubic-bezier(.4, 0, .2, 1), margin-top .35s cubic-bezier(.4, 0, .2, 1);
 }
-
 .accordion-item[data-type="pattern"].pattern-fullscreen .accordion-body {
   flex: 1;
   overflow-y: auto;
-  max-height: none !important; /* override قانون max-height موجود accordion-body */
-  margin-top: 25px; /* همون گپ همیشگی بین هدر و بدنه (.accordion-item.open .accordion-body)،
-                       عمداً اینجا هم صریحاً تکرار شده که با هیچ override دیگری از بین نره —
-                       تغییرش از 7 به این مقدار حالا با ترنزیشن بالا نرم انیمیت می‌شه */
+  max-height: none !important; 
+  margin-top: 25px; 
 }
-
 .accordion-item[data-type="pattern"].pattern-fullscreen .accordion-body-inner {
   width: 100%;
-  max-width: 1200px; /* حداکثر عرض محتوا روی مانیتورهای بزرگ/عریض */
+  max-width: 1200px; 
   margin: 0 auto;
   padding: 28px 24px 60px;
-  /* بدون background override: همان var(--gray-100) همیشگی accordion-body-inner
-     حفظ می‌شود؛ فقط عرض بیشتر می‌شود. */
 }
-
-/* توجه مهم: کلاس .acc-drag-handle مشترک است بین (۱) دستگیره‌ی درگِ خودِ
-   آکاردئون (برای جابه‌جایی کل آیتم در لیست تنظیمات) و (۲) دستگیره‌های درگِ
-   آیتم‌ها/گروه‌های محاسباتی داخل ادیتور فرمول (که کلاس computational-group-drag-handle
-   را هم دارند). قانون قبلی با سلکتور عمومی «...pattern-fullscreen .acc-drag-handle»
-   تمام این‌ها را همزمان مخفی می‌کرد و باعث از کار افتادن درگِ آیتم‌های فرمول
-   در حالت تمام‌صفحه می‌شد. با محدودکردن به «> .accordion-header > .acc-drag-handle»
-   فقط دستگیره‌ی خودِ هدر تحت تأثیر قرار می‌گیرد و درگِ فرمول دست‌نخورده می‌ماند. */
 .accordion-item[data-type="pattern"] > .accordion-header > .acc-drag-handle {
   transition: width .35s cubic-bezier(.4, 0, .2, 1), margin .35s cubic-bezier(.4, 0, .2, 1), opacity .25s ease;
 }
-
 .accordion-item[data-type="pattern"].pattern-fullscreen > .accordion-header > .acc-drag-handle,
 .accordion-item[data-type="pattern"].pattern-fullscreen-animating > .accordion-header > .acc-drag-handle {
   width: 0;
@@ -200,10 +125,6 @@
   pointer-events: none;
   overflow: hidden;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۵) کلاس واسط حین انیمیشن (FLIP)
-   ───────────────────────────────────────────────────────────────────────── */
 .accordion-item.pattern-fullscreen-animating {
   transition:
     top .45s cubic-bezier(.4, 0, .2, 1),
@@ -214,37 +135,18 @@
   background: var(--white);
   overflow: hidden;
 }
-
-/* جای‌خالی موقت در لیست، تا با خروج آیتم از فلوی عادی (position:fixed) لیست جمع نشود */
 .pattern-fullscreen-placeholder {
   flex-shrink: 0;
 }
-
-/* قفل اسکرول صفحه پشت مودال تمام‌صفحه */
 body.hojreh-fs-lock {
   overflow: hidden;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۷) تعامل با مودال «تست فرمول» (formula-test-modal.js)
-   ───────────────────────────────────────────────────────────────────────── */
-/* مودال تست فرمول با z-index:901 روی صفحه‌ی عادی درست کار می‌کند، ولی وقتی
-   آکاردئون پترن تمام‌صفحه است (z-index:1000، عمداً کل صفحه را می‌پوشاند)،
-   با همون 901 کاملاً زیر آن دفن می‌شد. کلاس زیر — که فقط وقتی مودال از
-   داخل یک آیتم تمام‌صفحه باز شود توسط formula-test-modal.js اضافه می‌شود —
-   z-index مودال/overlay را موقتاً بالاتر می‌برد؛ در حالت عادی (بدون این
-   کلاس) هیچ تغییری نسبت به رفتار قبلی ایجاد نمی‌شود. */
 .formula-test-modal-overlay.above-pattern-fullscreen {
   z-index: 1400;
 }
-
 .formula-test-modal.above-pattern-fullscreen {
   z-index: 1401;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   ۸) prefers-reduced-motion
-   ───────────────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .accordion-item[data-type="pattern"] .acc-toggle-group,
   .accordion-item[data-type="pattern"] .acc-toggle-group .acc-toggle-btn,

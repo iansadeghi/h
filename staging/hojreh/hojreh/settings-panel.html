@@ -1,8 +1,7 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
  <meta charset="UTF-8" />
- <!-- مقداردهی تم پیش از رندر برای جلوگیری از FOUC -->
  <script>(function(){try{var t=localStorage.getItem('hojreh-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <title>پنل تنظیمات - حجره</title>
@@ -20,8 +19,6 @@
  <link rel="stylesheet" href="assets/css/checkbox.css" />
 </head>
 <body>
-
-<!-- ═══════════ PRELOADER ═══════════ -->
 <div id="hojrehPreloaderBar"><div class="preloader-bar-fill"></div></div>
 <div id="hojrehPreloader">
   <svg class="preloader-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
@@ -51,8 +48,6 @@
     </g>
   </svg>
 </div>
-
-<!-- ═══════════ HEADER ═══════════ -->
 <header>
   <div class="logo-wrap">
     <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
@@ -72,13 +67,10 @@
       <path d="M251.419,120.093a36.234,36.234,0,0,0,36.23-36.23,36.234,36.234,0,0,0,36.23,36.23,36.234,36.234,0,0,0-36.23,36.23A36.235,36.235,0,0,0,251.419,120.093Z" fill="#d6b478"/>
     </svg>
   </div>
-
   <div class="header-menu-actions">
       <div class="header-buttons">
-      <!-- دکمه ذخیره تنظیمات -->
       <button class="header-save-btn" id="headerSaveBtn">ذخیره تنظیمات</button>
     </div>
-
     <nav class="header-nav">
       <a href="../index.html" class="back-to-site">بازگشت به منو</a>
       <a href="#">راهنمای تنظیمات</a>
@@ -87,11 +79,7 @@
     </nav>
   </div>
 </header>
-
-<!-- ═══════════ PAGE WRAP ═══════════ -->
 <div class="page-wrap">
-
-  <!-- ─── SIDEBAR ─── -->
   <aside class="sidebar">
     <div class="sidebar-title">فهرست تنظیمات</div>
     <ul class="sidebar-menu">
@@ -102,8 +90,6 @@
       <li><a href="#apprentice-section"><span class="sidebar-dot"></span><span class="sidebar-text">شاگرد حجره</span></a></li>
     </ul>
   </aside>
-
-  <!-- ─── RESIZER ─── -->
   <div class="col-resizer" id="colResizer">
     <div class="col-resizer-handle">
       <svg viewBox="0 0 6 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -114,14 +100,8 @@
       </svg>
     </div>
   </div>
-
-  <!-- ─── MAIN ─── -->
   <main class="main">
-    
-    <!-- ═══════════ بخش تعریف متغیرها ═══════════ -->
     <h1 class="section-title" id="variables-section">تعریف متغیرها</h1>
-
-    <!-- ─── ردیف بالای API — متغیرهای وابسته به API ─── -->
     <div class="header-row">
       <span class="header-text">متغیرهای وابسته به API</span>
       <button class="btn-more" id="openApiModalBtn">
@@ -132,11 +112,7 @@
         مشاهده بیشتر
       </button>
     </div>
-
-    <!-- لیست آکاردئون متغیرهای وابسته به API -->
     <div class="accordion-list" id="apiVariablesList">
-
-      <!-- ── دلار آمریکا ── -->
       <div class="accordion-item" draggable="false" data-id="USD" data-type="api-variable" data-api-symbol="USD" data-unit="عدد">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -249,8 +225,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ── طلای ۱۸ عیار ── -->
       <div class="accordion-item" draggable="false" data-id="GOLD_18K" data-type="api-variable" data-api-symbol="GOLD_18K" data-unit="گرم">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -363,10 +337,7 @@
           </div>
         </div>
       </div>
-
     </div>
-
-    <!-- ─── ردیف متغیرهای مستقل ─── -->
     <div class="header-row second-header">
       <span class="header-text">متغیرهای مستقل</span>
       <button class="btn-more" id="addIndependentVarBtn">
@@ -377,11 +348,7 @@
         افزودن متغیر مستقل
       </button>
     </div>
-
-    <!-- Accordion List (draggable) - Manual Variables -->
     <div class="accordion-list" id="independentList">
-
-      <!-- ── ITEM 1: زعفران قائنات سوپر نگین اتویی (closed) ── -->
       <div class="accordion-item" draggable="false" data-id="101" data-type="variable">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -401,7 +368,6 @@
           <div class="acc-title-area">
             <span class="acc-name">زعفران قائنات سوپر نگین اتویی</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -414,7 +380,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -465,8 +430,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ── ITEM 2: پسته احمدآقایی برشته زعفرانی ممتاز (closed) ── -->
       <div class="accordion-item" draggable="false" data-id="102" data-type="variable">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -486,7 +449,6 @@
           <div class="acc-title-area">
             <span class="acc-name">پسته احمدآقایی برشته زعفرانی ممتاز</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -499,7 +461,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -550,8 +511,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ── ITEM 3: بسته‌بندی شیشه‌ای 10*10*7 لوکس (closed) ── -->
       <div class="accordion-item" draggable="false" data-id="103" data-type="variable">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -571,7 +530,6 @@
           <div class="acc-title-area">
             <span class="acc-name">بسته‌بندی شیشه‌ای 10*10*7 لوکس</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -584,7 +542,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -634,14 +591,8 @@
           </div>
         </div>
       </div>
-
     </div>
-
-
-    <!-- ═══════════ بخش تعریف ثابت‌ها ═══════════ -->
     <h1 class="section-title" id="constants-section">تعریف ثابت‌ها</h1>
-
-    <!-- ردیف بالای ثابت‌های درصدی -->
     <div class="header-row">
       <span class="header-text">لیست ثابت‌های درصدی</span>
       <button class="btn-more" id="addConstantBtn">
@@ -652,11 +603,7 @@
         ایجاد ثابت
       </button>
     </div>
-
-    <!-- لیست آکاردئون های ثابت درصدی -->
     <div class="accordion-list" id="constantsList">
-
-      <!-- ثابت نمونه ۱: سود کارگاه و فروشگاه (۷٪) -->
       <div class="accordion-item" draggable="false" data-id="201" data-type="constant">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -676,7 +623,6 @@
           <div class="acc-title-area">
             <span class="acc-name">سود کارگاه و فروشگاه</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-constant-btn" title="حذف ثابت">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -689,7 +635,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -716,8 +661,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ثابت نمونه ۲: مالیات بر ارزش افزوده (۹٪) -->
       <div class="accordion-item" draggable="false" data-id="202" data-type="constant">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -737,7 +680,6 @@
           <div class="acc-title-area">
             <span class="acc-name">مالیات بر ارزش افزوده</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-constant-btn" title="حذف ثابت">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -750,7 +692,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -777,13 +718,8 @@
           </div>
         </div>
       </div>
-
     </div>
-
-    <!-- ═══════════ بخش تنظیمات رُندسازی ═══════════ -->
     <h1 class="section-title" id="rounding-section">تنظیمات رُندسازی</h1>
-
-    <!-- ردیف بالای مکانیزم‌های رندسازی -->
     <div class="header-row">
       <span class="header-text">مکانیزم‌های رُندسازی</span>
       <button class="btn-more" id="addRoundingBtn">
@@ -794,11 +730,7 @@
         ایجاد الگوریتم رُندسازی
       </button>
     </div>
-
-    <!-- لیست آکاردئون‌های رندسازی قیمت -->
     <div class="accordion-list" id="roundingList">
-
-      <!-- مکانیزم پیش فرض رندسازی عمومی -->
       <div class="accordion-item" draggable="false" data-id="301" data-type="algorithm">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -818,7 +750,6 @@
           <div class="acc-title-area">
             <span class="acc-name">رُند کردن چهار رقم آخر</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف مکانیزم">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -831,7 +762,6 @@
                 </g>
               </svg>
             </button>
-
             <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
               <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -867,7 +797,6 @@
                 <span class="form-label">نوع رُندسازی</span>
                 <div class="select-wrap">
                   <select class="form-control rounding-type-select">
-                    <!-- با جاوااسکریپت به صورت پویا ساخته می‌شود -->
                   </select>
                   <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
@@ -898,12 +827,8 @@
           </div>
         </div>
       </div>
-
     </div>
-
-    <!-- ═══════════ بخش تعریف الگوهای قیمت‌گذاری ═══════════ -->
     <h1 class="section-title" id="pricing-patterns-section">تعریف الگوهای قیمت‌گذاری</h1>
-
     <div class="header-row">
       <span class="header-text">لیست الگوها</span>
       <button class="btn-more" id="addPatternBtn">
@@ -914,11 +839,7 @@
         ایجاد الگو
       </button>
     </div>
-
-    <!-- لیست آکاردئون‌های الگوهای قیمت‌گذاری -->
     <div class="accordion-list" id="pricingPatternsList">
-
-      <!-- الگوی قیمت‌گذاری اصلی و بازسازی شده ۱ -->
       <div class="accordion-item" draggable="false" data-id="401" data-type="pattern">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -938,7 +859,6 @@
           <div class="acc-title-area">
             <span class="acc-name">الگوی ترکیب محصول و بسته‌بندی لوکس کادویی</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف الگو">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -951,13 +871,7 @@
                 </g>
               </svg>
             </button>
-
             <div class="acc-toggle-group">
-              <!-- ترتیب DOM مهم است: در RTL، اولین فرزندِ فلکس در لبه‌ی
-                   راستِ گروه می‌نشیند و آخرین فرزند در لبه‌ی چپ. چون
-                   chevron باید همیشه ثابت روی لبه‌ی چپ بماند، باید آخرین
-                   فرزند باشد؛ دکمه‌ی فول‌اسکرین (که عرضش بین 0 و 56px
-                   انیمیشن می‌شود) باید اول بیاید. -->
               <button class="acc-fullscreen-btn" type="button" aria-label="نمایش تمام‌صفحه الگو" title="نمایش تمام‌صفحه">
                 <span class="fs-icon fs-icon-expand">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -976,7 +890,6 @@
                   </svg>
                 </span>
               </button>
-
               <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
                 <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"/>
@@ -987,14 +900,8 @@
         </div>
         <div class="accordion-body">
           <div class="accordion-body-inner">
-            
-            <!-- چیدمان تعاملی ۲ ستونه -->
             <div class="pattern-interactive-box">
-              
-              <!-- ستون سمت چپ: چیدمان فرمول بصری (70 درصد) -->
               <div class="pattern-content-pane formula-drop-zone" id="formulaDropZone">
-                
-                <!-- حالت Empty State اولیه چیدمان -->
                 <div class="formula-empty-state" id="formulaEmptyState">
                   <svg viewBox="0 0 416 400" fill="currentColor" class="formula-svg">
                     <path d="M0,0v32v32h32V32h32V0H32H0z M96,0v32h48V0H96z M176,0v32h48V0H176z M256,0v32h32v32h32V0H256z M0,96v64h32V96H0z M288,96v48H96v16v240h320V144h-96V96H288z M128,176h256v192H128V176z M0,192v32v32h64v-32H32v-32H0z"/>
@@ -1012,8 +919,6 @@
                       مشاهده آموزش
                   </button>
                 </div>
-
-                <!-- حالت خطا برای فرمول نامعتبر -->
                 <div class="formula-error-state" id="formulaErrorState">
                   <svg svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 460" class="formula-svg formula-error-icon"><path d="M230,0C103.17,0,0,103.18,0,230S103.17,460,230,460,460,356.82,460,230,356.83,0,230,0ZM50,230A178.751,178.751,0,0,1,86.5,121.85L338.15,373.5A178.751,178.751,0,0,1,230,410C130.75,410,50,329.25,50,230ZM373.5,338.15,121.85,86.5A178.751,178.751,0,0,1,230,50c99.25,0,180,80.75,180,180A178.751,178.751,0,0,1,373.5,338.15Z" fill="currentColor"/></svg>
                   <div class="formula-empty-title formula-error-title">فرمول نامعتبر است</div>
@@ -1021,72 +926,52 @@
                     شناسه‌های استفاده شده در فرمول باید با شناسه‌های متغیرها، ثابت‌ها و رُندسازی‌های تعریف‌شده مطابقت داشته باشند و ساختار ریاضی فرمول صحیح باشد.
                   </div>
                 </div>
-
-                <!-- کانتینر آیتم‌های فرمول‌ساز چیده شده -->
                 <div class="formula-items-container" id="formulaItemsContainer"></div>
-
               </div>
-
-              <!-- ستون سمت راست: کنترل بار دکمه‌ها (30 درصد) -->
               <div class="pattern-control-pane">
-                
-                <!-- فیلد نام الگو در بالاترین بخش ستون کنترل -->
                 <div class="form-group pattern-name-group">
                   <span class="pattern-control-title">نام الگو</span>
                   <input type="text" class="form-control var-name-input pattern-name-input" value="الگوی ترکیب محصول و بسته‌بندی لوکس کادویی" />
                 </div>
-
                 <span class="pattern-control-title pattern-components-title">اجزای قیمت‌گذاری</span>
-                
-                <!-- دکمه گروه محاسباتی (پرانتزگذار) در بالاترین نقطه دکمه‌ها -->
                 <button class="btn-control-action btn-more" id="btnGroupAdd">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                   افزودن گروه محاسباتی (به عنوان پرانتز)
                 </button>
-
                 <button class="btn-control-action btn-more" id="btnApiVariableAdd">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                   افزودن متغیر وابسته به API
                 </button>
-
                 <button class="btn-control-action btn-more" id="btnIndependentAdd">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                   افزودن متغیر مستقل
                 </button>
-
                 <button class="btn-control-action btn-more" id="btnConstantAdd">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                   افزودن ثابت درصدی
                 </button>
-
                 <button class="btn-control-action btn-more" id="btnRoundingAdd">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                   افزودن مکانیزم رُندسازی
                 </button>
-
-                <!-- چک باکس ویرایش دستی فرمول در انتهای ستون راست -->
                 <div class="manual-formula-container">
                   <label class="manual-formula-label">
                     <input type="checkbox" class="manual-formula-toggle hojreh-checkbox-input" />
                     <span>ویرایش دستی فرمول</span>
                   </label>
                 </div>
-
               </div>
-
             </div>
-
-            <!-- کادر پیش‌نمایش فرمول نهایی داینامیک — با بسته‌بندی برای دکمه تست -->
             <div class="formula-preview-wrapper" id="formulaPreviewWrapper">
               <div class="formula-preview-large-box" id="formulaPreviewLarge" spellcheck="false" autocomplete="off">
                 برای نمایش فرمول، آیتم‌ها را به باکس بالا اضافه کنید.
@@ -1095,27 +980,18 @@
                 تست کردن فرمول
               </button>
             </div>
-
-            <!-- بخش شبیه‌ساز (مخفی — داده‌ها در مودال نمایش داده می‌شوند) -->
             <span class="form-label test-section-label" id="testSectionLabel" style="display:none;">تست کردن الگو</span>
             <div class="test-inputs-grid" id="testInputsGrid" aria-hidden="true">
-              <!-- فیلدهای شبیه‌ساز داینامیک — از مودال استفاده می‌شود -->
             </div>
-
             <div class="final-calculation-summary hidden" id="finalCalculationSummary" aria-hidden="true">
               <span>قیمت نهایی:</span>
               <span id="finalCalculationValue">۰ تومان</span>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
-
-    <!-- ═══════════ بخش شاگرد حجره ═══════════ -->
     <h1 class="section-title" id="apprentice-section">شاگرد حجره</h1>
-
     <div class="header-row">
       <span class="header-text">لیست شاگردهای حجره</span>
       <button class="btn-more" id="addApprenticeBtn">
@@ -1126,9 +1002,7 @@
         افزودن شاگرد حجره
       </button>
     </div>
-
     <div class="accordion-list" id="apprenticeList">
-
       <div class="accordion-item" draggable="false" data-id="501" data-type="apprentice">
         <div class="accordion-header">
           <div class="acc-drag-handle" title="جابجایی">
@@ -1148,7 +1022,6 @@
           <div class="acc-title-area">
             <span class="acc-name">علی احمدی</span>
           </div>
-
           <div class="acc-left-actions">
             <button class="acc-action-btn acc-delete-btn" title="حذف شاگرد">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1168,7 +1041,6 @@
             </button>
           </div>
         </div>
-
         <div class="accordion-body">
           <div class="accordion-body-inner">
             <div class="form-grid apprentice-form-grid">
@@ -1176,28 +1048,23 @@
                 <label class="form-label">نام کاربر</label>
                 <input type="text" class="form-control apprentice-first-name-input" value="علی" />
               </div>
-
               <div class="form-group">
                 <label class="form-label">نام خانوادگی</label>
                 <input type="text" class="form-control apprentice-last-name-input" value="احمدی" />
               </div>
-
               <div class="form-group">
                 <label class="form-label">ایمیل کاربر</label>
                 <input type="email" class="form-control apprentice-email-input" value="ali@example.com" />
               </div>
-
               <div class="form-group">
                 <label class="form-label">رمز عبور کاربر</label>
                 <div class="password-input-wrapper">
                   <input type="password" class="form-control apprentice-password-input" value="password123" />
                   <button type="button" class="password-eye-btn" aria-label="نمایش/پنهان رمز عبور" title="نمایش/پنهان رمز عبور">
-                    <!-- آیکون چشم باز — حالت پیش‌فرض (رمز پنهان) -->
                     <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                       <circle cx="12" cy="12" r="3"/>
                     </svg>
-                    <!-- آیکون چشم بسته — حالت نمایش رمز -->
                     <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                       <line x1="1" y1="1" x2="23" y2="23"/>
@@ -1214,12 +1081,9 @@
           </div>
         </div>
       </div>
-
     </div>
   </main>
 </div>
-
-<!-- ═══════════ MODAL CONFIRMATION ═══════════ -->
 <div class="confirm-modal-overlay" id="confirmModal">
   <div class="confirm-modal-box">
     <div class="confirm-title" id="confirmTitle">حذف متغیر</div>
@@ -1230,18 +1094,13 @@
     </div>
   </div>
 </div>
-
-<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="footer-pill-wrap">
     <div class="footer-pill-btns">
-      <!-- سمت راست: دکمه تغییر تم (ماه در حالت روشن، خورشید در حالت تاریک) -->
       <button class="pill-icon-btn" data-theme-action="toggle" aria-label="تغییر حالت نمایش" title="تغییر حالت نمایش">
-        <!-- ماه — در حالت روشن نمایش داده می‌شود -->
         <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
-        <!-- خورشید — در حالت تاریک نمایش داده می‌شود -->
         <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"/>
           <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
@@ -1250,7 +1109,6 @@
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
       </button>
-      <!-- سمت چپ: دکمه رفتن به بالا -->
       <button class="pill-icon-btn" data-action="scroll-top" aria-label="برگشت به بالا" title="برگشت به بالا">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
           <polyline points="18 15 12 9 6 15"/>
@@ -1260,12 +1118,8 @@
   </div>
   طراحی و توسعه توسط تیم برنامه‌نویسی کیان‌افراز
 </footer>
-
-<!-- ═══════════ API MODAL ═══════════ -->
 <div class="api-modal-overlay" id="apiModal">
   <div class="api-modal-content">
-
-    <!-- هدر مودال -->
     <div class="api-modal-header">
       <div class="api-modal-title-wrap">
         <span class="api-modal-title api-modal-title-main">انتخاب متغیر API</span>
@@ -1292,48 +1146,31 @@
         </button>
       </div>
     </div>
-
-    <!-- اسلایدر دو پنله -->
     <div class="api-modal-slider-wrap">
       <div class="api-modal-slider" id="apiSlider">
-
-        <!-- پنل ۱: دسته‌بندی‌ها -->
         <div class="api-pane" id="paneCategories">
-          <!-- با JS پر می‌شود -->
         </div>
-
-        <!-- پنل ۲: آیتم‌های دسته -->
         <div class="api-pane" id="paneItems">
           <div id="itemsContainer">
-            <!-- با JS پر می‌شود -->
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
 </div>
-
-<!-- ═══════════ FORMULA TEST MODAL ═══════════ -->
 <div class="formula-test-modal-overlay" id="formulaTestModalOverlay"></div>
 <div class="formula-test-modal" id="formulaTestModal" role="dialog" aria-modal="true">
-  <!-- دستگیره کشیدن برای بستن -->
   <div class="ftm-drag-handle" id="ftmDragHandle" aria-hidden="true">
     <div class="ftm-drag-handle-bar"></div>
   </div>
-  <!-- فیلدهای ورودی — با JS پر می‌شود -->
   <div class="ftm-body" id="ftmBody"></div>
-  <!-- نوار قیمت نهایی -->
   <div class="ftm-summary" id="ftmSummary">
     <span>قیمت نهایی:</span>
     <span class="ftm-summary-value" id="ftmSummaryValue">۰ تومان</span>
   </div>
 </div>
-
 <script type="module" src="assets/js/checkbox.js"></script>
 <script type="module" src="assets/js/settings-page.js" onerror="document.getElementById('hojrehPreloader')?.remove();document.getElementById('hojrehPreloaderBar')?.remove();"></script>
-
 <script>
 /* ─── منطق تغییر "منبع قیمت" در آکاردئون‌های متغیر وابسته به API ─── */
 (function () {
@@ -1362,7 +1199,6 @@
         }
       });
     });
-
     accordionItem.querySelectorAll('.manual-only-field').forEach(function (el) {
       el.style.display = isManual ? '' : 'none';
       el.querySelectorAll('input, select, textarea').forEach(function (ctrl) {
@@ -1379,7 +1215,6 @@
       });
     });
   }
-
   function attachPriceSourceListener(selectEl) {
     var accordionItem = selectEl.closest('.accordion-item[data-type="api-variable"]');
     if (!accordionItem) return;
@@ -1393,10 +1228,8 @@
       window._hojrehRefreshSettingsDot?.();
     });
   }
-
   /* ─── اعمال روی آکاردئون‌های موجود ─── */
   document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"] .api-price-source-select').forEach(attachPriceSourceListener);
-
   /* ─── اعمال روی آکاردئون‌های جدیدی که بعداً اضافه می‌شوند ─── */
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -1412,11 +1245,9 @@
       });
     });
   });
-
   var apiList = document.getElementById('apiVariablesList');
   if (apiList) observer.observe(apiList, { childList: true, subtree: true });
 })();
 </script>
-
 </body>
 </html>

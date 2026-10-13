@@ -1,50 +1,23 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * Hojreh Preloader Controller
- * کنترل‌کننده‌ی صفحه‌ی بارگذاری اولیه
- *
- * - حداقل زمان نمایش: 4000ms
- * - پراگرس کاملاً داینامیک: در کل بازه‌ی 4 ثانیه در حال حرکت است
- *   (شروع آهسته، شتاب در میانه، کند شدن نزدیک پایان)
- * - واقعاً صبر می‌کند تا فونت‌ها (document.fonts.ready)، تمام
- *   stylesheet ها، تصاویر و window.load کامل شوند؛ اگر این موارد
- *   بیشتر از 4 ثانیه طول بکشند، پراگرس نزدیک ۹۰٪ نگه داشته می‌شود
- *   تا بارگذاری واقعی تمام شود، سپس به ۱۰۰٪ می‌رسد و صفحه فید-اوت
- *   می‌شود.
- * - شدو/درخشش پراگرس‌بار فقط نزدیک انتهای مسیر فعال می‌شود.
- * ═══════════════════════════════════════════════════════════════
- */
-
-(function () {
+﻿(function () {
   'use strict';
-
   var MIN_DISPLAY_MS = 4000;
   var FADE_MS = 500;
-  /* پراگرس تا این درصد بدون نیاز به resource های واقعی پیش می‌رود؛
-     باقیمانده فقط وقتی صفحه واقعاً آماده شد تکمیل می‌شود. */
   var SOFT_CAP_PERCENT = 92;
   var GLOW_THRESHOLD_PERCENT = 80;
-
   document.addEventListener('DOMContentLoaded', function () {
     var preloader = document.getElementById('hojrehPreloader');
     var barWrap = document.getElementById('hojrehPreloaderBar');
     var barFill = barWrap ? barWrap.querySelector('.preloader-bar-fill') : null;
-
     if (!preloader || !barFill) return;
-
     var startTime = performance.now();
     var resourcesReady = false;
     var rafId = null;
     var finished = false;
-
-    /* ─── منحنی ease: کند در شروع، سریع در میانه، کمی کند نزدیک پایان ─── */
     function easeProgress(t) {
-      // ترکیب easeInOutCubic برای حرکت طبیعی و قابل‌حس بودن لودینگ
       return t < 0.5
         ? 4 * t * t * t
         : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
-
     function setProgress(percent) {
       percent = Math.max(0, Math.min(100, percent));
       barFill.style.width = percent + '%';
@@ -54,39 +27,27 @@
         barFill.classList.remove('is-glowing');
       }
     }
-
-    /* ─── حلقه‌ی انیمیشن پراگرس ─── */
     function tick(now) {
       var elapsed = now - startTime;
       var t = Math.min(elapsed / MIN_DISPLAY_MS, 1);
       var eased = easeProgress(t);
       var target = eased * 100;
-
-      /* تا وقتی منابع واقعی آماده نشده‌اند، از سقف نرم عبور نمی‌کنیم
-         تا کاربر حس "در حال بارگذاری واقعی" را از دست ندهد. */
       if (!resourcesReady && target > SOFT_CAP_PERCENT) {
         target = SOFT_CAP_PERCENT;
       }
-
       setProgress(target);
-
       var minTimeDone = elapsed >= MIN_DISPLAY_MS;
-
       if (minTimeDone && resourcesReady) {
         setProgress(100);
         finishPreload();
         return;
       }
-
       rafId = requestAnimationFrame(tick);
     }
-
-    /* ─── بررسی آماده بودن واقعی صفحه: فونت‌ها، CSS، تصاویر، load ─── */
     function waitForRealReadiness() {
       var fontsPromise = (document.fonts && document.fonts.ready)
         ? document.fonts.ready.catch(function () {})
         : Promise.resolve();
-
       var loadPromise = new Promise(function (resolve) {
         if (document.readyState === 'complete') {
           resolve();
@@ -94,7 +55,6 @@
           window.addEventListener('load', function () { resolve(); }, { once: true });
         }
       });
-
       var stylesheetsPromise = Promise.all(
         Array.prototype.map.call(
           document.querySelectorAll('link[rel="stylesheet"]'),
@@ -107,7 +67,6 @@
           }
         )
       );
-
       var imagesPromise = Promise.all(
         Array.prototype.map.call(document.images, function (img) {
           if (img.complete) return Promise.resolve();
@@ -117,7 +76,6 @@
           });
         })
       );
-
       Promise.all([fontsPromise, loadPromise, stylesheetsPromise, imagesPromise])
         .then(function () {
           resourcesReady = true;
@@ -126,22 +84,18 @@
           resourcesReady = true;
         });
     }
-
     function finishPreload() {
       if (finished) return;
       finished = true;
       if (rafId) cancelAnimationFrame(rafId);
-
       preloader.classList.add('is-hidden');
       if (barWrap) barWrap.classList.add('is-hidden');
-
       window.setTimeout(function () {
         preloader.style.display = 'none';
         if (barWrap) barWrap.style.display = 'none';
         document.documentElement.classList.add('hojreh-preloading-done');
       }, FADE_MS);
     }
-
     waitForRealReadiness();
     rafId = requestAnimationFrame(tick);
   });

@@ -1,11 +1,9 @@
-import { initNumericInputs } from '../general.js';
-
-/* ─── Task 4: افزودن پسوند تومان به ورودی‌های قیمت در settings-panel ─── */
+﻿import { initNumericInputs } from '../general.js';
 function wrapPriceInputsWithToman(root) {
   root = root || document;
   const priceSelectors = '.ojrat-input, .var-min-price, .var-default-price';
   root.querySelectorAll(priceSelectors).forEach(input => {
-    if (input.closest('.settings-price-wrapper')) return; // قبلاً wrap شده
+    if (input.closest('.settings-price-wrapper')) return;
     const wrapper = document.createElement('div');
     wrapper.className = 'settings-price-wrapper';
     input.parentNode.insertBefore(wrapper, input);
@@ -15,11 +13,8 @@ function wrapPriceInputsWithToman(root) {
     unit.textContent = 'تومان';
     wrapper.appendChild(unit);
   });
-  // اعمال numeric formatting
   initNumericInputs(root);
 }
-
-/* ─── Task 5: toggle رمز عبور با آیکون چشم ─── */
 function initPasswordToggle(root) {
   root = root || document;
   root.querySelectorAll('.password-eye-btn').forEach(btn => {
@@ -29,10 +24,8 @@ function initPasswordToggle(root) {
     if (!wrapper) return;
     const input = wrapper.querySelector('.apprentice-password-input');
     if (!input) return;
-
     btn.addEventListener('click', function() {
       const isPassword = input.type === 'password';
-      // انیمیشن چشمک
       btn.classList.add('toggling');
       setTimeout(() => {
         input.type = isPassword ? 'text' : 'password';
@@ -43,11 +36,8 @@ function initPasswordToggle(root) {
     });
   });
 }
-
-/* export wrap helper so api-modal and dynamic accordions can reuse it */
 function initNewAccordionExtras(el) {
   wrapPriceInputsWithToman(el);
   initPasswordToggle(el);
 }
-
 export { wrapPriceInputsWithToman, initPasswordToggle, initNewAccordionExtras };

@@ -1,23 +1,17 @@
-import { pricingPatterns } from '../pricing-patterns.js';
-
-/* ─── MANUAL FORMULA SHOW/HIDE PER PRICING PATTERN ─── */
-
+﻿import { pricingPatterns } from '../pricing-patterns.js';
 function toggleManualFormulaMode(isActive, patternItem) {
   if (isActive) {
     document.body.classList.add('manual-formula-active');
   } else {
     document.body.classList.remove('manual-formula-active');
   }
-
   if (patternItem) {
     const localToggle = patternItem.querySelector('.manual-formula-toggle');
     if (localToggle) localToggle.checked = isActive;
   }
-
   pricingPatterns.activatePattern?.(patternItem, { hydrate: false });
   pricingPatterns.enableManualFormulaMode?.(patternItem);
 }
-
 function initManualFormulaToggles() {
   document.querySelectorAll('.manual-formula-toggle').forEach(chk => {
     if (chk.dataset.hojrehManualHandler) return;
@@ -27,5 +21,4 @@ function initManualFormulaToggles() {
     });
   });
 }
-
 export { toggleManualFormulaMode, initManualFormulaToggles };

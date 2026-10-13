@@ -1,16 +1,10 @@
-import { pricingPatterns } from '../pricing-patterns.js';
-
-/* ─── STABLE SEQUENTIAL ID GENERATOR ───
-   Generates/validates the "english-id-input" identifiers used to reference
-   variables, constants, algorithms and patterns from pricing formulas. */
-
+﻿import { pricingPatterns } from '../pricing-patterns.js';
 function normalizeEnglishIdValue(value) {
   return String(value || '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9_]/g, '');
 }
-
 function generateEnglishID(persianText, type, currentInput) {
   const prefixMap = {
     'variable': 'var',
@@ -19,30 +13,24 @@ function generateEnglishID(persianText, type, currentInput) {
     'algorithm': 'round',
     'pattern': 'pattern'
   };
-
   const prefix = prefixMap[type] || type || 'item';
   const existingIds = new Set();
-
   document.querySelectorAll('.english-id-input').forEach(input => {
     if (input === currentInput) return;
     const val = normalizeEnglishIdValue(input.value);
     if (val) existingIds.add(val);
   });
-
   let counter = 1;
   let candidateId = `${prefix}${counter}`;
   while (existingIds.has(candidateId)) {
     counter++;
     candidateId = `${prefix}${counter}`;
   }
-
   return candidateId;
 }
-
 function getItemFormulaId(item) {
   return normalizeEnglishIdValue(item?.querySelector('.english-id-input')?.value || '');
 }
-
 function hasDuplicateActiveEnglishId(id, currentItem) {
   const normalized = normalizeEnglishIdValue(id);
   if (!normalized) return false;
@@ -52,16 +40,10 @@ function hasDuplicateActiveEnglishId(id, currentItem) {
     return getItemFormulaId(item) === normalized;
   });
 }
-
 function isFormulaProtectedItem(item) {
   const id = getItemFormulaId(item);
   if (!id) return false;
   const patterns = pricingPatterns;
-  // Rely exclusively on the explicit, state-isolated cross-pattern iteration
-  // helpers (isItemUsedInAnyFormula + its aliases). We deliberately do NOT
-  // call isItemUsedInCurrentFormula here, because that reads the ambient
-  // "active pattern" formula state, which the background self-healing sweep
-  // can repoint at any moment — leading to false negatives/positives.
   return !!(
     patterns?.isItemUsedInAnyFormula?.(id) ||
     patterns?.isItemUsedInFormula?.(id) ||
@@ -69,7 +51,6 @@ function isFormulaProtectedItem(item) {
     patterns?.isRegistryItemUsed?.(id)
   );
 }
-
 function itemHumanType(item) {
   const type = item?.dataset?.type;
   if (type === 'variable') return 'متغیر';
@@ -80,12 +61,10 @@ function itemHumanType(item) {
   if (type === 'apprentice') return 'شاگرد حجره';
   return 'آیتم';
 }
-
 function nextAccordionId(type) {
   const safeType = String(type || 'item').replace(/[^a-z0-9_-]/gi, '') || 'item';
   return `${safeType}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
-
 export {
   normalizeEnglishIdValue,
   generateEnglishID,

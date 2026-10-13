@@ -1,9 +1,6 @@
-import { normalizeUnitSelects } from '../general.js';
+﻿import { normalizeUnitSelects } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { normalizeEnglishIdValue } from './id-utils.js';
-
-/* ─── FORMULA-AFFECTING FIELD SYNC ─── */
-
 let formulaAffectingRefreshTimer = null;
 function scheduleFormulaAffectingRefresh() {
   clearTimeout(formulaAffectingRefreshTimer);
@@ -11,7 +8,6 @@ function scheduleFormulaAffectingRefresh() {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   }, 80);
 }
-
 function initFormulaFieldSync() {
   document.addEventListener('input', function(e) {
     if (e.target.matches('.english-id-input')) {
@@ -22,7 +18,6 @@ function initFormulaFieldSync() {
       scheduleFormulaAffectingRefresh();
     }
   });
-
   document.addEventListener('change', function(e) {
     if (e.target.matches('.unit-select, .rounding-max-select, .rounding-type-select')) {
       normalizeUnitSelects(e.target.closest('.accordion-item') || document);
@@ -33,5 +28,4 @@ function initFormulaFieldSync() {
     }
   });
 }
-
 export { scheduleFormulaAffectingRefresh, initFormulaFieldSync };

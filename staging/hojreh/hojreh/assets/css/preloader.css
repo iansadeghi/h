@@ -1,31 +1,7 @@
-/* ═══════════════════════════════════════════════════════════════
-   HOJREH PRELOADER
-   صفحه‌ی بارگذاری اولیه: پس‌زمینه ساده + لوگوی متحرک در مرکز +
-   پراگرس‌بار بالای صفحه. رنگ‌ها از همان متغیرهای general.css
-   می‌آیند تا با تغییر تم (روشن/تیره) به‌صورت خودکار هماهنگ بمانند.
-
-   نکته‌ی مهم: این فایل به‌صورت <link rel="stylesheet"> سینکرون و
-   render-blocking در <head> لود می‌شود. به همین دلیل، تمام استایل
-   انیمیشن لوگو (که قبلاً به‌صورت <style> درون خودِ SVG بود) به اینجا
-   منتقل شده تا مرورگر تضمین کند پیش از اولین paint، این قواعد آماده‌اند
-   — یعنی هیچ فریم بدون‌استایل یا "خراب" از لوگو دیده نمی‌شود.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* جلوگیری از اسکرول صفحه‌ی پشتی در حین نمایش پری‌لودر.
-   این قاعده روی html و body اعمال می‌شود بدون نیاز به کلاس
-   جاوااسکریپتی، چون preloader.css خودش render-blocking است و
-   پیش از اولین paint لود می‌شود — یعنی از همان فریم صفر (نه بعد
-   از DOMContentLoaded) اسکرول مسدود است و هیچ لحظه‌ای اسکرول‌بار
-   دیده/پنهان نمی‌شود. هر دو تگ html و body پوشش داده شده‌اند چون
-   موتور اسکرول بسته به مرورگر می‌تواند از هرکدام باشد.
-   به محض پایان پری‌لودر، JS کلاس hojreh-preloading-done را به
-   <html> اضافه می‌کند تا این قانون خنثی شود و اسکرول بقیه‌ی صفحه
-   آزاد بماند. */
-html:not(.hojreh-preloading-done),
+﻿html:not(.hojreh-preloading-done),
 html:not(.hojreh-preloading-done) body {
   overflow: hidden;
 }
-
 #hojrehPreloader {
   position: fixed;
   inset: 0;
@@ -36,48 +12,34 @@ html:not(.hojreh-preloading-done) body {
   background: var(--white);
   transition: opacity .5s ease, visibility .5s ease;
 }
-
 [data-theme="dark"] #hojrehPreloader {
   background: #111111;
 }
-
-/* وقتی JS کلاس را اضافه می‌کند، صفحه محو شده و از تعامل خارج می‌شود */
 #hojrehPreloader.is-hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
-
-/* ─── لوگو: ریسپانسیو، با کلمپ بین حداقل و حداکثر اندازه ─── */
 #hojrehPreloader .preloader-logo {
   width: min(46vw, 260px);
   min-width: 150px;
   height: auto;
   color: var(--black);
   shape-rendering: geometricPrecision;
-  /* در فریم اول، گروه faw با scale بزرگ‌تر از viewBox رندر می‌شود؛
-     overflow:visible از برش‌خوردن آن در ابتدای انیمیشن جلوگیری می‌کند */
   overflow: visible;
 }
-
 @media (max-width: 600px) {
   #hojrehPreloader .preloader-logo {
     width: min(60vw, 200px);
     min-width: 130px;
   }
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   انیمیشن لوگوی پری‌لودر
-   ═══════════════════════════════════════════════════════════════ */
-
 #hojrehPreloader .star-pivot {
   transform-box: fill-box;
   transform-origin: center;
   animation: hojrehStarSpinLoop 7.2s linear infinite;
   animation-delay: 2.3s;
 }
-
 @keyframes hojrehStarSpinLoop {
   0%      { transform: rotate(0deg); }
   8.333%  { transform: rotate(360deg); }
@@ -85,49 +47,41 @@ html:not(.hojreh-preloading-done) body {
   58.333% { transform: rotate(720deg); }
   100%    { transform: rotate(720deg); }
 }
-
 #hojrehPreloader .faw-group {
   transform-box: view-box;
   transform-origin: 0 0;
   animation: hojrehFawIntro 2.3s cubic-bezier(.65,0,.35,1) 1 forwards;
 }
-
 @keyframes hojrehFawIntro {
   0%      { transform: translate(508.554px, -134.779px) scale(1.6); }
   73.913% { transform: translate(508.554px, -134.779px) scale(1.6); }
   100%    { transform: translate(0px, 0px) scale(1); }
 }
-
 #hojrehPreloader .star-intro-spin {
   transform-box: fill-box;
   transform-origin: center;
   animation: hojrehStarIntroSpin 0.7s ease-in-out 1 forwards;
 }
-
 @keyframes hojrehStarIntroSpin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 #hojrehPreloader .letter {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: left center;
   animation: hojrehLetterIn 0.22s ease-out 1 forwards;
 }
-
 #hojrehPreloader .letter-h1 { animation-delay: 2.300s; }
 #hojrehPreloader .letter-o  { animation-delay: 2.383s; }
 #hojrehPreloader .letter-j  { animation-delay: 2.467s; }
 #hojrehPreloader .letter-r  { animation-delay: 2.550s; }
 #hojrehPreloader .letter-e  { animation-delay: 2.633s; }
 #hojrehPreloader .letter-h2 { animation-delay: 2.717s; }
-
 @keyframes hojrehLetterIn {
   0%   { opacity: 0; transform: translateX(10px); }
   100% { opacity: 1; transform: translateX(0); }
 }
-
 @media (prefers-reduced-motion: reduce) {
   #hojrehPreloader .star-pivot,
   #hojrehPreloader .faw-group,
@@ -139,8 +93,6 @@ html:not(.hojreh-preloading-done) body {
   }
   #hojrehPreloader .faw-group { transform: translate(0px,0px) scale(1) !important; }
 }
-
-/* ─── پراگرس‌بار بالای صفحه ─── */
 #hojrehPreloaderBar {
   position: fixed;
   top: 0;
@@ -151,23 +103,14 @@ html:not(.hojreh-preloading-done) body {
   background: transparent;
   pointer-events: none;
   transition: opacity .4s ease;
-  /* صفحه dir="rtl" است؛ بدون این خط، عرض درصدی فرزند به‌صورت
-     پیش‌فرض از سمت راست رشد می‌کرد. اینجا مستقل از جهت صفحه،
-     رشد را همیشه از چپ به راست اجبار می‌کنیم. */
   direction: ltr;
 }
-
 #hojrehPreloaderBar.is-hidden {
   opacity: 0;
 }
-
 #hojrehPreloaderBar .preloader-bar-fill {
   height: 100%;
   width: 0%;
-  /* نوار از چپ به راست رشد می‌کند. نوک جلوی نوار (انتهای سمت راستِ
-     خودِ المنت در حال رشد) همیشه ~20% روشن‌تر است؛ چون گرادینت روی
-     باکس خودِ فرزند تعریف شده، با رشد عرض، نوک روشن همیشه دقیقاً در
-     جلوترین نقطه می‌ماند. */
   background: linear-gradient(
     to right,
     var(--green-dark) 0%,
@@ -177,7 +120,6 @@ html:not(.hojreh-preloading-done) body {
   border-radius: 0 2px 2px 0;
   box-shadow: none;
 }
-
 [data-theme="dark"] #hojrehPreloaderBar .preloader-bar-fill {
   background: linear-gradient(
     to right,
@@ -186,16 +128,12 @@ html:not(.hojreh-preloading-done) body {
     var(--green-tip-dark, #6fe0ae) 100%
   );
 }
-
-/* کلاس کمکی: شدو/درخشش فقط پشت نوک روشن (لبه‌ی جلوی نوار) فعال می‌شود */
 #hojrehPreloaderBar .preloader-bar-fill.is-glowing {
   box-shadow: 6px 0 10px -1px rgba(79, 196, 145, .7);
 }
-
 [data-theme="dark"] #hojrehPreloaderBar .preloader-bar-fill.is-glowing {
   box-shadow: 6px 0 12px 0px rgba(111, 224, 174, .75);
 }
-
 @media (prefers-reduced-motion: reduce) {
   #hojrehPreloader,
   #hojrehPreloaderBar,

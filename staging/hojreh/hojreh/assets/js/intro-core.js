@@ -1,39 +1,8 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * Hojreh Intro Core — هستهٔ اینتروی صفحات (قابل استفادهٔ مجدد)
- *
- * فقط یک بار برای هر بازدیدکننده (localStorage) اجرا می‌شود:
- * صفحه با یک اورلی تیره می‌شود، فوکس روی عناصر مشخص‌شده حرکت می‌کند
- * و کنار هر کدام یک حباب توضیح نمایش داده می‌شود.
- *
- * استفاده در هر صفحه (فایل محتوای همان صفحه، بعد از این فایل لود شود):
- *
- *   HojrehIntro.start({
- *     id: 'access',                // کلید یکتا برای هر صفحه
- *     version: 1,                  // با افزایش آن، اینترو دوباره نمایش داده می‌شود
- *     steps: [
- *       { target: '#someSelector', text: 'متن توضیح' },
- *       ...
- *     ],
- *     labels: { next: 'بعدی', skip: 'بستن راهنما', done: 'متوجه شدم' }  // اختیاری
- *   });
- *
- * ابزارها:
- *   HojrehIntro.start({... , force: true})  // نمایش اجباری (بدون توجه به دفعهٔ قبل)
- *   HojrehIntro.reset('access')             // پاک‌کردن «دیده شده» (برای تست)
- *
- * - پس از پایان پری‌لودر (کلاس hojreh-preloading-done) شروع می‌شود.
- * - با تم روشن/تاریک (html[data-theme]) هماهنگ است.
- * - کیبورد: Enter / ← = بعدی ، Esc = بستن راهنما.
- * ═══════════════════════════════════════════════════════════════
- */
-(function () {
+﻿(function () {
   'use strict';
-
   var KEY_PREFIX = 'hojreh-intro:';
   var DONE_CLASS = 'hojreh-preloading-done';
   var DEFAULT_LABELS = { next: 'بعدی', skip: 'بستن راهنما', done: 'متوجه شدم' };
-
   var CSS = '' +
     '.hi-root{--hi-bg:#fff;--hi-fg:#111;--hi-muted:#666;--hi-accent:#00584D;--hi-accent-fg:#fff;' +
       'position:fixed;inset:0;z-index:1000001;direction:rtl;font-family:"YekanBakh",Tahoma,sans-serif;' +
@@ -59,14 +28,12 @@
     '.hi-next{background:var(--hi-accent);color:var(--hi-accent-fg)}.hi-next:hover{filter:brightness(1.12)}' +
     '.hi-btn:focus-visible{outline:none}' +
     '@media (prefers-reduced-motion:reduce){.hi-root,.hi-spot,.hi-tip{transition:none}}';
-
   function storageGet(key) {
-    try { return localStorage.getItem(key); } catch (e) { return undefined; } // undefined = ذخیره‌سازی در دسترس نیست
+    try { return localStorage.getItem(key); } catch (e) { return undefined; }
   }
   function storageSet(key, val) {
-    try { localStorage.setItem(key, val); } catch (e) { /* نادیده */ }
+    try { localStorage.setItem(key, val); } catch (e) {  }
   }
-
   function injectCss() {
     if (document.getElementById('hojrehIntroCss')) return;
     var st = document.createElement('style');
@@ -74,17 +41,13 @@
     st.textContent = CSS;
     document.head.appendChild(st);
   }
-
   function el(tag, cls, text) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
     if (text != null) n.textContent = text;
     return n;
   }
-
   function toFa(n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return String(n); } }
-
-  /* اجرا بعد از پایان پری‌لودر (در صفحاتی که پری‌لودر ندارند: بلافاصله) */
   function whenReady(cb) {
     var root = document.documentElement;
     function go() { setTimeout(cb, 250); }
@@ -94,15 +57,12 @@
     });
     mo.observe(root, { attributes: true, attributeFilter: ['class'] });
   }
-
   function run(cfg) {
     var steps = (cfg.steps || []).filter(function (s) { return document.querySelector(s.target); });
     if (!steps.length) return;
-
     var labels = Object.assign({}, DEFAULT_LABELS, cfg.labels || {});
     var idx = 0;
     var prevOverflow = document.documentElement.style.overflow;
-
     injectCss();
     var root = el('div', 'hi-root');
     root.setAttribute('role', 'dialog');
@@ -124,7 +84,6 @@
     root.append(block, spot, tip);
     document.body.appendChild(root);
     document.documentElement.style.overflow = 'hidden';
-
     var raf = 0;
     function place() {
       var step = steps[idx];
@@ -137,7 +96,6 @@
       spot.style.width = (r.width + pad * 2) + 'px';
       spot.style.height = (r.height + pad * 2) + 'px';
       spot.style.borderRadius = getComputedStyle(target).borderRadius;
-
       var vw = window.innerWidth, vh = window.innerHeight, gap = 18;
       var w = Math.min(320, vw - 24);
       tip.style.width = w + 'px';
@@ -156,7 +114,6 @@
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(place);
     }
-
     function show(i) {
       idx = i;
       var step = steps[idx];
@@ -170,7 +127,6 @@
       place();
       nextBtn.focus({ preventScroll: true });
     }
-
     function close() {
       document.removeEventListener('keydown', onKey, true);
       window.removeEventListener('resize', schedulePlace);
@@ -181,27 +137,23 @@
       setTimeout(function () { root.remove(); }, 380);
     }
     function next() { if (idx >= steps.length - 1) close(); else show(idx + 1); }
-
     function onKey(e) {
       if (e.key === 'Escape') { e.preventDefault(); close(); }
       else if (e.key === 'ArrowLeft' || e.key === 'Enter') {
-        if (e.key === 'Enter' && document.activeElement === skipBtn) return; // کلیک خود دکمه
+        if (e.key === 'Enter' && document.activeElement === skipBtn) return;
         e.preventDefault(); next();
       }
       else if (e.key === 'ArrowRight' && idx > 0) { e.preventDefault(); show(idx - 1); }
       else if (e.key === 'Tab') { e.preventDefault(); (document.activeElement === nextBtn ? skipBtn : nextBtn).focus(); }
     }
-
     nextBtn.addEventListener('click', next);
     skipBtn.addEventListener('click', close);
     document.addEventListener('keydown', onKey, true);
     window.addEventListener('resize', schedulePlace);
     window.addEventListener('load', schedulePlace);
-
     show(0);
     requestAnimationFrame(function () { root.classList.add('is-on'); });
   }
-
   var HojrehIntro = {
     start: function (cfg) {
       if (!cfg || !cfg.id) return false;
@@ -212,15 +164,14 @@
         if (seen === undefined || seen === ver) return false;
       }
       whenReady(function () {
-        storageSet(key, ver); // با نمایش، «دیده شده» ثبت می‌شود تا رفرش وسط اینترو آن را تکرار نکند
+        storageSet(key, ver);
         run(cfg);
       });
       return true;
     },
     reset: function (id) {
-      try { localStorage.removeItem(KEY_PREFIX + id); } catch (e) { /* نادیده */ }
+      try { localStorage.removeItem(KEY_PREFIX + id); } catch (e) {  }
     }
   };
-
   window.HojrehIntro = HojrehIntro;
 })();

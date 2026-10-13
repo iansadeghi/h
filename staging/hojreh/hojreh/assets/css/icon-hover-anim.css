@@ -1,11 +1,4 @@
-/* ==========================================================================
-   Icon Hover Animations — Vanilla CSS (no JS, no React, no dependencies)
-   Targets the existing inline SVG icons already used in this project.
-   Just link this file after your other stylesheets. Nothing else to wire up.
-   ========================================================================== */
-
-/* Respect users who prefer less motion */
-@media (prefers-reduced-motion: reduce) {
+﻿@media (prefers-reduced-motion: reduce) {
   .icon-search svg *,
   .icon-close-x svg *,
   .header-search-close svg *,
@@ -38,8 +31,6 @@
     transition: none !important;
   }
 }
-
-/* Give every icon svg a stable transform origin + smooth base transition */
 .icon-search svg,
 .icon-close-x svg,
 .header-search-close svg,
@@ -67,17 +58,6 @@
   transform-box: fill-box;
   transform-origin: center;
 }
-
-/* --------------------------------------------------------------------
-   1) SEARCH (magnifier) — .icon-search, .api-modal-search-btn
-   A smooth little "scan" glide instead of a rotation-based shake —
-   the whole glass drifts in a small loop, reads as purposeful even
-   from a distance instead of a jittery tremble.
-   NOTE: #priceSearchBtn stacks .icon-search and .icon-close-x on top
-   of each other (inset:0) to crossfade between them, so hover is
-   triggered from the always-present parent button instead of the
-   icon span itself (the invisible top layer was eating the hover).
--------------------------------------------------------------------- */
 @keyframes icon-search-scan {
   0%   { transform: translate(0, 0); }
   20%  { transform: translate(-2px, -1.5px); }
@@ -90,13 +70,6 @@
 #priceSearchBtn:hover .icon-search svg {
   animation: icon-search-scan 0.9s ease-in-out;
 }
-
-/* --------------------------------------------------------------------
-   2) CLOSE / X — .icon-close-x, .header-search-close,
-   .api-modal-close, .price-modal-close
-   Each line "empties" out along its own length and redraws — first
-   one line, then the other, in sequence (the classic line-wipe).
--------------------------------------------------------------------- */
 .icon-close-x svg line,
 .header-search-close svg line,
 .api-modal-close svg line,
@@ -122,13 +95,6 @@
 .price-modal-close:hover svg line:last-child {
   animation: icon-x-line-wipe 0.6s ease-in-out 0.12s;
 }
-
-/* --------------------------------------------------------------------
-   3) PLUS / ADD — .btn-more, .btn-control-action.btn-more,
-   .api-item-plus (the "+" in the API variables list row)
-   Jelly scale: the two strokes squash/stretch by slightly different
-   amounts and wobble back to rest, like soft jelly settling.
--------------------------------------------------------------------- */
 @keyframes icon-plus-jelly-v {
   0%   { transform: scaleY(1); }
   30%  { transform: scaleY(1.32); }
@@ -159,13 +125,6 @@
   transform-origin: center;
   animation: icon-plus-jelly-h 0.55s ease-out;
 }
-
-/* --------------------------------------------------------------------
-   4) TRASH / DELETE — .acc-delete-btn, .acc-delete-constant-btn,
-   .pattern-item-delete-btn (و گروه محاسباتی)
-   No shake on the can — only the lid, together with its handle,
-   lifts up a small amount and settles back.
--------------------------------------------------------------------- */
 @keyframes icon-trash-lid {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-1.5px); }
@@ -177,20 +136,6 @@
   transform-box: fill-box;
   transform-origin: center;
 }
-
-/* --------------------------------------------------------------------
-   5) EYE / HIDE — .acc-hide-btn
-   Rest state: the standard crossed-out eye — this is the untouched
-   Feather "eye-off" icon (its arc already has the cut built into the
-   path itself, so the diagonal line merges into one side of the
-   outline instead of sitting on top of it like a straight slash).
-   We never draw a separate line over the full-eye shape — that's what
-   made the previous version look "cut on both sides" / non-standard.
-   On hover: the bare full eye pops in first, then the real slashed
-   icon (its cut path + its line) fades back in slightly after, with
-   its line drawing itself in via stroke-dashoffset — so the crossing
-   visibly happens on hover instead of already being done at rest.
--------------------------------------------------------------------- */
 .acc-hide-btn {
   position: relative;
 }
@@ -215,13 +160,6 @@
   stroke-dasharray: 31 31;
   stroke-dashoffset: 0;
 }
-
-/* Full timeline lives in these four keyframe sets so every piece lands
-   back on EXACTLY the rest values (full-icon opacity:0, slashed-icon
-   opacity:1, line dashoffset:0) once the animation finishes — nothing
-   is left toggled on by a plain ":hover { opacity:1 }" rule, which is
-   what previously left the bare eye stuck visible under the slashed
-   one after the animation had already played. */
 @keyframes icon-eye-full-flash {
   0%   { opacity: 0; }
   15%  { opacity: 1; }
@@ -245,7 +183,6 @@
   55%  { stroke-dashoffset: 31; }
   100% { stroke-dashoffset: 0; }
 }
-
 .acc-hide-btn:hover .eye-full-icon {
   animation: icon-eye-full-flash 0.65s ease-out forwards;
 }
@@ -258,13 +195,6 @@
 .acc-hide-btn:hover .eye-slashed-icon svg line {
   animation: icon-eye-line-draw 0.65s ease-out forwards;
 }
-
-/* --------------------------------------------------------------------
-   5b) PASSWORD EYE TOGGLE — .password-eye-btn (شاگرد حجره → رمز عبور)
-   Plays while the open/closed eye icons swap (JS adds the
-   ".toggling" class for ~130ms around the swap) — a quick blink
-   that hides the swap instead of a hard cut.
--------------------------------------------------------------------- */
 @keyframes icon-eye-toggle-blink {
   0%   { transform: scaleY(1); }
   50%  { transform: scaleY(0.05); }
@@ -273,12 +203,6 @@
 .password-eye-btn.toggling svg {
   animation: icon-eye-toggle-blink 0.26s ease-in-out;
 }
-
-/* --------------------------------------------------------------------
-   6) DRAG HANDLES — .acc-drag-handle
-   Dots jiggle up/down to hint "grab me"
-   (.col-resizer-handle intentionally left un-animated)
--------------------------------------------------------------------- */
 @keyframes icon-drag-jiggle {
   0%, 100% { transform: translateY(0); }
   25%      { transform: translateY(-1.5px); }
@@ -287,11 +211,6 @@
 .acc-drag-handle:hover svg {
   animation: icon-drag-jiggle 0.5s ease-in-out infinite;
 }
-
-/* --------------------------------------------------------------------
-   7) SCROLL TO TOP — .pill-icon-btn[data-action="scroll-top"]
-   Chevron hops upward repeatedly while hovered
--------------------------------------------------------------------- */
 @keyframes icon-hop-up {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-3px); }
@@ -299,11 +218,6 @@
 .pill-icon-btn[data-action="scroll-top"]:hover svg {
   animation: icon-hop-up 0.5s ease-in-out infinite;
 }
-
-/* --------------------------------------------------------------------
-   8) BACK ARROW — .api-modal-title-back
-   Nudges left (RTL "back" direction) on hover
--------------------------------------------------------------------- */
 @keyframes icon-back-nudge {
   0%, 100% { transform: translateX(0); }
   50%      { transform: translateX(-3px); }
@@ -311,11 +225,6 @@
 .api-modal-title-back:hover svg {
   animation: icon-back-nudge 0.45s ease-in-out infinite;
 }
-
-/* --------------------------------------------------------------------
-   9) PLAY (tutorial) — .btn-formula-tutorial
-   Soft pulse, like a play button inviting a click
--------------------------------------------------------------------- */
 @keyframes icon-play-pulse {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.18); }
@@ -323,16 +232,6 @@
 .btn-formula-tutorial:hover svg {
   animation: icon-play-pulse 0.6s ease-in-out infinite;
 }
-
-/* --------------------------------------------------------------------
-   10) CHEVRONS (accordion toggle / custom select arrow)
-   These already rotate on open/close via JS-driven classes — so on
-   hover we only add a light bounce, never fighting the open-state
-   rotation (which should keep working exactly as before).
-   Covers every accordion list — including شاگرد حجره — plus the
-   dropdown arrow used inside the pricing-pattern item rows
-   (.custom-select-arrow).
--------------------------------------------------------------------- */
 @keyframes icon-chevron-bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(2px); }
@@ -341,11 +240,9 @@
   0%, 100% { transform: scaleY(-1) translateY(0); }
   50%      { transform: scaleY(-1) translateY(-2px); }
 }
-/* closed state: bounce down (plays on hovering the whole header row) */
 .accordion-item:not(.open) .accordion-header:hover .chevron-down {
   animation: icon-chevron-bounce 0.4s ease-in-out;
 }
-/* open state: bounce while keeping the flipped orientation */
 .accordion-item.open .accordion-header:hover .chevron-down {
   animation: icon-chevron-bounce-open 0.4s ease-in-out;
 }
@@ -353,19 +250,12 @@
 .select-arrow:hover svg {
   animation: icon-chevron-bounce 0.4s ease-in-out;
 }
-/* custom-select-arrow (pricing pattern item dropdowns): pointer-events
-   is disabled on the arrow itself, so hover is bound to the wrapper */
 .custom-select-wrapper:not(.is-open):hover .custom-select-arrow svg {
   animation: icon-chevron-bounce 0.4s ease-in-out;
 }
 .custom-select-wrapper.is-open:hover .custom-select-arrow svg {
   animation: icon-chevron-bounce-open 0.4s ease-in-out;
 }
-
-/* --------------------------------------------------------------------
-   11) THEME TOGGLE — .theme-icon-sun / .theme-icon-moon
-   Sun spins slowly, moon tilts like a little nod
--------------------------------------------------------------------- */
 @keyframes icon-sun-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(90deg); }
@@ -380,11 +270,6 @@
 .pill-icon-btn:hover .theme-icon-moon {
   animation: icon-moon-tilt 0.5s ease-in-out;
 }
-
-/* --------------------------------------------------------------------
-   12) FULLSCREEN / MINIMIZE — .acc-fullscreen-btn
-   Simple pulse on hover, هم‌خانواده با بقیه آیکون‌های اکشن (مثل play/trash)
--------------------------------------------------------------------- */
 @keyframes icon-fullscreen-pulse {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.15); }

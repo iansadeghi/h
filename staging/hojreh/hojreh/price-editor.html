@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <!-- مقداردهی تم پیش از رندر برای جلوگیری از FOUC -->
   <script>(function(){try{var t=localStorage.getItem('hojreh-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ویرایشگر قیمت‌ها - حجره</title>
   <link rel="icon" type="image/webp" href="assets/img/faw.webp" />
-  
   <link rel="stylesheet" href="assets/css/toast.css" />
   <link rel="stylesheet" href="assets/css/save-dirty.css" />
   <link rel="stylesheet" href="assets/css/general.css" />
@@ -18,8 +16,6 @@
   <link rel="stylesheet" href="assets/css/icon-hover-anim.css" />
 </head>
 <body>
-
-<!-- ═══════════ PRELOADER ═══════════ -->
 <div id="hojrehPreloaderBar"><div class="preloader-bar-fill"></div></div>
 <div id="hojrehPreloader">
   <svg class="preloader-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
@@ -49,10 +45,7 @@
     </g>
   </svg>
 </div>
-
-<!-- ═══════════ HEADER ═══════════ -->
 <header id="mainHeader">
-  <!-- حالت عادی هدر -->
   <div class="logo-wrap">
     <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
       <g fill="currentColor">
@@ -71,7 +64,6 @@
       <path d="M251.419,120.093a36.234,36.234,0,0,0,36.23-36.23,36.234,36.234,0,0,0,36.23,36.23,36.234,36.234,0,0,0-36.23,36.23A36.235,36.235,0,0,0,251.419,120.093Z" fill="#d6b478"/>
     </svg>
   </div>
-
   <div class="header-menu-actions">
     <div class="header-buttons">
       <button class="header-save-btn" id="savePricesBtn">ذخیره قیمت‌ها</button>
@@ -81,8 +73,6 @@
       <a href="settings-panel.html" class="active">پنل تنظیمات</a>
     </nav>
   </div>
-
-  <!-- باکس جستجو — در حالت search-mode نمایش داده می‌شود -->
   <div class="header-search-box" id="headerSearchBox">
     <input
       type="text"
@@ -100,10 +90,7 @@
     </button>
   </div>
 </header>
-
-<!-- ═══════════ MAIN CONTENT ═══════════ -->
 <div class="pricing-editor-container">
-  
   <div class="pricing-card">
     <div class="pricing-card-header">
       <div>
@@ -111,10 +98,7 @@
         <p class="pricing-card-subtitle">تغییر این مقادیر مستقیماً روی فرمول‌های محاسباتی قیمت نهایی محصول تاثیر می‌گذارد.</p>
       </div>
     </div>
-
     <div class="pricing-grid" id="pricingGrid">
-      
-      <!-- ردیف پسته فندقی -->
       <div class="pricing-item" data-item-id="pistachio-f">
         <label class="pricing-item-label" for="price-pistachio-f">
           <span class="label-prefix">قیمت هر کیلوگرم </span><span class="label-name">پسته فندقی</span>:
@@ -129,8 +113,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف پسته احمد آقایی -->
       <div class="pricing-item" data-item-id="pistachio-a">
         <label class="pricing-item-label" for="price-pistachio-a">
           <span class="label-prefix">قیمت هر کیلوگرم </span><span class="label-name">پسته احمدآقایی</span>:
@@ -145,8 +127,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف زعفران سرگل -->
       <div class="pricing-item" data-item-id="saffron">
         <label class="pricing-item-label" for="price-saffron">
           <span class="label-prefix">قیمت هر گرم </span><span class="label-name">زعفران سرگل ممتاز</span>:
@@ -161,8 +141,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف روغن زیتون -->
       <div class="pricing-item" data-item-id="olive-oil">
         <label class="pricing-item-label" for="price-olive-oil">
           <span class="label-prefix">قیمت هر لیتر </span><span class="label-name">روغن زیتون بکر</span>:
@@ -177,8 +155,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف بادام درختی -->
       <div class="pricing-item" data-item-id="almond">
         <label class="pricing-item-label" for="price-almond">
           <span class="label-prefix">قیمت هر کیلوگرم </span><span class="label-name">مغز بادام ایرانی</span>:
@@ -193,8 +169,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف گردو با پوست -->
       <div class="pricing-item" data-item-id="walnut">
         <label class="pricing-item-label" for="price-walnut">
           <span class="label-prefix">قیمت هر کیلوگرم </span><span class="label-name">گردو با پوست چوبی</span>:
@@ -209,8 +183,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ردیف اجرت طلای 18 عیار -->
       <div class="pricing-item" data-item-id="gold-wage-18k">
         <label class="pricing-item-label" for="price-gold-wage-18k">
           <span class="label-prefix">اجرت هر گرم </span><span class="label-name">طلای 18 عیار</span>:
@@ -225,23 +197,17 @@
           </div>
         </div>
       </div>
-
-      <!-- empty state جستجو -->
       <div class="pricing-search-empty" id="pricingSearchEmpty" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480"><path d="M192,0C86.246,0,0,86.246,0,192S86.246,384,192,384a190.988,190.988,0,0,0,126.8-48.234l17.2,17.2V384l96,96,48-48-96-96H352.969l-17.2-17.2A190.988,190.988,0,0,0,384,192C384,86.246,297.754,0,192,0Zm0,48A144,144,0,1,1,48,192,143.638,143.638,0,0,1,192,48Zm-72,96a24,24,0,1,0,24,24A24,24,0,0,0,120,144Zm144,0a24,24,0,1,0,24,24A24,24,0,0,0,264,144Zm-72,71.906a143.616,143.616,0,0,0-83.531,26.578l27.89,39.094c32.661-23.329,78.574-23.329,111.235,0l27.89-39.094A143.474,143.474,0,0,0,192,215.906Z" fill="#d0d0d0"/></svg>
         <p class="search-empty-title">نتیجه‌ای یافت نشد</p>
         <span class="search-empty-sub">عبارت جستجوی دیگری را امتحان کنید</span>
       </div>
-
     </div>
   </div>
 </div>
-
-<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="footer-pill-wrap">
     <div class="footer-pill-btns">
-      <!-- سمت راست: دکمه جستجو — آیکون ذره‌بین / بستن -->
       <button class="pill-icon-btn" id="priceSearchBtn" aria-label="جستجوی محصول" title="جستجوی محصول">
         <span class="icon-search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -256,13 +222,10 @@
           </svg>
         </span>
       </button>
-      <!-- وسط: دکمه تغییر تم (ماه در حالت روشن، خورشید در حالت تاریک) -->
       <button class="pill-icon-btn" data-theme-action="toggle" aria-label="تغییر حالت نمایش" title="تغییر حالت نمایش">
-        <!-- ماه — در حالت روشن نمایش داده می‌شود -->
         <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
-        <!-- خورشید — در حالت تاریک نمایش داده می‌شود -->
         <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"/>
           <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
@@ -271,7 +234,6 @@
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
       </button>
-      <!-- سمت چپ: دکمه رفتن به بالا -->
       <button class="pill-icon-btn" data-action="scroll-top" aria-label="برگشت به بالا" title="برگشت به بالا">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"/>
@@ -281,7 +243,6 @@
   </div>
   طراحی و توسعه توسط تیم برنامه‌نویسی کیان‌افراز
 </footer>
-
 <script type="module" src="assets/js/price-editor-page.js" onerror="document.getElementById('hojrehPreloader')?.remove();document.getElementById('hojrehPreloaderBar')?.remove();"></script>
 </body>
 </html>

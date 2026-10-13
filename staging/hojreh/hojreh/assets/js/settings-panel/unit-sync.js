@@ -1,7 +1,4 @@
-import { pricingPatterns } from '../pricing-patterns.js';
-
-/* ─── DYNAMIC WAGE LABEL BY UNIT SELECT ─── */
-
+﻿import { pricingPatterns } from '../pricing-patterns.js';
 function attachUnitLabelSync(select) {
   if (!select) return;
   if (select.dataset.unitLabelReady === 'true') return;
@@ -16,11 +13,9 @@ function attachUnitLabelSync(select) {
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
   });
 }
-
 function initUnitSync() {
   document.querySelectorAll('.unit-select').forEach(select => {
     attachUnitLabelSync(select);
   });
 }
-
 export { attachUnitLabelSync, initUnitSync };

@@ -1,26 +1,16 @@
-import { HojrehFormulaEngine, pricingPatterns } from './pricing-patterns.js';
+﻿import { HojrehFormulaEngine, pricingPatterns } from './pricing-patterns.js';
 import { settingsPanel } from './settings-panel.js';
 import { customSelect } from './custom-select.js';
-
 let apiModal;
-
-/* ═══════════════════════════════════════════════════════════════
-   API MODAL — متغیرهای وابسته به API
-   فایل: assets/js/api-modal.js
-   ═══════════════════════════════════════════════════════════════ */
 (function () {
-
-  /* ─── تولید شناسه‌های حرفی برای متغیرهای تعداد، هم‌راستا با HojrehFormulaEngine ─── */
   function generateQuantitySymbol(index) {
     if (HojrehFormulaEngine?.generateQuantitySymbol) {
       return HojrehFormulaEngine.generateQuantitySymbol(index);
     }
-
     const letters = 'abcdefghijklmnopqrstuvwxyz';
     let n = Math.max(0, Number(index) || 0);
     if (n < 26) return letters[n];
     n -= 26;
-
     for (let length = 2; length < 8; length++) {
       const blockSize = 26 * Math.pow(25, length - 1);
       if (n < blockSize) {
@@ -39,18 +29,14 @@ let apiModal;
       }
       n -= blockSize;
     }
-
     return `q${index}`;
   }
-
-  /* ─── محاسبه quantity symbols برای متغیرهای API ─── */
   function updateApiQuantitySymbols() {
     if (HojrehFormulaEngine?.syncVariableQuantitySymbols) {
       HojrehFormulaEngine.syncVariableQuantitySymbols();
       pricingPatterns.refreshFormulaAfterSettingsChange?.();
       return;
     }
-
     const allVariables = [];
     document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"]').forEach(item => {
       if (!item.querySelector('.acc-switch input[type="checkbox"]')?.checked) return;
@@ -60,7 +46,6 @@ let apiModal;
       if (!item.querySelector('.acc-switch input[type="checkbox"]')?.checked) return;
       allVariables.push({ element: item, quantityInput: item.querySelector('.quantity-symbol-input') });
     });
-
     const used = new Set();
     allVariables.forEach((v, index) => {
       if (!v.quantityInput) return;
@@ -77,16 +62,7 @@ let apiModal;
       used.add(candidate);
     });
   }
-
-  /* ─── قرارداد واحدها و پوشش پرووایدرها ─────────────────────────────
-     این واحدها واحد خروجی «وب‌سرویس حجره» هستند، نه الزاماً واحد خام
-     صفحهٔ منبع. تبدیل‌هایی مثل ریال→تومان، ۱۰۰ ین→۱ ین و تن→کیلوگرم
-     باید در Collector مرکزی انجام شوند تا فرمول مشتری همیشه یک معنا داشته
-     باشد. پرووایدرها فقط وقتی در UI نمایش داده می‌شوند که آن متغیر را روی
-     یک صفحه/خروجی مشخص مشاهده و قابل‌تفکیک کرده باشیم.
-  ─────────────────────────────────────────────────────────────────── */
   const itemDefaultUnit = {
-    // ارزها — همه عدد
     "USD": "عدد", "EUR": "عدد", "AED": "عدد", "TRY": "عدد",
     "GBP": "عدد", "CNY": "عدد", "JPY": "عدد", "CAD": "عدد",
     "AUD": "عدد", "CHF": "عدد", "SGD": "عدد", "HKD": "عدد",
@@ -96,7 +72,6 @@ let apiModal;
     "DKK": "عدد", "NZD": "عدد", "MYR": "عدد", "KRW": "عدد",
     "AMD": "عدد", "AFN": "عدد", "IQD": "عدد", "KGS": "عدد",
     "TJS": "عدد", "TMT": "عدد", "ARS": "عدد", "BRL": "عدد", "SYP": "عدد", "THB": "عدد",
-    // طلاجات
     "XAU_OZ": "انس تروا",
     "MITHQAL": "مثقال",
     "GOLD_18K": "گرم",
@@ -114,11 +89,9 @@ let apiModal;
     "MITHQAL_COIN": "مثقال",
     "MITHQAL_NO_BUBBLE": "مثقال",
     "BUBBLE_TRANSFER": "مثقال",
-    // نقره
     "SILVER": "انس تروا",
     "SILVER_999": "گرم",
     "SILVER_925": "گرم",
-    // سکه‌ها — همه عدد
     "EMAMI": "عدد", "BAHAR": "عدد", "HALF_COIN": "عدد", "QUARTER_COIN": "عدد",
     "GRAM_COIN": "عدد", "PARSIAN_1G": "عدد",
     "RETAIL_EMAMI": "عدد", "RETAIL_BAHAR": "عدد",
@@ -126,16 +99,13 @@ let apiModal;
     "EMAMI_86": "عدد", "EMAMI_PRE86": "عدد",
     "HALF_86": "عدد", "HALF_PRE86": "عدد",
     "QUARTER_86": "عدد", "QUARTER_PRE86": "عدد",
-    // فلزات
     "COPPER": "کیلوگرم", "ALUMINIUM": "کیلوگرم", "NICKEL": "کیلوگرم",
     "ZINC": "کیلوگرم", "LEAD": "کیلوگرم", "TIN": "کیلوگرم",
     "COBALT": "کیلوگرم", "PLATINUM": "گرم", "PALLADIUM": "گرم",
-    // انرژی
     "OIL": "بشکه", "OIL_BRENT": "بشکه", "OIL_OPEC": "بشکه",
     "GAS": "میلیون بی‌تی‌یو", "GASOLINE": "گالن", "GASOIL": "تن متریک",
     "HEATING_OIL": "گالن", "LNG": "میلیون بی‌تی‌یو", "COAL": "تن متریک"
   };
-
   const providerCatalog = {
     tgju:      { label: 'TGJU', note: 'HTML عمومی و صفحات شاخص' },
     navasan:   { label: 'نوسان', note: 'ویجت رسمی رایگان وردپرس' },
@@ -147,7 +117,6 @@ let apiModal;
     tgn:       { label: 'تابان گوهر نفیس', note: 'وب‌سرویس ارائه‌دهنده' },
     tala:      { label: 'Tala.ir', note: 'وب‌سرویس و جدول عمومی' }
   };
-
   const providerCoverage = {
     tgju: new Set(`USD EUR AED GBP TRY CHF CNY JPY KRW CAD AUD NZD SGD INR PKR IQD SYP AFN DKK SEK NOK SAR QAR OMR KWD BHD MYR THB HKD RUB AZN AMD GEL KGS TJS TMT GOLD_18K_750 GOLD_18K_740 GOLD_24K GOLD_SECONDHAND MITHQAL MITHQAL_NO_BUBBLE BUBBLE_TRANSFER MITHQAL_COIN GOLD_MOLTEN_CASH GOLD_MOLTEN_WS GOLD_SUB_KILO SILVER_925 SILVER_999 SILVER XAU_OZ EMAMI BAHAR HALF_COIN QUARTER_COIN GRAM_COIN RETAIL_EMAMI RETAIL_BAHAR RETAIL_HALF RETAIL_QUARTER RETAIL_GRAM ALUMINIUM LEAD ZINC COPPER NICKEL COBALT TIN OIL GASOLINE HEATING_OIL GAS OIL_BRENT GASOIL COAL OIL_OPEC LNG`.split(' ')),
     iranjib: new Set(`USD EUR AED MITHQAL SILVER XAU_OZ GOLD_18K EMAMI BAHAR HALF_COIN QUARTER_COIN GRAM_COIN ALUMINIUM LEAD ZINC COPPER NICKEL TIN PLATINUM PALLADIUM OIL GASOLINE GAS OIL_BRENT`.split(' ')),
@@ -159,11 +128,9 @@ let apiModal;
     ayaar: new Set(`MITHQAL XAU_OZ GOLD_18K EMAMI BAHAR HALF_COIN QUARTER_COIN GRAM_COIN`.split(' ')),
     zarwan: new Set(`USD EUR AED GBP TRY CHF CNY JPY CAD AUD SGD INR IQD AFN DKK SEK NOK SAR QAR OMR KWD BHD MYR THB HKD RUB AZN AMD BAHAR GRAM_COIN EMAMI_86 HALF_86 QUARTER_86 EMAMI_PRE86 HALF_PRE86 QUARTER_PRE86`.split(' '))
   };
-
   function providersForItem(id) {
     return Object.keys(providerCatalog).filter(providerId => providerCoverage[providerId]?.has(id));
   }
-
   const intervalStops = [
     ['1m', 'هر ۱ دقیقه'],
     ['5m', 'هر ۵ دقیقه'],
@@ -178,13 +145,11 @@ let apiModal;
     ['3d', 'هر ۳ روز'],
     ['1w', 'هر ۱ هفته']
   ];
-
   function intervalOptions(selectedValue = '1m') {
     return intervalStops.map(([value, label]) =>
       `<option value="${value}"${value === selectedValue ? ' selected' : ''}>${label}</option>`
     ).join('');
   }
-
   function providerOptions(item) {
     const ids = providersForItem(item.id);
     if (!ids.length) {
@@ -197,12 +162,9 @@ let apiModal;
     });
     return options.join('');
   }
-
   function sourceModeOptions() {
     return '<option value="api">دریافت خودکار</option><option value="manual">ورود دستی</option>';
   }
-
-  /* ─── دیتای دسته‌بندی‌های موجود در مودال ─── */
   const apiData = {
     "ارزها": [
       { name: "دلار آمریکا",          id: "USD" },
@@ -310,8 +272,6 @@ let apiModal;
       { name: "زغال‌سنگ",         id: "COAL" }
     ]
   };
-
-  /* ─── آیکون SVG اختصاصی هر دسته‌بندی ─── */
   const categoryIcons = {
     "ارزها": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="240 65 90 65" fill="#2ecc71"><path d="M247.958,68.596v38.86h74.852v-38.86H247.958z M258.421,73.454h53.935c-0.157,0.389-0.24,0.797-0.24,1.214 c0,2.011,1.796,3.643,4.01,3.643c0.459,0,0.908-0.076,1.337-0.209V97.96c-0.428-0.142-0.877-0.218-1.337-0.218 c-2.214,0-4.01,1.632-4.01,3.643c0,0.417,0.084,0.825,0.24,1.214h-53.935c0.146-0.389,0.23-0.797,0.23-1.214 c0-2.011-1.796-3.643-4.01-3.643c-0.459,0-0.908,0.076-1.337,0.218V78.102c0.428,0.133,0.877,0.209,1.337,0.209 c2.214,0,4.01-1.632,4.01-3.643C258.651,74.251,258.567,73.843,258.421,73.454z M285.384,78.311c-5.91,0-10.693,4.345-10.693,9.715 v2.429h0.543c1.201,4.155,5.19,7.286,10.15,7.286s8.949-3.131,10.15-7.286h0.543v-2.429 C296.077,82.656,291.294,78.311,285.384,78.311z M285.384,83.169c3.185,0,5.347,1.964,5.347,4.858c0,2.894-2.162,4.858-5.347,4.858 s-5.347-1.964-5.347-4.858C280.037,85.133,282.199,83.169,285.384,83.169z M266.671,84.383c-2.214,0-4.01,1.632-4.01,3.643 c0,2.011,1.796,3.643,4.01,3.643s4.01-1.632,4.01-3.643C270.681,86.015,268.885,84.383,266.671,84.383z M304.097,84.383c-2.214,0-4.01,1.632-4.01,3.643c0,2.011,1.796,3.643,4.01,3.643s4.01-1.632,4.01-3.643 C308.107,86.015,306.31,84.383,304.097,84.383z M247.958,109.885v4.858h2.684c0,0,38.324-0.095,66.143,6.603l3.352,0.797v-12.258 h-5.347v2.647c-0.428-0.142-0.877-0.218-1.337-0.218c-1.807,0-3.394,1.11-3.874,2.694c-27.464-5.152-58.916-5.123-58.948-5.123 H247.958z"/></svg>`,
     "طلاجات": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="255 250 55 45" fill="#f1c40f"><path d="M276.192,256.083l-3.986,6.975v2.085h-2.603l-3.986,6.975v2.085h-2.603l-3.986,6.975v5.38h13.179h3.295h9.884h3.295h13.179 h9.884v-5.331l-3.924-7.024h-2.666v-2.037l-3.924-7.024h-2.666v-2.037l-3.924-7.024h-10.902H276.192z M278.103,259.377h4.678 l2.603,4.556v1.21h-2.603h-4.678h-0.956H275.5v-1.21L278.103,259.377z M271.513,268.438h0.692h3.986l2.603,4.556v1.21h-2.603h-4.678 h-0.956h-1.647v-1.21L271.513,268.438z M284.692,268.438h3.986h0.692l2.603,4.556v1.21h-7.281h-0.956h-1.647v-1.21L284.692,268.438z M264.924,277.498h0.692h3.986l2.603,4.556v1.21h-9.884v-1.21L264.924,277.498z M278.103,277.498h0.692h3.986l2.603,4.556v1.21 H275.5v-1.21L278.103,277.498z M291.281,277.498h3.986h0.692l2.603,4.556v1.21h-9.884v-1.21L291.281,277.498z"/></svg>`,
@@ -320,8 +280,6 @@ let apiModal;
     "فلزات": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="245 135 65 55" fill="#2c3e50"><path d="M267.804,141.453c-2.741,0-4.961,2.22-4.961,4.962v14.885c0,2.741,2.22,4.962,4.961,4.962h29.769 c19.781,0,24.662-21.474,24.662-21.474l-0.005-0.01c0.099-0.27,0.149-0.555,0.15-0.843c0-1.37-1.111-2.481-2.481-2.481H267.804z M250.439,148.895c-1.37,0-2.481,1.111-2.481,2.481c0.001,0.424,0.111,0.842,0.32,1.211l-0.005,0.01c0,0,3.366,6.221,9.608,6.221 v-9.923H250.439z M277.727,171.222c0,0-2.481,7.442-7.442,7.442c-1.37-0.019-2.496,1.076-2.516,2.446 c-0.019,1.37,1.076,2.496,2.446,2.516c0.023,0,0.047,0,0.07,0h12.404c0.707,0,1.38-0.301,1.851-0.829c0,0,1.866-1.652,3.111-1.652 c1.245,0,3.111,1.652,3.111,1.652c0.471,0.527,1.144,0.829,1.851,0.829h12.404c1.37,0.019,2.496-1.076,2.516-2.446 c0.019-1.37-1.076-2.496-2.446-2.516c-0.023,0-0.047,0-0.07,0c-4.961,0-7.442-7.442-7.442-7.442H277.727z"/></svg>`,
     "انرژی": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352.456 384.003" fill="#e74c3c"><path d="M16.228,0a16,16,0,0,0-.453,32q.226,0,.453,0v80a16,16,0,0,0-.453,32q.226,0,.453,0v96a16,16,0,0,0-.453,32q.226,0,.453,0v80a16,16,0,0,0-.453,32q.226,0,.453,0h320a16,16,0,1,0,.452-32c-.15,0-.3,0-.452,0V272a16,16,0,1,0,.452-32c-.15,0-.3,0-.452,0V144a16,16,0,0,0,.452-32c-.15,0-.3,0-.452,0V32a16,16,0,0,0,.452-32c-.15,0-.3,0-.452,0h-320Zm160,96s64,76.656,64,112a64,64,0,1,1-128,0C112.228,172.656,176.228,96,176.228,96Z" transform="translate(0 0.002)"/></svg>`
   };
-
-  /* ─── MODAL LOGIC ─── */
   const modal = document.getElementById('apiModal');
   const openBtn = document.getElementById('openApiModalBtn');
   const closeBtn = document.getElementById('closeApiModalBtn');
@@ -331,32 +289,23 @@ let apiModal;
   const itemsContainer = document.getElementById('itemsContainer');
   const backBtn = document.getElementById('apiBackBtn');
   const searchInput = document.getElementById('apiSearchInput');
-
   if (!modal || !openBtn) return;
-
-  /* ─── مدیریت حالت سرچ در هدر ─── */
   let isSearchMode = false;
-
   function enterSearchMode() {
     isSearchMode = true;
     modal.classList.add('search-active');
     searchInput.value = '';
-    // فوکوس با تأخیر کوچک برای اینکه انیمیشن CSS اول بره
     setTimeout(() => searchInput.focus(), 320);
   }
-
   function exitSearchMode() {
     isSearchMode = false;
     modal.classList.remove('search-active');
     searchInput.value = '';
-    // برگشت به صفحه دسته‌بندی‌ها
     slideTo(1);
   }
-
   searchBtn?.addEventListener('click', () => {
     enterSearchMode();
   });
-
   function renderCategories() {
     paneCategories.innerHTML = '';
     for (let cat in apiData) {
@@ -374,33 +323,21 @@ let apiModal;
       paneCategories.appendChild(div);
     }
   }
-
-  /* ─── بررسی وجود آکاردئون با این شناسه در لیست API (آیتم‌های پنهان نادیده گرفته می‌شوند) ─── */
   function isAlreadyAdded(id) {
     const allItems = document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"]');
     for (const item of allItems) {
-      if (item.style.display === 'none') continue; // آیتم پنهان‌شده = موجود نیست
-      // بررسی از طریق data-id
+      if (item.style.display === 'none') continue;
       if (item.dataset.apiSymbol === id || item.dataset.id === id) return true;
-      // بررسی از طریق مقدار شناسه انگلیسی (fallback برای آیتم‌هایی که data-id متفاوت دارند)
       const idInput = item.querySelector('.english-id-input');
       if (idInput && idInput.value.trim() === id) return true;
     }
     return false;
   }
-
-  /* ─── ساخت HTML آکاردئون برای متغیر API جدید ─── */
   function createAccordionItem(item) {
     const dragSVG = `<svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="12" cy="20" r="2"/></svg>`;
-    // ساختار دو-لایه (eye-full-icon + eye-slashed-icon) عمداً همینطور نگه داشته شده
-    // چون assets/css/icon-hover-anim.css دقیقاً همین دو span را برای انیمیشن
-    // هاور (پاپ‌این چشم کامل → فید و خط‌کشیِ چشم خط‌خورده) هدف قرار می‌دهد؛
-    // یک svg تخت مثل قبل باعث می‌شد این آیتم‌های تازه‌ساخته‌شده هیچ انیمیشنی نداشته باشند.
     const hideSVG = `<span class="eye-full-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="eye-slashed-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></span>`;
     const chevronSVG = `<svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
     const arrowSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
-
-    // تعیین واحد شمارش پیش‌فرض بر اساس شناسه
     const defaultUnit = itemDefaultUnit[item.id] || 'عدد';
     const el = document.createElement('div');
     el.className = 'accordion-item';
@@ -409,7 +346,6 @@ let apiModal;
     el.setAttribute('data-type', 'api-variable');
     el.setAttribute('data-api-symbol', item.id);
     el.setAttribute('data-unit', defaultUnit);
-
     el.innerHTML = `
       <div class="accordion-header">
         <div class="acc-drag-handle" title="جابجایی">${dragSVG}</div>
@@ -485,25 +421,10 @@ let apiModal;
         </div>
       </div>
     `;
-
-    // دکمه پنهان‌سازی مخصوص متغیرهای API است و جزو pipeline مشترک نیست،
-    // پس همچنان به صورت اختصاصی وصل می‌شود.
     attachApiHideEvents(el.querySelector('.acc-hide-btn'));
-
-    /* ─── HYDRATION BRIDGE ───────────────────────────────────────────
-       به‌جای سیم‌کشی دستیِ ایزوله (که باعث می‌شد آیتم تازه‌ساخته‌شده نیمه‌کاره
-       بماند و درگ هندل، اعتبارسنجی سوییچ، dirty tracking و sync نام/واحد را
-       نداشته باشد)، آیتم را از کنترلر مرکزی و مشترک hydrate عبور می‌دهیم تا
-       دقیقاً مثل سایر آکاردئون‌ها وارد چرخه‌ی حیات شیء شود:
-         - اتصال drag handle به startDrag (مشکل ۱)
-         - attachAccordionEvents / attachSwitchValidationAndLock
-         - attachNameUpdateEvents / attachUnitLabelSync
-         - initDirtyTracking و سایر guardها
-    ──────────────────────────────────────────────────────────────────── */
     if (settingsPanel?.hydrateAccordionItem) {
       settingsPanel.hydrateAccordionItem(el, { type: 'api-variable' });
     } else {
-      // fallback دفاعی: اگر pipeline مشترک هنوز در دسترس نیست، حداقل toggle را وصل کن
       const header = el.querySelector('.accordion-header');
       header?.addEventListener('click', function (e) {
         if (
@@ -514,11 +435,8 @@ let apiModal;
         el.classList.toggle('open');
       });
     }
-
     return el;
   }
-
-  /* ─── اضافه کردن آیتم به لیست آکاردئون‌های API ─── */
   function addToApiList(item, rowEl) {
     if (isAlreadyAdded(item.id)) {
       rowEl.classList.add('api-item-already');
@@ -527,70 +445,46 @@ let apiModal;
       }
       return;
     }
-
     const list = document.getElementById('apiVariablesList');
     if (!list) return;
-
     const newItem = createAccordionItem(item);
-
-    // انیمیشن ورود
     newItem.style.opacity = '0';
     newItem.style.transform = 'translateY(-8px)';
     list.appendChild(newItem);
     settingsPanel.refreshAccordionEmptyState?.(list);
-
     requestAnimationFrame(() => {
       newItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
       newItem.style.opacity = '1';
       newItem.style.transform = 'translateY(0)';
     });
-
-    // باز کردن آکاردئون جدید
     setTimeout(() => {
       newItem.classList.add('open');
       newItem.style.transition = '';
-      // پاک‌سازی استایل‌های inline انیمیشن ورود.
-      // مقدار inline ‌`opacity:1` بر قانون کلاسی `.accordion-item.dragging { opacity:0.5 }`
-      // اولویت دارد و باعث می‌شد آیتم API هنگام درگ، حالت کم‌رنگ بصری را نگیرد.
-      // با حذف این inline styleها، آیتم به همان رفتار CSS سایر آکاردئون‌ها برمی‌گردد.
       newItem.style.opacity = '';
       newItem.style.transform = '';
     }, 320);
-
-    // بروزرسانی quantity symbols
     updateApiQuantitySymbols();
     pricingPatterns.refreshFormulaAfterSettingsChange?.();
-
-    // اعمال پسوند تومان روی ورودی‌های قیمت آکاردئون جدید
     settingsPanel.wrapPriceInputsWithToman?.(newItem);
-
-    // تسک ۳: انیمیشن + → تیک (CSS transition — بدون layout shift)
     rowEl.classList.add('adding');
     rowEl.style.pointerEvents = 'none';
-
     setTimeout(() => {
       rowEl.classList.remove('adding');
       rowEl.classList.add('api-item-added');
     }, 300);
-
     if (typeof showToast === 'function') {
       showToast(`«${item.name}» به متغیرهای وابسته به API اضافه شد.`, 'green');
     }
-
-    // بستن مودال با تأخیر کوتاه (بعد از اتمام انیمیشن تیک)
     setTimeout(() => {
       modal.classList.remove('active');
       modal.classList.remove('in-category');
       modal.classList.remove('search-active');
       isSearchMode = false;
     }, 560);
-
-    // اسکرول به آیتم جدید بعد از بستن مودال
     setTimeout(() => {
       newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 700);
   }
-
   function renderItems(itemsArray) {
     itemsContainer.innerHTML = '';
     if (itemsArray.length === 0) {
@@ -628,7 +522,6 @@ let apiModal;
       itemsContainer.appendChild(div);
     });
   }
-
   function slideTo(paneIndex) {
     if (paneIndex === 1) {
       slider.style.transform = 'translateX(0)';
@@ -638,14 +531,11 @@ let apiModal;
       modal.classList.add('in-category');
     }
   }
-
   function openCategory(catName) {
     renderItems(apiData[catName]);
     slideTo(2);
-    // ذخیره نام دسته فعلی برای رفرش بعدی
     modal.dataset.currentCat = catName;
   }
-
   openBtn.addEventListener('click', () => {
     modal.classList.add('active');
     modal.classList.remove('in-category');
@@ -657,17 +547,14 @@ let apiModal;
     slideTo(1);
     setTimeout(updateApiQuantitySymbols, 100);
   });
-
   closeBtn.addEventListener('click', () => {
     if (isSearchMode) {
-      // در حالت سرچ، close = بستن سرچ (نه بستن مودال)
       exitSearchMode();
       return;
     }
     modal.classList.remove('active');
     modal.classList.remove('in-category');
   });
-
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       if (isSearchMode) {
@@ -678,7 +565,6 @@ let apiModal;
       modal.classList.remove('in-category');
     }
   });
-
   backBtn?.addEventListener('click', () => {
     if (isSearchMode) {
       exitSearchMode();
@@ -687,7 +573,6 @@ let apiModal;
     slideTo(1);
     searchInput.value = '';
   });
-
   searchInput.addEventListener('input', (e) => {
     const val = e.target.value.trim().toLowerCase();
     if (val === '') {
@@ -702,27 +587,22 @@ let apiModal;
         }
       });
     }
-    // در حالت سرچ، هدر برمی‌گرده به حالت اصلی (نه حالت دسته‌بندی)
     modal.classList.remove('in-category');
     renderItems(results);
     slider.style.transform = 'translateX(50%)';
   });
-
-  /* ─── اکشن پنهان‌سازی موقت آکاردئون‌های API ─── */
   function attachApiHideEvents(btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       const accordionItem = this.closest('.accordion-item');
       const varName = accordionItem.querySelector('.var-name-input')?.value || 'این متغیر';
       const formulaId = accordionItem.querySelector('.english-id-input')?.value?.trim();
-
       if (formulaId && pricingPatterns.isRegistryItemUsed?.(formulaId)) {
         if (typeof showToast === 'function') {
           showToast(`متغیر "${varName}" در فرمول قیمت‌گذاری استفاده شده و قابل پنهان‌سازی نیست.`, 'yellow');
         }
         return;
       }
-
       accordionItem.classList.add('collapsed-hide');
       setTimeout(() => {
         accordionItem.style.display = 'none';
@@ -731,51 +611,38 @@ let apiModal;
           showToast(`متغیر "${varName}" پنهان شد.`, 'green');
         }
         pricingPatterns.refreshFormulaAfterSettingsChange?.();
-
-        // اگر مودال باز است، لیست آیتم‌ها را دوباره رندر کن
         if (modal.classList.contains('active')) {
           if (modal.classList.contains('in-category') && modal.dataset.currentCat) {
-            // در حالت دسته‌بندی: رندر مجدد همان دسته
             renderItems(apiData[modal.dataset.currentCat]);
           } else if (isSearchMode && searchInput.value.trim()) {
-            // در حالت جستجو: جستجو را دوباره اجرا کن
             searchInput.dispatchEvent(new Event('input'));
           }
         }
       }, 300);
     });
   }
-
   document.querySelectorAll('#apiVariablesList .acc-hide-btn').forEach(btn => {
     attachApiHideEvents(btn);
   });
-
-  /* آیتم‌های نمونه‌ای که از قبل داخل HTML هستند نیز باید دقیقاً همان قرارداد
-     واحد/پرووایدر آیتم‌های ساخته‌شده در مودال را بگیرند. */
   function hydrateExistingApiMetadata() {
     const catalogById = new Map();
     Object.values(apiData).flat().forEach(item => catalogById.set(item.id, item));
-
     document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"]').forEach(itemEl => {
       const id = itemEl.dataset.apiSymbol || itemEl.dataset.id || itemEl.querySelector('.english-id-input')?.value?.trim();
       const item = catalogById.get(String(id || '').toUpperCase());
       if (!item) return;
       itemEl.dataset.apiSymbol = itemEl.dataset.apiSymbol || item.id;
-
       const defaultUnit = itemDefaultUnit[item.id] || 'عدد';
       itemEl.dataset.unit = defaultUnit;
       const unitSelect = itemEl.querySelector('.unit-select');
       unitSelect?.closest('.form-group')?.remove();
-
       const wageLabel = itemEl.querySelector('.dynamic-wage-label');
       if (wageLabel) wageLabel.textContent = `اجرت به ازای هر یک ${defaultUnit}`;
-
       const sourceSelect = itemEl.querySelector('.api-price-source-select');
       if (sourceSelect) {
         sourceSelect.innerHTML = sourceModeOptions();
         customSelect.refresh(sourceSelect);
       }
-
       const providerField = [...itemEl.querySelectorAll('.api-only-field')].find(field =>
         field.querySelector('.form-label')?.textContent.trim() === 'منبع API'
       );
@@ -785,7 +652,6 @@ let apiModal;
         providerSelect.innerHTML = providerOptions(item);
         providerSelect.disabled = false;
       }
-
       const intervalField = [...itemEl.querySelectorAll('.api-only-field')].find(field =>
         field.querySelector('.form-label')?.textContent.trim() === 'بازه بررسی'
       );
@@ -799,11 +665,7 @@ let apiModal;
       }
     });
   }
-
   hydrateExistingApiMetadata();
-
-  // Export تابع آپدیت symbols برای استفاده در سایر فایل‌ها
   apiModal = { updateApiQuantitySymbols, providerCatalog, providerCoverage, itemDefaultUnit };
-
 })();
 export { apiModal };

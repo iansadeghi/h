@@ -1,10 +1,8 @@
-import { showToast } from '../general.js';
+﻿import { showToast } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { itemHumanType, isFormulaProtectedItem } from './id-utils.js';
 import { showConfirmModal } from './confirm-modal.js';
 import { refreshAccordionEmptyState } from './empty-state.js';
-
-/* ─── DELETE ACTION FOR INDEPENDENT / ROUNDING ACCORDIONS ─── */
 function attachDeleteEvents(btn) {
   if (!btn) return;
   if (btn.dataset.deleteReady === 'true') return;
@@ -14,12 +12,10 @@ function attachDeleteEvents(btn) {
     const accordionItem = this.closest('.accordion-item');
     const itemName = accordionItem.querySelector('.var-name-input')?.value || 'این آیتم';
     const label = itemHumanType(accordionItem);
-
     if (isFormulaProtectedItem(accordionItem)) {
       showToast(`${label} «${itemName}» در فرمول قیمت‌گذاری استفاده شده و قابل حذف نیست.`, 'yellow');
       return;
     }
-
     showConfirmModal(
       `حذف ${label}`,
       `این کار باعث حذف ${label} «${itemName}» خواهد شد. آیا مطمئن هستید؟`,
@@ -36,8 +32,6 @@ function attachDeleteEvents(btn) {
     );
   });
 }
-
-/* ─── DELETE ACTION FOR CONSTANTS ACCORDIONS ─── */
 function attachDeleteConstantEvents(btn) {
   if (!btn) return;
   if (btn.dataset.deleteConstantReady === 'true') return;
@@ -46,12 +40,10 @@ function attachDeleteConstantEvents(btn) {
     e.stopPropagation();
     const accordionItem = this.closest('.accordion-item');
     const constantName = accordionItem.querySelector('.var-name-input')?.value || 'این ثابت';
-
     if (isFormulaProtectedItem(accordionItem)) {
       showToast(`ثابت درصدی «${constantName}» در فرمول قیمت‌گذاری استفاده شده و قابل حذف نیست.`, 'yellow');
       return;
     }
-
     showConfirmModal(
       'حذف ثابت درصدی',
       `این کار باعث حذف ثابت «${constantName}» خواهد شد. آیا مطمئن هستید؟`,
@@ -68,7 +60,6 @@ function attachDeleteConstantEvents(btn) {
     );
   });
 }
-
 function initDeleteActions() {
   document.querySelectorAll('.acc-delete-btn').forEach(btn => {
     attachDeleteEvents(btn);
@@ -77,5 +68,4 @@ function initDeleteActions() {
     attachDeleteConstantEvents(btn);
   });
 }
-
 export { attachDeleteEvents, attachDeleteConstantEvents, initDeleteActions };

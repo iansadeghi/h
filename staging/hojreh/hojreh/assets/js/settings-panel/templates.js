@@ -1,12 +1,4 @@
-/* ─── PURE BODY-HTML TEMPLATE UTILITIES (no event wiring) ───
-   These return ONLY the inner content for an accordion body. Structural
-   creation (header, drag handle, switch, delete/toggle buttons) and ALL
-   event wiring is owned by the unified factory pipeline:
-     createAccordionShell()  →  hydrateAccordionItem()
-   exactly like "لیست الگوها" and "شاگرد" already do. This removes the second,
-   conflicting hand-rolled construction pathway. */
-
-function createIndependentVarBodyHtml() {
+﻿function createIndependentVarBodyHtml() {
   return `
     <div class="form-grid">
       <div class="form-group">
@@ -49,7 +41,6 @@ function createIndependentVarBodyHtml() {
     </div>
   `;
 }
-
 function createConstantBodyHtml() {
   return `
     <div class="form-grid">
@@ -68,7 +59,6 @@ function createConstantBodyHtml() {
     </div>
   `;
 }
-
 function createRoundingBodyHtml() {
   return `
     <div class="form-grid">
@@ -127,7 +117,6 @@ function createRoundingBodyHtml() {
     </div>
   `;
 }
-
 function createApprenticeBodyHtml(id) {
   return `
     <div class="form-grid apprentice-form-grid">
@@ -167,15 +156,6 @@ function createApprenticeBodyHtml(id) {
     </div>
   `;
 }
-
-/* ─── PATTERN TEMPLATE (cloned from the default pattern already in the DOM) ─── */
-
-/* Lifecycle / idempotency flags that get baked into a live, already-booted
-   accordion as HTML attributes. When we clone the default pattern template
-   and serialize it through innerHTML, these stale "ready" flags travel with
-   the string. hydrateAccordionItem() would then read them, assume the new
-   instance is already wired, and short-circuit — leaving a dead accordion.
-   We strip every one of them from the clone before serialization. */
 const STALE_LIFECYCLE_ATTRS = [
   'data-name-update-ready',
   'data-drag-ready',
@@ -191,34 +171,26 @@ const STALE_LIFECYCLE_ATTRS = [
   'data-manual-edited',
   'data-hojreh-manual-handler',
   'data-hojreh-original-value',
-  /* additional pattern-specific readiness flags */
   'data-pricing-manual-ready',
   'data-formula-preview-ready',
   'data-formula-test-ready',
   'data-hojreh-dirty-ready',
   'data-eye-attached',
-  /* HojrehPatternController#_bindControls() guard — must be stripped or a
-     cloned accordion inherits "already wired" state and _bindControls()
-     bails out before attaching any listeners to its buttons. */
   'data-pattern-controls-ready'
 ];
-
 function stripStaleLifecycleAttributes(root) {
   if (!root) return;
   const apply = el => STALE_LIFECYCLE_ATTRS.forEach(attr => el.removeAttribute(attr));
   apply(root);
   root.querySelectorAll('*').forEach(apply);
 }
-
 function createPatternBodyHtml(id, title) {
   const template = document.querySelector('#pricingPatternsList .accordion-item[data-type="pattern"] .accordion-body-inner');
   if (!template) return '';
   const clone = template.cloneNode(true);
-
   clone.querySelectorAll('[id]').forEach(el => {
     el.id = `${el.id}-${id}`;
   });
-
   clone.querySelectorAll('.formula-items-container').forEach(el => { el.innerHTML = ''; });
   clone.querySelectorAll('.formula-preview-large-box').forEach(el => {
     el.textContent = 'برای نمایش فرمول، آیتم‌ها را به باکس بالا اضافه کنید.';
@@ -235,9 +207,6 @@ function createPatternBodyHtml(id, title) {
     el.style.display = '';
   });
   clone.querySelectorAll('.manual-formula-toggle').forEach(el => {
-    // Reset both the live property AND the serialized attribute. innerHTML
-    // only reflects attributes, so we must remove `checked` explicitly,
-    // otherwise a checked toggle on the template would leak into the clone.
     el.checked = false;
     el.removeAttribute('checked');
   });
@@ -252,31 +221,17 @@ function createPatternBodyHtml(id, title) {
   clone.querySelectorAll('.final-calculation-summary span[id], .final-calculation-summary [id]').forEach(el => {
     if (el.matches('#finalCalculationValue, [id^="finalCalculationValue"]')) el.textContent = '۰ تومان';
   });
-
   const nameInput = clone.querySelector('.pattern-name-input');
   if (nameInput) {
-    // CRITICAL: set the *attribute*, not just the property. We return
-    // clone.innerHTML (a string) and innerHTML serialization only reflects
-    // HTML attributes — the live `.value` property is invisible to it. The
-    // template still carries the default name in its `value="..."` attribute,
-    // so without this the new accordion would silently inherit the default
-    // pattern's name (and its delete dialog would name the wrong pattern).
     nameInput.value = title;
     nameInput.setAttribute('value', title);
     nameInput.name = `hojreh_patterns[${id}][name]`;
     nameInput.setAttribute('name', `hojreh_patterns[${id}][name]`);
   }
-
   clone.querySelectorAll('.hojreh-formula-text-field, .hojreh-formula-display-field, .hojreh-formula-dependencies-field, .hojreh-formula-payload-field').forEach(el => el.remove());
-
-  // Final cleansing sweep: strip every cloned lifecycle/idempotency flag so
-  // hydrateAccordionItem() treats the new instance as fresh and re-binds all
-  // event listeners instead of short-circuiting on a stale "ready" attribute.
   stripStaleLifecycleAttributes(clone);
-
   return clone.innerHTML;
 }
-
 export {
   createIndependentVarBodyHtml,
   createConstantBodyHtml,

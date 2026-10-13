@@ -1,23 +1,10 @@
-/* ═══════════════════════════════════════════════════════════════
-   HojrehFormulaEngine — پارسر/AST/موتور ارزیابیِ خالصِ فرمول
-   ───────────────────────────────────────────────────────────────
-   Extracted from the former monolithic pricing-patterns.js as part
-   of its modularization (see ../pricing-patterns.js for the full
-   module map). Zero DOM dependency and zero dependency on
-   HojrehPatternController — a single source of truth shared by the
-   editor UI, the simulator, and (structurally) the backend compiler.
-   ═══════════════════════════════════════════════════════════════ */
-
-import {
+﻿import {
   unitCatalog as sharedUnitCatalog, getUnitMeta as getSharedUnitMeta
 } from '../general.js';
-
 const HojrehFormulaEngine = (function () {
   'use strict';
-
   const ID_PATTERN = /^[a-z][a-z0-9_]*$/;
   const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
-
   const fallbackUnitCatalog = {
     'کیلوگرم': { category: 'weight', quantityLabel: 'وزن' },
     'گرم': { category: 'weight', quantityLabel: 'وزن' },
@@ -39,9 +26,7 @@ const HojrehFormulaEngine = (function () {
     'میلی‌لیتر': { category: 'volume', quantityLabel: 'حجم' },
     'متر مکعب': { category: 'volume', quantityLabel: 'حجم' }
   };
-
   const unitCatalog = sharedUnitCatalog || fallbackUnitCatalog;
-
   function getUnitMeta(unit) {
     const cleanUnit = String(unit || '').trim();
     if (getSharedUnitMeta) {
@@ -58,19 +43,16 @@ const HojrehFormulaEngine = (function () {
     }
     return unitCatalog[cleanUnit] || { category: 'custom', quantityLabel: 'مقدار' };
   }
-
   function getQuantityFieldLabel(name, unit) {
     const cleanName = String(name || 'بدون نام').trim();
     const cleanUnit = String(unit || 'واحد').trim();
     return `${getUnitMeta(cleanUnit).quantityLabel} ${cleanName} (${cleanUnit})`;
   }
-
   function getPriceFieldLabel(name, unit) {
     const cleanName = String(name || 'بدون نام').trim();
     const cleanUnit = String(unit || 'واحد').trim();
     return `قیمت هر ${cleanUnit} از ${cleanName}`;
   }
-
   function getUnitOptions() {
     if (Array.isArray(unitCatalog)) {
       return unitCatalog.map(unit => ({
@@ -87,14 +69,10 @@ const HojrehFormulaEngine = (function () {
       quantityLabel: unitCatalog[value].quantityLabel || 'مقدار'
     }));
   }
-
-  // تولید نشانه‌های مقدار طبق الگوی خواسته‌شده: a..z, ab, ac, ..., az, ba, bc, ...
-  // تکرار پشت سر هم مثل aa / bb تولید نمی‌شود تا خوانایی فرمول‌ها حفظ شود.
   function generateQuantitySymbol(index) {
     let n = Math.max(0, Number(index) || 0);
     if (n < 26) return LETTERS[n];
     n -= 26;
-
     for (let length = 2; length < 8; length++) {
       const blockSize = 26 * Math.pow(25, length - 1);
       if (n < blockSize) {
@@ -113,10 +91,8 @@ const HojrehFormulaEngine = (function () {
       }
       n -= blockSize;
     }
-
     return `q${index}`;
   }
-
   function normalizeNumberString(value) {
     return String(value ?? '')
       .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
@@ -124,46 +100,36 @@ const HojrehFormulaEngine = (function () {
       .replace(/[,،\s]/g, '')
       .replace(/[^0-9.\-]/g, '');
   }
-
   function parseNumberValue(value, fallback = 0) {
     const normalized = normalizeNumberString(value);
     if (!normalized || normalized === '-' || normalized === '.') return fallback;
     const num = parseFloat(normalized);
     return Number.isFinite(num) ? num : fallback;
   }
-
   function normalizeIdentifier(value) {
     return String(value || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
   }
-
   function normalizeQuantitySymbol(value) {
     return String(value || '').trim().toLowerCase().replace(/[^a-z]/g, '');
   }
-
   function readVariablePrice(item) {
     const defaultPriceInput = item.querySelector('.var-default-price');
     if (defaultPriceInput) return parseNumberValue(defaultPriceInput.value, 0);
-
     const lastPriceButton = item.querySelector('.last-price');
     if (lastPriceButton) return parseNumberValue(lastPriceButton.textContent, 0);
-
     const minPriceInput = item.querySelector('.var-min-price');
     if (minPriceInput) return parseNumberValue(minPriceInput.value, 0);
-
     return 0;
   }
-
   function getVariableAccordionItems() {
     return [
       ...Array.from(document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"]')).map(item => ({ item, source: 'api' })),
       ...Array.from(document.querySelectorAll('#independentList .accordion-item[data-type="variable"]')).map(item => ({ item, source: 'independent' }))
     ];
   }
-
   function isAccordionItemActive(item) {
     return !!item.querySelector('.acc-switch input[type="checkbox"]')?.checked;
   }
-
   function nextAvailableQuantitySymbol(usedSymbols) {
     let index = 0;
     let candidate = generateQuantitySymbol(index);
@@ -173,26 +139,18 @@ const HojrehFormulaEngine = (function () {
     }
     return candidate;
   }
-
-  // نشانه مقدار فقط برای متغیرهای فعال در فرمول رزرو می‌شود؛
-  // مقدارهای قدیمی آیتم‌های غیرفعال پاک نمی‌شوند تا شناسه‌ها بی‌دلیل نپرند.
-  // دو مرحله‌ای است تا یک آیتم فعالِ جدید، نشانه پایدار آیتم فعال قبلی را ندزدد.
   function syncVariableQuantitySymbols() {
     const used = new Set();
     const needsGeneration = [];
     const entries = getVariableAccordionItems();
-
     entries.forEach(({ item }) => {
       const input = item.querySelector('.quantity-symbol-input');
       if (!input) return;
-
       const current = normalizeQuantitySymbol(input.value);
-
       if (!isAccordionItemActive(item)) {
         input.value = current;
         return;
       }
-
       if (current && !used.has(current)) {
         input.value = current;
         used.add(current);
@@ -200,41 +158,32 @@ const HojrehFormulaEngine = (function () {
         needsGeneration.push(input);
       }
     });
-
     needsGeneration.forEach(input => {
       const generated = nextAvailableQuantitySymbol(used);
       input.value = generated;
       used.add(generated);
     });
   }
-
   function collectVariableItem(item, index, source) {
     const nameInput = item.querySelector('.var-name-input');
     const idInput = item.querySelector('.english-id-input');
     const quantityInput = item.querySelector('.quantity-symbol-input');
     const unitSelect = item.querySelector('.unit-select');
     const ojratInput = item.querySelector('.ojrat-input');
-
     if (!nameInput || !idInput) return null;
-
     const active = isAccordionItemActive(item);
     const id = normalizeIdentifier(idInput.value);
     if (idInput.value && idInput.value !== id) idInput.value = id;
-
     const normalizedQuantitySymbol = normalizeQuantitySymbol(quantityInput?.value);
     const quantitySymbol = active ? (normalizedQuantitySymbol || generateQuantitySymbol(index)) : normalizedQuantitySymbol;
     if (active && quantityInput && quantityInput.value !== quantitySymbol) quantityInput.value = quantitySymbol;
-
     const unit = unitSelect?.value || item.dataset.unit || 'عدد';
-
-    // read ojrat — strip Persian digits and commas, default to 0
     let ojrat = 0;
     if (ojratInput) {
       let rawOjrat = ojratInput.value.replace(/،/g, '').replace(/,/g, '');
       rawOjrat = rawOjrat.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
       ojrat = parseFloat(rawOjrat) || 0;
     }
-
     return {
       id,
       name: nameInput.value.trim() || 'بدون نام',
@@ -250,7 +199,6 @@ const HojrehFormulaEngine = (function () {
       element: item
     };
   }
-
   function readRoundingConfig(item) {
     const digits = parseInt(item.querySelector('.rounding-max-select')?.value || '3', 10);
     const mode = item.querySelector('.rounding-type-select')?.value || 'zero';
@@ -263,17 +211,6 @@ const HojrehFormulaEngine = (function () {
       preventIncrease
     };
   }
-  /* ── Hybrid registry injection ────────────────────────────────
-     When a controller is constructed with { registryCatalog }, the
-     engine never touches document.querySelectorAll for that lookup —
-     it normalizes the supplied catalog into the exact same
-     { variables, constants, roundings } shape the DOM-scrape path
-     produces, so every downstream consumer (buildFormulaString,
-     evaluateFormula, compileToProgram, parseFormulaString, …) is
-     completely agnostic to where the data came from. This is what
-     lets HojrehPatternController run fully headlessly — bulk
-     WooCommerce sync jobs, background price-recalculation queues,
-     offline/unit-test contexts — with zero DOM present. */
   function normalizeCatalogEntry(entry, type) {
     if (!entry || typeof entry !== 'object') return null;
     const id = normalizeIdentifier(entry.id ?? entry.selectedId ?? '');
@@ -283,7 +220,6 @@ const HojrehFormulaEngine = (function () {
       name: String(entry.name ?? entry.selectedName ?? 'بدون نام').trim() || 'بدون نام',
       active: entry.active !== false
     };
-
     if (type === 'variable') {
       const unit = entry.unit || entry.selectedUnit || 'عدد';
       return {
@@ -314,13 +250,8 @@ const HojrehFormulaEngine = (function () {
     }
     return base;
   }
-
   function buildRegistryFromCatalog(catalog) {
     const items = { variables: [], constants: [], roundings: [] };
-
-    // Accepts either a flat array of { type, ...fields } entries, or an
-    // already-bucketed { variables, constants, roundings } object — both
-    // are documented shapes a headless caller might reasonably hand in.
     if (Array.isArray(catalog)) {
       catalog.forEach(entry => {
         const type = entry?.type;
@@ -344,10 +275,8 @@ const HojrehFormulaEngine = (function () {
         if (normalized) items.roundings.push(normalized);
       });
     }
-
     return items;
   }
-
   function filterRegistryByActive(items, activeOnly) {
     if (!activeOnly) return items;
     return {
@@ -356,28 +285,19 @@ const HojrehFormulaEngine = (function () {
       roundings: items.roundings.filter(r => r.active)
     };
   }
-
   function getRegisteredItems(options = {}) {
     const activeOnly = !!options.activeOnly;
-
-    // Headless mode: an injected catalog completely bypasses DOM
-    // scraping. No document.querySelectorAll call happens on this path,
-    // so this is safe to call with no DOM present at all.
     if (options.registryCatalog) {
       return filterRegistryByActive(buildRegistryFromCatalog(options.registryCatalog), activeOnly);
     }
-
     const items = { variables: [], constants: [], roundings: [] };
-
     syncVariableQuantitySymbols();
-
     getVariableAccordionItems().forEach(({ item, source }, index) => {
       const variable = collectVariableItem(item, index, source);
       if (!variable) return;
       if (activeOnly && !variable.active) return;
       items.variables.push(variable);
     });
-
     document.querySelectorAll('#constantsList .accordion-item[data-type="constant"]').forEach(item => {
       const nameInput = item.querySelector('.var-name-input');
       const idInput = item.querySelector('.english-id-input');
@@ -395,7 +315,6 @@ const HojrehFormulaEngine = (function () {
         element: item
       });
     });
-
     document.querySelectorAll('#roundingList .accordion-item[data-type="algorithm"]').forEach(item => {
       const nameInput = item.querySelector('.var-name-input');
       const idInput = item.querySelector('.english-id-input');
@@ -412,10 +331,8 @@ const HojrehFormulaEngine = (function () {
         element: item
       });
     });
-
     return items;
   }
-
   function findInCollection(id, collection) {
     const clean = normalizeIdentifier(id);
     for (const v of collection.variables) if (v.id === clean) return { ...v, type: 'variable' };
@@ -423,11 +340,9 @@ const HojrehFormulaEngine = (function () {
     for (const r of collection.roundings) if (r.id === clean) return { ...r, type: 'rounding' };
     return null;
   }
-
   function findItemById(itemId, options = {}) {
     return findInCollection(itemId, getRegisteredItems(options));
   }
-
   function cloneElementForBackend(el) {
     return {
       type: el.type,
@@ -442,7 +357,6 @@ const HojrehFormulaEngine = (function () {
       innerElements: (el.innerElements || []).map(cloneElementForBackend)
     };
   }
-
   function normalizeElementOperators(elements) {
     (elements || []).forEach((el, index) => {
       el.operator = index === 0 ? '+' : (el.operator === '*' ? '*' : '+');
@@ -450,11 +364,6 @@ const HojrehFormulaEngine = (function () {
     });
     return elements || [];
   }
-
-  /** Structural order check only: no normalization, registry lookup or
-   *  selection validation, so unfinished editor items remain editable.
-   *  Each group starts its own running total. Empty groups are allowed
-   *  as placeholders, but cannot supply a base for percent/rounding. */
   function hasValidElementOrder(elements) {
     function inspect(elems) {
       let hasBase = false;
@@ -473,54 +382,36 @@ const HojrehFormulaEngine = (function () {
     }
     return inspect(elements).valid;
   }
-
   function getElementRegistryItem(el, options = {}) {
     if (!el?.selectedId) return null;
     return findItemById(el.selectedId, { activeOnly: false, ...options });
   }
-
-  /* Unicode directional-isolate marks (RLI ... PDI). Wrapping each Persian
-     label in these turns it into an opaque, atomic bidi run: its RTL
-     characters can no longer merge with a neighboring RTL run across the
-     neutral characters (operators, spaces, digits) that sit between them.
-     Without this, concatenating several strong-RTL terms with weak/neutral
-     joiners lets the browser's bidi algorithm regroup and reorder the terms
-     as a block — visually flipping term order even though the underlying
-     string (and this.state.elements) is built in perfectly correct
-     chronological order. Only ever applied to the verbal/display strings;
-     English-id (canonical) formulas are pure ASCII and never need it. */
   const RLI = '\u2067';
   const PDI = '\u2069';
   function isolateRtlLabel(text) {
     return text ? `${RLI}${text}${PDI}` : text;
   }
-
   function buildFormulaString(elements, useEnglishIds = false, options = {}) {
     const safeElements = normalizeElementOperators(elements || []);
     if (!safeElements.length) return '';
-
     function appendTerm(expr, operator, term) {
       if (!term) return expr;
       if (!expr) return term;
       return `${expr} ${operator === '*' ? '*' : '+'} ${term}`;
     }
-
     function labelFor(el, fallback) {
       const item = getElementRegistryItem(el, options);
       if (useEnglishIds) return item?.id || el.selectedId || fallback || '';
       return isolateRtlLabel(item?.name || el.selectedName || fallback || '');
     }
-
     function processElements(elems) {
       let expr = '';
-
       elems.forEach(el => {
         if (el.type === 'group' || el.isGroup) {
           const inner = processElements(el.innerElements || []);
           if (inner) expr = appendTerm(expr, el.operator, `(${inner})`);
           return;
         }
-
         if (el.type === 'variable') {
           const item = getElementRegistryItem(el, options);
           const rawDisplayId = useEnglishIds ? (item?.id || el.selectedId) : (item?.name || el.selectedName || 'بدون نام');
@@ -528,10 +419,8 @@ const HojrehFormulaEngine = (function () {
           const qSym = item?.quantitySymbol || el.quantitySymbol || '';
           if (displayId && qSym) {
             const varTerm = `${displayId}*${qSym}`;
-            // append ojrat term only when ojrat > 0
             const ojrat = item?.ojrat || 0;
             if (ojrat > 0) {
-              // useEnglishIds: use id_ojrat*qSym; display mode: use "اجرت" as readable label
               const ojratTerm = useEnglishIds
                 ? `${item?.id || el.selectedId}_ojrat*${qSym}`
                 : isolateRtlLabel('اجرت');
@@ -542,46 +431,37 @@ const HojrehFormulaEngine = (function () {
           }
           return;
         }
-
         if (el.type === 'constant') {
           if (!expr) return;
           const displayId = labelFor(el, '');
           if (displayId) expr = `[${expr}]${el.operator === '*' ? '*' : '+'}${displayId}`;
           return;
         }
-
         if (el.type === 'rounding') {
           if (!expr) return;
           const displayId = labelFor(el, '');
           if (displayId) expr = `[${displayId}[${expr}]]`;
         }
       });
-
       return expr;
     }
-
     return processElements(safeElements);
   }
-
   function normalizeFormulaForCompare(formulaText) {
     return String(formulaText || '')
       .replace(/×/g, '*')
       .replace(/\s+/g, '')
       .toLowerCase();
   }
-
   function validateFormula(formulaText) {
     const text = String(formulaText || '').trim();
     if (!text) return { valid: false, error: 'فرمول خالی است' };
-
     const allowedPattern = /^[a-z0-9_\s+*×()\[\]]+$/;
     if (!allowedPattern.test(text)) {
       const badChars = [...new Set(text.split('').filter(c => !/[a-z0-9_\s+*×()\[\]]/.test(c)))];
       return { valid: false, error: `کاراکتر(های) غیرمجاز در فرمول: ${badChars.join(' ')}` };
     }
-
     if (/[A-Z]/.test(text)) return { valid: false, error: 'فرمول باید فقط شامل حروف کوچک انگلیسی باشد' };
-
     const stack = [];
     const pairs = { ')': '(', ']': '[' };
     for (const ch of text) {
@@ -593,46 +473,37 @@ const HojrehFormulaEngine = (function () {
       }
     }
     if (stack.length) return { valid: false, error: 'تعداد پرانتزها یا کروشه‌های باز و بسته برابر نیست' };
-
     const stripped = text.replace(/\s/g, '').replace(/×/g, '*');
     if (/^[+*]/.test(stripped) || /[+*]$/.test(stripped)) {
       return { valid: false, error: 'عملگر در ابتدا یا انتهای فرمول نامعتبر است' };
     }
     if (/[+*]{2,}/.test(stripped)) return { valid: false, error: 'عملگرهای متوالی نامعتبر هستند' };
     if (/\(\)/.test(stripped) || /\[\]/.test(stripped)) return { valid: false, error: 'گروه یا کروشه خالی معتبر نیست' };
-
     return { valid: true };
   }
-
   function parseFormulaString(formulaText, options = {}) {
     const basicCheck = validateFormula(formulaText);
     if (!basicCheck.valid) return { valid: false, error: basicCheck.error, elements: [] };
-
     const activeItems = getRegisteredItems({ activeOnly: true, ...options });
     const allItems = getRegisteredItems({ activeOnly: false, ...options });
     const text = String(formulaText || '').replace(/×/g, '*').trim();
     let pos = 0;
     let elementCounter = 0;
     let warningReason = '';
-
     function markWarning(message) {
       if (!warningReason) warningReason = message;
     }
-
     function peek() { return pos < text.length ? text[pos] : null; }
     function consume() { return text[pos++]; }
     function skipWS() { while (pos < text.length && /\s/.test(text[pos])) pos += 1; }
-
     function parseIdentifier() {
       skipWS();
       let id = '';
       while (pos < text.length && /[a-z0-9_]/.test(text[pos])) id += consume();
       return id;
     }
-
     function activeItem(id) { return findInCollection(id, activeItems); }
     function anyItem(id) { return findInCollection(id, allItems); }
-
     function requireActiveItem(id) {
       const item = activeItem(id);
       if (item) return item;
@@ -640,13 +511,11 @@ const HojrehFormulaEngine = (function () {
       if (inactive) throw new Error(`آیتم «${id}» در سیستم وجود دارد اما فعال نیست`);
       throw new Error(`شناسه «${id}» در سیستم تعریف نشده است`);
     }
-
     function expect(ch, message) {
       skipWS();
       if (peek() !== ch) throw new Error(message || `کاراکتر «${ch}» انتظار می‌رفت`);
       consume();
     }
-
     function makeElementFromItem(item, operator) {
       return {
         id: ++elementCounter,
@@ -665,44 +534,36 @@ const HojrehFormulaEngine = (function () {
         innerElements: []
       };
     }
-
     function parseExpression(stopChar) {
       const elements = [];
       let pendingOp = '+';
       let expectingTerm = true;
-
       while (pos < text.length) {
         skipWS();
         const ch = peek();
         if (!ch) break;
         if (stopChar && ch === stopChar) break;
-
         if (ch === '+' || ch === '*') {
           if (expectingTerm) throw new Error('عملگر بدون آیتم قبل از آن معتبر نیست');
           pendingOp = consume() === '*' ? '*' : '+';
           expectingTerm = true;
           continue;
         }
-
         if (!expectingTerm) {
           throw new Error('بین اجزای فرمول باید عملگر + یا * قرار بگیرد');
         }
-
         const parsed = parseTerm(pendingOp, elements);
         parsed.forEach(el => elements.push(el));
         pendingOp = '+';
         expectingTerm = false;
       }
-
       if (expectingTerm && elements.length > 0) throw new Error('فرمول با عملگر ناقص تمام شده است');
       normalizeElementOperators(elements);
       return elements;
     }
-
     function parseTerm(operator, currentElements) {
       skipWS();
       const ch = peek();
-
       if (ch === '(') {
         consume();
         const inner = parseExpression(')');
@@ -722,14 +583,11 @@ const HojrehFormulaEngine = (function () {
           innerElements: inner
         }];
       }
-
       if (ch === '[') return parseBracketExpression(operator, currentElements);
-
       if (/[a-z]/.test(ch || '')) {
         const id = parseIdentifier();
         if (!ID_PATTERN.test(id)) throw new Error(`شناسه «${id}» معتبر نیست`);
         const item = requireActiveItem(id);
-
         if (item.type === 'variable') {
           skipWS();
           if (peek() !== '*') throw new Error(`متغیر «${id}» باید به صورت ${id}*${item.quantitySymbol || 'a'} نوشته شود`);
@@ -748,25 +606,20 @@ const HojrehFormulaEngine = (function () {
           el.quantitySymbol = qSym;
           return [el];
         }
-
         if (item.type === 'constant') {
           if (!currentElements.length) throw new Error('ثابت درصدی نمی‌تواند اولین آیتم فرمول باشد');
           return [makeElementFromItem(item, operator)];
         }
-
         throw new Error(`مکانیزم رُندسازی «${id}» فقط باید به شکل [${id}[...]] استفاده شود`);
       }
-
       throw new Error(`کاراکتر غیرمجاز یا جایگذاری نامعتبر: «${ch}»`);
     }
-
     function parseBracketExpression(operator, currentElements) {
-      consume(); // [
+      consume();
       skipWS();
       const savedPos = pos;
       const firstId = parseIdentifier();
       const firstItem = firstId ? activeItem(firstId) : null;
-
       if (firstItem?.type === 'rounding') {
         skipWS();
         if (peek() !== '[') {
@@ -775,7 +628,7 @@ const HojrehFormulaEngine = (function () {
         if (currentElements.length > 0) {
           markWarning('رُندسازی فقط وقتی معادل نمایش بصری است که روی کل عبارت قبلی اعمال شده باشد');
         }
-        consume(); // inner [
+        consume();
         const inner = parseExpression(']');
         expect(']', 'کروشه داخلی رُندسازی بسته نشده است');
         expect(']', 'کروشه بیرونی رُندسازی بسته نشده است');
@@ -785,7 +638,6 @@ const HojrehFormulaEngine = (function () {
         const roundEl = makeElementFromItem(firstItem, '+');
         return [...inner, roundEl];
       }
-
       pos = savedPos;
       const inner = parseExpression(']');
       expect(']', 'کروشه بسته پیدا نشد');
@@ -797,7 +649,6 @@ const HojrehFormulaEngine = (function () {
       normalizeElementOperators(inner);
       return inner;
     }
-
     try {
       const elements = parseExpression(null);
       skipWS();
@@ -823,14 +674,11 @@ const HojrehFormulaEngine = (function () {
       return { valid: false, error: err.message || 'خطای ناشناخته در پارس فرمول', elements: [] };
     }
   }
-
   function applyRounding(value, config) {
     const safeValue = Number(value || 0);
     const digits = Math.max(1, parseInt(config?.digits || 3, 10));
     const factor = Math.pow(10, digits);
     const mode = config?.mode || 'zero';
-
-    /* ── compute the raw rounded result ──────────────────────── */
     let rounded;
     if (mode === 'nine') {
       rounded = Math.floor(safeValue / factor) * factor + (factor - 1);
@@ -840,35 +688,22 @@ const HojrehFormulaEngine = (function () {
     } else {
       rounded = Math.floor(safeValue / factor) * factor;
     }
-
-    /* ── Guard 1: prevent result from becoming 0 ────────────────
-       If the rounded value is 0 (or negative) while the original
-       price is positive, skip rounding and return the original.   */
     if (config?.preventZero && rounded <= 0 && safeValue > 0) {
       return safeValue;
     }
-
-    /* ── Guard 2: prevent price increase during rounding ────────
-       If the rounded value is higher than the original, skip
-       rounding and return the original.                          */
     if (config?.preventIncrease && rounded > safeValue) {
       return safeValue;
     }
-
     return rounded;
   }
-
   function evaluateFormula(elements, values = {}, options = {}) {
     const registry = getRegisteredItems({ activeOnly: false, ...options });
     function findValueItem(id) { return findInCollection(id, registry); }
-
     function evalElems(elems) {
       let result = 0;
       let isFirst = true;
-
       normalizeElementOperators(elems || []).forEach(el => {
         let value = 0;
-
         if (el.type === 'group' || el.isGroup) {
           value = evalElems(el.innerElements || []);
         } else if (el.type === 'variable') {
@@ -878,7 +713,6 @@ const HojrehFormulaEngine = (function () {
           const quantity = Number.isFinite(Number(supplied.quantity)) ? Number(supplied.quantity)
             : Number.isFinite(Number(supplied.qty)) ? Number(supplied.qty)
               : 1;
-          // add ojrat per unit when set
           const ojrat = Number(supplied.ojrat ?? item?.ojrat ?? 0) || 0;
           value = price * quantity + ojrat * quantity;
         } else if (el.type === 'constant') {
@@ -894,7 +728,6 @@ const HojrehFormulaEngine = (function () {
           isFirst = false;
           return;
         }
-
         if (isFirst) {
           result = value;
           isFirst = false;
@@ -904,17 +737,13 @@ const HojrehFormulaEngine = (function () {
           result += value;
         }
       });
-
       return result;
     }
-
     return evalElems(elements || []);
   }
-
   function collectDependencies(elements) {
     const deps = { variables: [], constants: [], roundings: [] };
     const seen = new Set();
-
     function walk(elems) {
       (elems || []).forEach(el => {
         if (el.type === 'group' || el.isGroup) return walk(el.innerElements || []);
@@ -925,32 +754,14 @@ const HojrehFormulaEngine = (function () {
         if (el.type === 'rounding') deps.roundings.push(el.selectedId);
       });
     }
-
     walk(elements || []);
     return deps;
   }
-
-  /* ── RPN / postfix compiler ─────────────────────────────────────
-     Emits a flat, backend-friendly instruction list that a ~15-line
-     PHP stack machine can execute without re-implementing the JS
-     parser/AST walker. Grammar mirrors evaluateFormula():
-
-       push var  -> {op:'var',      id, qty}       -> pushes price*qty (+ ojrat*qty)
-       push const-> {op:'const',    id, mode}       -> pops a, pushes const applied to a
-       group     -> compiled recursively, no extra op (transparent to the stack)
-       combine   -> {op:'add'} | {op:'mul'}         -> pops b,a, pushes a±*b
-       round     -> {op:'round', id}                -> pops a, pushes rounded(a)
-
-     The program is a straight left-to-right postfix walk of the same
-     element tree buildFormulaString()/evaluateFormula() already use,
-     so canonical formula text, AST, and program can never diverge. */
   function compileToProgram(elements, options = {}) {
     const program = [];
     const safeElements = normalizeElementOperators(elements || []);
-
     function emit(elems) {
       let combinedOnce = false;
-
       elems.forEach(el => {
         if (el.type === 'group' || el.isGroup) {
           emit(el.innerElements || []);
@@ -969,7 +780,7 @@ const HojrehFormulaEngine = (function () {
             id: item?.id || el.selectedId,
             mode: el.operator === '*' ? 'mul' : 'add'
           });
-          combinedOnce = true; // constant already consumed+re-pushed the running total
+          combinedOnce = true;
           return;
         } else if (el.type === 'rounding') {
           const item = getElementRegistryItem(el, options);
@@ -979,7 +790,6 @@ const HojrehFormulaEngine = (function () {
         } else {
           return;
         }
-
         if (combinedOnce) {
           program.push({ op: el.operator === '*' ? 'mul' : 'add' });
         } else {
@@ -987,22 +797,12 @@ const HojrehFormulaEngine = (function () {
         }
       });
     }
-
     emit(safeElements);
     return program;
   }
-
-  /* Strips invisible Unicode bidi control marks (LRM/RLM/LRE/RLE/PDF/LRO/RLO)
-     that RTL browsers silently inject into contentEditable text around
-     Latin-script runs. Left in place, these marks pass through untouched
-     into the formula validation regex and produce false-positive
-     leading/trailing-operator errors even though the visible text is a
-     perfectly valid formula. Pure/stateless so it's safe to call anywhere
-     raw text is pulled out of the DOM. */
   function sanitizeBiDiCharacters(text) {
     return String(text || '').replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069\u061C]/g, '');
   }
-
   return {
     getRegisteredItems,
     findItemById,
@@ -1031,5 +831,4 @@ const HojrehFormulaEngine = (function () {
     isolateRtlLabel
   };
 })();
-
 export { HojrehFormulaEngine };

@@ -1,39 +1,19 @@
-/* ════════════════════════════════════════════════════════════════
-   HOJREH — UNSAVED CHANGES DOT ON SAVE BUTTONS
-   نشانگر تغییرات ذخیره‌نشده روی دکمه‌های ذخیره‌سازی
-   ════════════════════════════════════════════════════════════════ */
-
-/* ─── Button pop: tiny overshoot, barely perceptible ─── */
-@keyframes save-btn-pop {
+﻿@keyframes save-btn-pop {
   0%   { transform: scale(1); }
   45%  { transform: scale(1.012); }
   100% { transform: scale(1); }
 }
-
-/*
- * ─── Ripple rings ───────────────────────────────────────────────
- * Each ring starts at scale(1) / opacity 0.65, grows to scale(3.2),
- * and fades to opacity 0 — fully gone before reaching the adjacent text.
- * Ring 2 is delayed by 40% of the cycle so it launches when ring 1 is
- * ~60% grown, keeping two rings in flight at all times.
- *
- * Total cycle: 2s.  Ring 2 stagger: 0.8s (40% × 2s).
- */
 @keyframes save-dot-ripple {
   0%   { transform: scale(1);   opacity: 0.65; }
   100% { transform: scale(3.2); opacity: 0;    }
 }
-
 .header-save-btn {
   position: relative;
   transition: background .15s, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
-
 .header-save-btn.has-unsaved-changes {
   animation: save-btn-pop 0.32s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
 }
-
-/* The dot is injected via JS as a <span class="save-dirty-dot"> */
 .save-dirty-dot {
   display: inline-block;
   width: 0;
@@ -54,21 +34,12 @@
   pointer-events: none;
   flex-shrink: 0;
 }
-
 .header-save-btn.has-unsaved-changes .save-dirty-dot {
   width: 7px;
   max-width: 7px;
   margin-left: 10px;
   opacity: 1;
 }
-
-/* ─── Ripple rings via ::before and ::after ─── */
-/*
- * Centering approach: position absolute at top:0 left:0 with the same
- * 7×7 size as the dot, so they naturally overlap the dot exactly.
- * Then use transform-origin:center and scale() to grow from the center.
- * This avoids sub-pixel translate rounding at small sizes.
- */
 .header-save-btn.has-unsaved-changes .save-dirty-dot::before,
 .header-save-btn.has-unsaved-changes .save-dirty-dot::after {
   content: '';
@@ -83,8 +54,6 @@
   animation: save-dot-ripple 2s ease-out 0.22s infinite;
   pointer-events: none;
 }
-
-/* Ring 2: offset by 40% of cycle so it launches when ring 1 is ~60% grown */
 .header-save-btn.has-unsaved-changes .save-dirty-dot::after {
-  animation-delay: 1.02s; /* 0.22s base + 0.8s stagger */
+  animation-delay: 1.02s; 
 }

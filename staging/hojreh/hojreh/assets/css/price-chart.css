@@ -1,18 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════
-   HOJREH PRICE CHART
-   فایل: assets/css/price-chart.css
-
-   نمودار خطی سبک/نرم با SVG برای نمایش روند تغییرات قیمت.
-   کاملاً مستقل و قابل استفاده در هر بخشی از سایت —
-   فقط کافیست price-chart.css + price-chart.js لود شوند و
-   window.HojrehPriceChart.render(container, options) صدا زده شود.
-
-   رنگ اصلی نمودار به‌صورت ثابت «سبز اکسنت» است (نه زرد مرجع طراحی)
-   و به تم روشن/تاریک سایت واکنش می‌دهد.
-   ═══════════════════════════════════════════════════════════════ */
-
-:root {
-  /* ─── توکن‌های اختصاصی نمودار — مجزا از پالت کلی تا تغییر تم کلی روی نمودار اثر ناخواسته نگذارد ─── */
+﻿:root {
   --chart-accent: var(--green-dark);
   --chart-accent-soft: #2a9268;
   --chart-grid-line: var(--gray-200);
@@ -23,7 +9,6 @@
   --chart-up: var(--chart-accent);
   --chart-down: var(--red-danger);
 }
-
 [data-theme="dark"] {
   --chart-accent: #2a9268;
   --chart-accent-soft: #37a177;
@@ -33,11 +18,6 @@
   --chart-tooltip-text: #f0f0f0;
   --chart-cursor-line: #555;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   ROOT WRAPPER
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc {
   position: relative;
   width: 100%;
@@ -47,20 +27,9 @@
   user-select: none;
   -webkit-user-select: none;
 }
-
 .hpc * {
   box-sizing: border-box;
 }
-
-/* ─── توجه: ردیف «درصد تغییرات» (قبلاً .hpc-summary/.hpc-change) از
-   داخل خود نمودار حذف شده است. این UI اکنون در سطح میزبان (مثلاً
-   هدر price-modal) رندر می‌شود؛ نمودار فقط از طریق callback گزینه‌ی
-   onChangeUpdate داده‌ی محاسبه‌شده را به بیرون می‌فرستد. ─── */
-
-/* ═══════════════════════════════════════════════════════════════
-   PLOT AREA
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc-plot-wrap {
   position: relative;
   width: 100%;
@@ -68,19 +37,16 @@
   touch-action: pan-y;
   overflow-x: hidden;
 }
-
 .hpc-svg {
   width: 100%;
   height: 100%;
   display: block;
   overflow: visible;
 }
-
 .hpc-svg .hpc-area-fill {
   fill: url(#hpcAreaGradient);
   opacity: 1;
 }
-
 .hpc-svg .hpc-line-path {
   fill: none;
   stroke: var(--black);
@@ -89,35 +55,25 @@
   stroke-linejoin: round;
   transition: stroke 0.25s ease;
 }
-
-/* ─── هاله نرم زیر خط: area fill محو شده — نه stroke —
-   blur افقی باعث می‌شود هاله به طرفین پخش شود اما تیز
-   بماند؛ gradient عمودی آن را فقط در قله‌ها visible نگه می‌دارد ─── */
 .hpc-svg .hpc-area-glow {
   pointer-events: none;
 }
-
 [data-theme="dark"] .hpc-svg .hpc-area-glow {
   opacity: 0.85;
 }
-
-/* ─── افکت ورود نمودار: محو + کمی پایین به بالا، بعد از اسپینر ─── */
 .hpc-svg .hpc-line-path,
 .hpc-svg .hpc-area-glow,
 .hpc-svg .hpc-area-fill {
   opacity: 1;
 }
-
 .hpc-svg .hpc-line-path.hpc-enter,
 .hpc-svg .hpc-area-glow.hpc-enter,
 .hpc-svg .hpc-area-fill.hpc-enter {
   animation: hpcLineEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
 .hpc-svg .hpc-area-glow.hpc-enter {
   animation-duration: 0.7s;
 }
-
 @keyframes hpcLineEnter {
   from {
     opacity: 0;
@@ -128,8 +84,6 @@
     transform: translateY(0);
   }
 }
-
-/* ─── خط‌چین عمودی همراه با موس ─── */
 .hpc-svg .hpc-cursor-line {
   stroke: var(--chart-cursor-line);
   stroke-width: 1.25;
@@ -138,12 +92,9 @@
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
-
 .hpc-plot-wrap.is-hovering .hpc-cursor-line {
   opacity: 1;
 }
-
-/* ─── دایره نقطه‌ی فعال ─── */
 .hpc-svg .hpc-cursor-dot-halo {
   fill: var(--black);
   opacity: 0.14;
@@ -151,7 +102,6 @@
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
-
 .hpc-svg .hpc-cursor-dot {
   fill: var(--white);
   stroke: var(--black);
@@ -160,23 +110,15 @@
   transition: opacity 0.15s ease, stroke 0.25s ease;
   pointer-events: none;
 }
-
 .hpc-plot-wrap.is-hovering .hpc-cursor-dot,
 .hpc-plot-wrap.is-hovering .hpc-cursor-dot-halo {
   opacity: 1;
 }
-
-/* ─── کپچر رویداد موس/لمس روی کل ناحیه پلات ─── */
 .hpc-svg .hpc-hit-area {
   fill: transparent;
   pointer-events: all;
   cursor: none;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   TOOLTIP (کارت شناور بالای نقطه)
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc-tooltip {
   position: absolute;
   top: 0;
@@ -202,18 +144,15 @@
   z-index: 5;
   white-space: nowrap;
 }
-
 .hpc-plot-wrap.is-hovering .hpc-tooltip {
   opacity: 1;
   visibility: visible;
 }
-
 [data-theme="dark"] .hpc-tooltip {
   background: rgba(30, 30, 30, 0.68);
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3), 0 1.5px 4px rgba(0, 0, 0, 0.18);
 }
-
 .hpc-tooltip-price {
   font-size: 16px;
   font-weight: 800;
@@ -221,7 +160,6 @@
   font-family: var(--font-display);
   white-space: nowrap;
 }
-
 .hpc-tooltip-date {
   font-size: 12px;
   color: var(--gray-600);
@@ -229,11 +167,6 @@
   margin-top: 2px;
   font-family: var(--font-body); font-feature-settings: normal; font-variation-settings: normal;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   STATS ROW (کمترین/بیشترین)
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc-stats {
   display: flex;
   align-items: center;
@@ -242,7 +175,6 @@
   margin-top: 14px;
   flex-wrap: wrap;
 }
-
 .hpc-stat {
   display: flex;
   align-items: center;
@@ -252,7 +184,6 @@
   color: var(--gray-600);
   font-family: var(--font-body); font-feature-settings: normal; font-variation-settings: normal;
 }
-
 .hpc-stat-value {
   color: var(--black);
   font-weight: 700;
@@ -261,11 +192,6 @@
   border-radius: 5px;
   transition: color 0.18s ease;
 }
-
-/* ─── حالت اسکلتن لودینگ مقدار کمترین/بیشترین حین تغییر بازه ───
-   متن با color: transparent مخفی می‌شود (نه display:none) تا عرض
-   باکس همان عرض متن واقعی بماند و چیدمان نپرد؛ پس‌زمینه shimmer
-   جای آن را با یک بلوک تمیز پر می‌کند. */
 .hpc-stat-value.hpc-skeleton {
   color: transparent;
   background: linear-gradient(
@@ -277,12 +203,10 @@
   background-size: 200% 100%;
   animation: hpcStatShimmer 1.3s ease-in-out infinite;
 }
-
 @keyframes hpcStatShimmer {
   0%   { background-position: 100% 0; }
   100% { background-position: -100% 0; }
 }
-
 [data-theme="dark"] .hpc-stat-value.hpc-skeleton {
   background: linear-gradient(
     100deg,
@@ -292,21 +216,14 @@
   );
   background-size: 200% 100%;
 }
-
 .hpc-stat-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-
 .hpc-stat-dot.is-min { background: var(--chart-down); }
 .hpc-stat-dot.is-max { background: var(--chart-up); }
-
-/* ═══════════════════════════════════════════════════════════════
-   RANGE TABS (روزانه / هفتگی / ماهانه / سالانه)
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc-ranges {
   position: relative;
   display: flex;
@@ -320,9 +237,6 @@
   margin-inline: auto;
   border-radius: 50px;
 }
-
-/* ─── پیل شناور پشت دکمه‌ی فعال — جابجایی نرم با transform،
-   بدون پرش بین تب‌ها. روی دکمه‌ها قرار می‌گیرد (z-index پایین‌تر از متن). ─── */
 .hpc-range-pill {
   position: absolute;
   top: 0;
@@ -336,15 +250,12 @@
   pointer-events: none;
   border-radius: 50px;
 }
-
 .hpc-range-pill.is-instant {
   transition: none;
 }
-
 [data-theme="dark"] .hpc-range-pill {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
-
 .hpc-range-btn {
   position: relative;
   z-index: 1;
@@ -359,37 +270,25 @@
   transition: color 0.18s ease;
   white-space: nowrap;
 }
-
 .hpc-range-btn:hover {
   color: var(--black);
 }
-
 .hpc-range-btn.is-active {
   color: var(--black);
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   LOADING / EMPTY / SWITCHING STATES داخل خود نمودار (نه مودال)
-   ═══════════════════════════════════════════════════════════════ */
-
 .hpc-plot-wrap.is-loading .hpc-svg,
 .hpc-plot-wrap.is-loading .hpc-tooltip {
   opacity: 0;
 }
-
-/* ─── حین جابجایی بین بازه‌های زمانی: محتوای فعلی فید اوت می‌شود
-   و اسپینر این نمودار (نه مودال) نشان داده می‌شود ─── */
 .hpc-svg,
 .hpc-stats {
   transition: opacity 0.22s ease;
 }
-
 .hpc-plot-wrap.is-switching .hpc-svg,
 .hpc-plot-wrap.is-switching .hpc-tooltip {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-
 .hpc-spinner-wrap {
   position: absolute;
   inset: 0;
@@ -401,13 +300,11 @@
   transition: opacity 0.2s ease, visibility 0.2s ease;
   pointer-events: none;
 }
-
 .hpc-plot-wrap.is-switching .hpc-spinner-wrap {
   opacity: 1;
   visibility: visible;
   transition-delay: 0.1s;
 }
-
 .hpc-spinner {
   width: 28px;
   height: 28px;
@@ -416,11 +313,9 @@
   border-top-color: var(--chart-accent);
   animation: hpcSpin 0.75s linear infinite;
 }
-
 @keyframes hpcSpin {
   to { transform: rotate(360deg); }
 }
-
 .hpc-empty {
   position: absolute;
   inset: 0;
@@ -432,26 +327,18 @@
   color: var(--gray-400);
   text-align: center;
 }
-
 .hpc-plot-wrap.is-empty .hpc-empty {
   display: flex;
 }
-
 .hpc-plot-wrap.is-empty .hpc-svg {
   opacity: 0;
 }
-
 .hpc-empty-text {
   font-size: 13px;
   font-weight: 600;
   font-family: var(--font-body); font-feature-settings: normal; font-variation-settings: normal;
   color: var(--gray-400);
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
-
 @media (max-width: 520px) {
   .hpc-plot-wrap { height: 190px; }
   .hpc-stats { gap: 12px; }
