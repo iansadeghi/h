@@ -1,0 +1,404 @@
+@font-face {
+  font-family: 'Gramophone';
+  src: url('../font/GramophoneFaNum-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YekanBakh';
+  src: url('../font/YekanBakhFaNum-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Font tokens ─── */
+:root {
+  --font-display:  'Gramophone', 'Tahoma', sans-serif; /* تیترها، دکمه‌ها، برچسب‌های کوتاه */
+  --font-body:     'YekanBakh',  'Tahoma', sans-serif; /* متون توضیحی، فیلدها، آیتم‌های ریز */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --green-dark: #00584D;
+  --green-mid: #156b61;
+  --black: #111111;
+  --black-hover: #333333;
+  --gray-100: #f5f5f5;
+  --gray-200: #e8e8e8;
+  --gray-300: #d0d0d0;
+  --gray-400: #a0a0a0;
+  --gray-600: #666;
+  --white: #ffffff;
+  --accent: #D2B384;
+  --red-danger: #d9383a;
+  --red-danger-hover: #b82c2e;
+}
+
+html, body {
+  font-family: var(--font-display);
+  background: #ffffff;
+  color: var(--black);
+  min-height: 100vh;
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  font-feature-settings: "ss01" on, "ss02" on; 
+  font-variation-settings: "DOTS" 1;
+  scroll-behavior: smooth;
+}
+
+header {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  position: sticky !important;
+  top: 0;
+  z-index: 100;
+  flex-direction: row-reverse;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+
+/* پس‌زمینه نیمه‌شفاف روی pseudo-element — جدا از backdrop-filter
+   تا alpha رنگ پس‌زمینه روی لایه compositing منتقل نشود و
+   محتوای هدر (لوگو، لینک‌ها، دکمه) با opacity کامل نمایش داده شوند */
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #ffffff91;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.logo-wrap img,
+.logo-wrap .logo-svg {
+  width: 190px;
+  height: auto;
+}
+
+.header-menu-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-direction: row;
+}
+
+.header-nav a {
+  text-decoration: none;
+  color: var(--black);
+  font-size: 15px;
+  font-weight: 500;
+  transition: color .2s;
+  font-family: var(--font-body); font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+
+.header-nav a:hover { color: var(--green-dark); }
+
+.back-to-site {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  font-family: var(--font-body) !important; font-feature-settings: normal; font-variation-settings: normal;
+  font-feature-settings: normal !important;
+  font-variation-settings: normal !important;
+}
+
+.header-save-btn {
+  background: var(--green-dark);
+  color: var(--white);
+  border: none;
+  padding: 13px 18px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s;
+  font-feature-settings: "ss01" on, "ss02" on; 
+  font-variation-settings: "DOTS" 1;
+}
+
+.header-save-btn:hover {
+  background: var(--green-mid);
+}
+
+footer {
+  color: var(--gray-600);
+  text-align: center;
+  padding: 18px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: auto;
+  width: 100%;
+  font-family: var(--font-body); font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+
+@media (max-width: 920px) {
+  header {
+    flex-direction: row-reverse;
+    gap: 16px;
+    padding: 15px 24px;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .header-menu-actions {
+    flex-direction: row;
+    width: auto;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  header {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-wrap img,
+  .logo-wrap .logo-svg {
+    width: 130px;
+  }
+
+  .header-save-btn {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+}
+
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: #fff; }
+::-webkit-scrollbar-thumb { background: var(--green-dark); height: 100px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+
+[data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1a1a; }
+
+::selection {
+  background: var(--black);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: var(--black);
+  color: #ffffff;
+}
+
+/* ─── Toast: styles moved to assets/css/toast.css ─── */
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — VARIABLES & ROOT OVERRIDES
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  --gray-100: #1e1e1e;
+  --gray-200: #272727;
+  --gray-300: #343434;
+  --gray-400: #666666;
+  --gray-600: #a8a8a8;
+  --white: #111111;
+  --black: #eeeeee;
+  --black-hover: #cccccc;
+  color-scheme: dark;
+  --green-dark: #06917D;
+  --green-mid: #08b49a;
+}
+
+/* ─── Body background ─── */
+[data-theme="dark"] body {
+  background: #111111;
+  color: var(--black);
+}
+
+/* ─── Header ─── */
+[data-theme="dark"] header::before {
+  background: rgba(17, 17, 17, 0.88);
+}
+
+/* ─── Header nav links ─── */
+/* uses var(--black) — handled automatically */
+
+/* ─── Save button: text on green bg must stay white ─── */
+[data-theme="dark"] .header-save-btn {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .header-nav a:hover {
+  color: #42cd96;
+}
+
+[data-theme="dark"] .sidebar-menu li a:hover {
+  color: #42cd96;
+}
+/* ─── Toast dark mode: see assets/css/toast.css ─── */
+
+/* ─── Selection ─── */
+[data-theme="dark"] ::selection {
+  background: var(--black);
+  color: #111111;
+}
+
+[data-theme="dark"] ::-moz-selection {
+  background: var(--black);
+  color: #111111;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — LOGO SVG
+   ═══════════════════════════════════════════════════════════════ */
+
+.logo-svg {
+  color: #111111;
+  transition: color 0.3s ease;
+  shape-rendering: geometricPrecision;
+}
+
+[data-theme="dark"] .logo-svg {
+  color: #ffffff;
+}
+
+/* ─── Logo background rect: uses --green-dark → auto dark ─── */
+.logo-bg-rect {
+  fill: var(--green-dark);
+  transition: fill 0.3s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — PILL ICON BUTTONS
+   دکمه‌های آیکونی داخل یک پیل گرد در فوتر
+   ═══════════════════════════════════════════════════════════════ */
+
+.footer-pill-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+/* ─── ensure [hidden] always wins over display rules ─── */
+[hidden] { display: none !important; }
+
+.footer-pill-btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--gray-100);
+  border-radius: 50px;
+  padding: 4px;
+}
+
+.pill-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-600);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pill-icon-btn:hover {
+  background: var(--gray-300);
+  color: var(--black);
+  transform: scale(1.08);
+}
+
+.pill-icon-btn:active {
+  transform: scale(0.95);
+}
+
+.pill-icon-btn.pill-btn-active {
+  background: var(--black);
+  color: var(--white);
+}
+
+.pill-icon-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* ─── Theme toggle: show moon in light mode, sun in dark mode ─── */
+.theme-icon-sun  { display: none; }
+.theme-icon-moon { display: block; }
+
+[data-theme="dark"] .theme-icon-sun  { display: block; }
+[data-theme="dark"] .theme-icon-moon { display: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEW TRANSITIONS API — RADIAL CLIP-PATH TRANSITION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   FONT SPLIT — YekanBakh برای متون توضیحی و محتوای ریز
+   فونت گرامافون روی html/body باقی می‌ماند (تیترها، دکمه‌ها)
+   YekanBakh بدون font-feature-settings و font-variation-settings
+   گرامافون اعمال می‌شود.
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-body,
+.font-body * {
+  font-family: var(--font-body) !important; font-feature-settings: normal; font-variation-settings: normal;
+  font-feature-settings: normal !important;
+  font-variation-settings: normal !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 0;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* حالت معکوس برای گذار به دارک:
+   لایت (اسنپ‌شات قدیم) روی دارک (اسنپ‌شات جدید) قرار می‌گیرد و
+   دایره‌اش از بزرگ به کوچیک جمع می‌شود؛ بنابراین ترتیب z-index باید
+   برعکسِ حالت پیش‌فرض شود. این attribute فقط در طول همان گذار روی
+   <html> ست می‌شود و بلافاصله بعد از پایان انیمیشن پاک می‌شود. */
+html[data-theme-transition="to-dark"]::view-transition-old(root) {
+  z-index: 1;
+}
+
+html[data-theme-transition="to-dark"]::view-transition-new(root) {
+  z-index: 0;
+}

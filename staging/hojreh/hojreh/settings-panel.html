@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+ <meta charset="UTF-8" />
+ <!-- مقداردهی تم پیش از رندر برای جلوگیری از FOUC -->
+ <script>(function(){try{var t=localStorage.getItem('hojreh-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>پنل تنظیمات - حجره</title>
+ <link rel="icon" type="image/webp" href="assets/img/faw.webp" />
+ <link rel="stylesheet" href="assets/css/toast.css" />
+ <link rel="stylesheet" href="assets/css/save-dirty.css" />
+ <link rel="stylesheet" href="assets/css/general.css" />
+ <link rel="stylesheet" href="assets/css/settings-panel.css" />
+ <link rel="stylesheet" href="assets/css/pricing-patterns.css" />
+ <link rel="stylesheet" href="assets/css/api-modal.css" />
+ <link rel="stylesheet" href="assets/css/custom-select.css" />
+ <link rel="stylesheet" href="assets/css/preloader.css" />
+ <link rel="stylesheet" href="assets/css/icon-hover-anim.css" />
+ <link rel="stylesheet" href="assets/css/pattern-fullscreen.css" />
+ <link rel="stylesheet" href="assets/css/checkbox.css" />
+</head>
+<body>
+
+<!-- ═══════════ PRELOADER ═══════════ -->
+<div id="hojrehPreloaderBar"><div class="preloader-bar-fill"></div></div>
+<div id="hojrehPreloader">
+  <svg class="preloader-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
+    <g fill="currentColor">
+      <path class="letter letter-o" d="M998.911,250.274c-4.146,151.6-242.5,151.572-246.62,0C756.435,98.661,994.79,98.715,998.911,250.274Zm-45.38,0c-2.965-146.325-152.892-146.287-155.86,0C800.651,396.581,950.577,396.58,953.531,250.274Z"></path>
+      <path class="letter letter-j" d="M1056.091,134.294h38.61v213.16a69.607,69.607,0,0,1-54.44,67.84c-26.117,3.427-53.611,5.4-80.15-27.94l25.26-28.62c.841,2.559,12.383,55.842,53.279,52.65,12.05-2.616,17.174-31.781,17.441-58.39v-218.7Zm-16.61-48.66a36.225,36.225,0,0,0,36.22-36.22,36.225,36.225,0,0,0,36.22,36.22,36.225,36.225,0,0,0-36.22,36.22A36.218,36.218,0,0,0,1039.481,85.634Z"></path>
+      <path class="letter letter-r" d="M1294.151,150.284l-14.68,39.17c-22.419-26.608-78.644-45.542-104.24,2.772-.133.029.033,173.006-.03,173.058h-38.61V135.264h38.61v48.35C1196.275,145.011,1245.224,117.088,1294.151,150.284Z"></path>
+      <path class="letter letter-e" d="M1499.2,261.5l39.86,21.71c-40.25,124.682-244.791,98.809-245.3-33.484,3.032-145.863,234.4-156.149,250.309-8.466h-184.98v-4.15h139.99c-13.631-138.642-159.559-124.782-160.539,12.614C1339.653,388.048,1486.627,400.423,1499.2,261.5Z"></path>
+      <g class="letter letter-h1">
+        <rect x="535.611" y="83.854" width="38.61" height="281.42"></rect>
+        <path d="M696.651,217.834c-13.03-57.47-54.67-76.89-67.21-82.59-42.476,26.573-56.191,78.122-55.22,82.92,0,0,12.46-40,45.03-66.14,42.57,38.71,39.89,84.64,39.89,84.64v128.65h38.62C697.159,355.332,699.226,231.779,696.651,217.834Z"></path>
+      </g>
+      <g class="letter letter-h2">
+        <rect x="1573.561" y="83.854" width="38.61" height="281.42"></rect>
+        <path d="M1734.6,217.834c-13.03-57.47-54.67-76.89-67.21-82.59-42.476,26.573-56.19,78.122-55.22,82.92,0,0,12.46-40,45.03-66.14,42.57,38.71,39.89,84.64,39.89,84.64v128.65h38.62C1735.112,355.332,1737.172,231.78,1734.6,217.834Z"></path>
+      </g>
+    </g>
+    <g class="faw-group">
+      <rect width="449.264" height="449.264" class="logo-bg-rect" fill="var(--green-dark)"></rect>
+      <rect x="125.385" y="83.873" width="38.621" height="281.498" fill="var(--white)"></rect>
+      <path d="M286.469,217.88c-13.034-57.486-54.685-76.911-67.229-82.613-42.488,26.58-56.206,78.144-55.235,82.943,0,0,12.463-40.011,45.042-66.158,42.582,38.721,39.9,84.663,39.9,84.663V365.4h38.631C286.974,355.416,289.049,231.827,286.469,217.88Z" fill="var(--white)"></path>
+      <g class="star-pivot">
+        <g class="star-intro-spin">
+          <path d="M251.419,120.093a36.234,36.234,0,0,0,36.23-36.23,36.234,36.234,0,0,0,36.23,36.23,36.234,36.234,0,0,0-36.23,36.23A36.235,36.235,0,0,0,251.419,120.093Z" fill="#d6b478"></path>
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="logo-wrap">
+    <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
+      <g fill="currentColor">
+        <path d="M998.911,250.274c-4.146,151.6-242.5,151.572-246.62,0C756.435,98.661,994.79,98.715,998.911,250.274Zm-45.38,0c-2.965-146.325-152.892-146.287-155.86,0C800.651,396.581,950.577,396.58,953.531,250.274Z"/>
+        <path d="M1056.091,134.294h38.61v213.16a69.607,69.607,0,0,1-54.44,67.84c-26.117,3.427-53.611,5.4-80.15-27.94l25.26-28.62c.841,2.559,12.383,55.842,53.279,52.65,12.05-2.616,17.174-31.781,17.441-58.39v-218.7Zm-16.61-48.66a36.225,36.225,0,0,0,36.22-36.22,36.225,36.225,0,0,0,36.22,36.22,36.225,36.225,0,0,0-36.22,36.22A36.218,36.218,0,0,0,1039.481,85.634Z"/>
+        <path d="M1294.151,150.284l-14.68,39.17c-22.419-26.608-78.644-45.542-104.24,2.772-.133.029.033,173.006-.03,173.058h-38.61V135.264h38.61v48.35C1196.275,145.011,1245.224,117.088,1294.151,150.284Z"/>
+        <path d="M1499.2,261.5l39.86,21.71c-40.25,124.682-244.791,98.809-245.3-33.484,3.032-145.863,234.4-156.149,250.309-8.466h-184.98v-4.15h139.99c-13.631-138.642-159.559-124.782-160.539,12.614C1339.653,388.048,1486.627,400.423,1499.2,261.5Z"/>
+        <rect x="535.611" y="83.854" width="38.61" height="281.42"/>
+        <path d="M696.651,217.834c-13.03-57.47-54.67-76.89-67.21-82.59-42.476,26.573-56.191,78.122-55.22,82.92,0,0,12.46-40,45.03-66.14,42.57,38.71,39.89,84.64,39.89,84.64v128.65h38.62C697.159,355.332,699.226,231.779,696.651,217.834Z"/>
+        <rect x="1573.561" y="83.854" width="38.61" height="281.42"/>
+        <path d="M1734.6,217.834c-13.03-57.47-54.67-76.89-67.21-82.59-42.476,26.573-56.19,78.122-55.22,82.92,0,0,12.46-40,45.03-66.14,42.57,38.71,39.89,84.64,39.89,84.64v128.65h38.62C1735.112,355.332,1737.172,231.78,1734.6,217.834Z"/>
+      </g>
+      <rect width="449.264" height="449.264" class="logo-bg-rect"/>
+      <rect x="125.385" y="83.873" width="38.621" height="281.498" fill="#fff"/>
+      <path d="M286.469,217.88c-13.034-57.486-54.685-76.911-67.229-82.613-42.488,26.58-56.206,78.144-55.235,82.943,0,0,12.463-40.011,45.042-66.158,42.582,38.721,39.9,84.663,39.9,84.663V365.4h38.631C286.974,355.416,289.049,231.827,286.469,217.88Z" fill="#fff"/>
+      <path d="M251.419,120.093a36.234,36.234,0,0,0,36.23-36.23,36.234,36.234,0,0,0,36.23,36.23,36.234,36.234,0,0,0-36.23,36.23A36.235,36.235,0,0,0,251.419,120.093Z" fill="#d6b478"/>
+    </svg>
+  </div>
+
+  <div class="header-menu-actions">
+      <div class="header-buttons">
+      <!-- دکمه ذخیره تنظیمات -->
+      <button class="header-save-btn" id="headerSaveBtn">ذخیره تنظیمات</button>
+    </div>
+
+    <nav class="header-nav">
+      <a href="../index.html" class="back-to-site">بازگشت به منو</a>
+      <a href="#">راهنمای تنظیمات</a>
+      <a href="#">پنل ویرایشگر قیمت</a>
+      <a href="#">درباره ما</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════ PAGE WRAP ═══════════ -->
+<div class="page-wrap">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sidebar-title">فهرست تنظیمات</div>
+    <ul class="sidebar-menu">
+      <li><a href="#variables-section" class="active"><span class="sidebar-dot"></span><span class="sidebar-text">تعریف متغیرها</span></a></li>
+      <li><a href="#constants-section"><span class="sidebar-dot"></span><span class="sidebar-text">تعریف ثابت‌ها</span></a></li>
+      <li><a href="#rounding-section"><span class="sidebar-dot"></span><span class="sidebar-text">تنظیمات رُندسازی</span></a></li>
+      <li><a href="#pricing-patterns-section"><span class="sidebar-dot"></span><span class="sidebar-text">تعریف الگوهای قیمت‌گذاری</span></a></li>
+      <li><a href="#apprentice-section"><span class="sidebar-dot"></span><span class="sidebar-text">شاگرد حجره</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ─── RESIZER ─── -->
+  <div class="col-resizer" id="colResizer">
+    <div class="col-resizer-handle">
+      <svg viewBox="0 0 6 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="4" r="1.5"/>
+        <circle cx="3" cy="10" r="1.5"/>
+        <circle cx="3" cy="16" r="1.5"/>
+        <circle cx="3" cy="22" r="1.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    
+    <!-- ═══════════ بخش تعریف متغیرها ═══════════ -->
+    <h1 class="section-title" id="variables-section">تعریف متغیرها</h1>
+
+    <!-- ─── ردیف بالای API — متغیرهای وابسته به API ─── -->
+    <div class="header-row">
+      <span class="header-text">متغیرهای وابسته به API</span>
+      <button class="btn-more" id="openApiModalBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        مشاهده بیشتر
+      </button>
+    </div>
+
+    <!-- لیست آکاردئون متغیرهای وابسته به API -->
+    <div class="accordion-list" id="apiVariablesList">
+
+      <!-- ── دلار آمریکا ── -->
+      <div class="accordion-item" draggable="false" data-id="USD" data-type="api-variable" data-api-symbol="USD" data-unit="عدد">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">دلار آمریکا</span>
+          </div>
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-hide-btn" title="پنهان‌سازی">
+              <span class="eye-full-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </span>
+              <span class="eye-slashed-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </span>
+            </button>
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام متغیر</span>
+                <input type="text" class="form-control var-name-input" value="دلار آمریکا" />
+              </div>
+              <div class="form-group english-id-group">
+                <span class="form-label">شناسه انگلیسی (فرمول)</span>
+                <input type="text" class="form-control english-id-input" value="USD" placeholder="مثلاً USD" />
+              </div>
+              <div class="form-group quantity-symbol-group">
+                <span class="form-label">نشانه متغیر تعداد</span>
+                <input type="text" class="form-control quantity-symbol-input" value="" placeholder="a" readonly />
+              </div>
+              <div class="form-group">
+                <span class="form-label">منبع قیمت</span>
+                <div class="select-wrap">
+                  <select class="form-control api-price-source-select">
+                    <option value="api">دریافت خودکار</option>
+                    <option value="manual">ورود دستی</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">بازه بررسی</span>
+                <div class="select-wrap">
+                  <select class="form-control">
+                    <option>هر ۱ ساعت</option>
+                    <option>هر ۳۰ دقیقه</option>
+                    <option>هر ۱۵ دقیقه</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">منبع API</span>
+                <div class="select-wrap">
+                  <select class="form-control">
+                    <option>TGJU.org</option>
+                    <option>Navasan</option>
+                    <option>CBI</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group manual-only-field" style="display:none;">
+                <span class="form-label">مبلغ فعلی</span>
+                <input type="text" class="form-control var-default-price" value="۱۷۸،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">حداقل قیمت</span>
+                <input type="text" class="form-control var-min-price" value="۱۷۹،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label dynamic-wage-label">اجرت به ازای هر یک عدد</span>
+                <input type="text" class="form-control ojrat-input" value="۰" />
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">آخرین مبلغ اعلام شده</span>
+                <button class="last-price">۱۷۸،۰۰۰ تومان</button>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">تست اتصال</span>
+                <button class="btn-test-conn">بررسی اتصال به وب سرویس</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── طلای ۱۸ عیار ── -->
+      <div class="accordion-item" draggable="false" data-id="GOLD_18K" data-type="api-variable" data-api-symbol="GOLD_18K" data-unit="گرم">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">طلای ۱۸ عیار</span>
+          </div>
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-hide-btn" title="پنهان‌سازی">
+              <span class="eye-full-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </span>
+              <span class="eye-slashed-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </span>
+            </button>
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام متغیر</span>
+                <input type="text" class="form-control var-name-input" value="طلای ۱۸ عیار" />
+              </div>
+              <div class="form-group english-id-group">
+                <span class="form-label">شناسه انگلیسی (فرمول)</span>
+                <input type="text" class="form-control english-id-input" value="GOLD_18K" placeholder="مثلاً GOLD_18K" />
+              </div>
+              <div class="form-group quantity-symbol-group">
+                <span class="form-label">نشانه متغیر تعداد</span>
+                <input type="text" class="form-control quantity-symbol-input" value="" placeholder="a" readonly />
+              </div>
+              <div class="form-group">
+                <span class="form-label">منبع قیمت</span>
+                <div class="select-wrap">
+                  <select class="form-control api-price-source-select">
+                    <option value="api">دریافت خودکار</option>
+                    <option value="manual">ورود دستی</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">بازه بررسی</span>
+                <div class="select-wrap">
+                  <select class="form-control">
+                    <option>هر ۱ ساعت</option>
+                    <option>هر ۳۰ دقیقه</option>
+                    <option>هر ۱۵ دقیقه</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">منبع API</span>
+                <div class="select-wrap">
+                  <select class="form-control">
+                    <option>TGJU.org</option>
+                    <option>Navasan</option>
+                    <option>CBI</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group manual-only-field" style="display:none;">
+                <span class="form-label">مبلغ فعلی</span>
+                <input type="text" class="form-control var-default-price" value="۴،۸۵۰،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">حداقل قیمت</span>
+                <input type="text" class="form-control var-min-price" value="۴،۵۰۰،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label dynamic-wage-label">اجرت به ازای هر یک گرم</span>
+                <input type="text" class="form-control ojrat-input" value="۰" />
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">آخرین مبلغ اعلام شده</span>
+                <button class="last-price">۴،۸۵۰،۰۰۰ تومان</button>
+              </div>
+              <div class="form-group api-only-field">
+                <span class="form-label">تست اتصال</span>
+                <button class="btn-test-conn">بررسی اتصال به وب سرویس</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── ردیف متغیرهای مستقل ─── -->
+    <div class="header-row second-header">
+      <span class="header-text">متغیرهای مستقل</span>
+      <button class="btn-more" id="addIndependentVarBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        افزودن متغیر مستقل
+      </button>
+    </div>
+
+    <!-- Accordion List (draggable) - Manual Variables -->
+    <div class="accordion-list" id="independentList">
+
+      <!-- ── ITEM 1: زعفران قائنات سوپر نگین اتویی (closed) ── -->
+      <div class="accordion-item" draggable="false" data-id="101" data-type="variable">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">زعفران قائنات سوپر نگین اتویی</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام متغیر</span>
+                <input type="text" class="form-control var-name-input" value="زعفران قائنات سوپر نگین اتویی" />
+              </div>
+              <div class="form-group english-id-group">
+              <span class="form-label">شناسه انگلیسی </span>
+              <input type="text" class="form-control english-id-input" value="var1" placeholder="مثلاً var1" />
+            </div>
+              <div class="form-group quantity-symbol-group" style="display: none;">
+              <span class="form-label">نشانه متغیر تعداد</span>
+              <input type="text" class="form-control quantity-symbol-input" value="a" placeholder="a" readonly />
+            </div>
+              <div class="form-group">
+                <span class="form-label">حداقل قیمت</span>
+                <input type="text" class="form-control var-min-price" value="۴۸۰،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">واحد شمارش</span>
+                <div class="select-wrap">
+                  <select class="form-control unit-select">
+                    <option value="مثقال" selected>مثقال</option>
+                    <option value="گرم">گرم</option>
+                    <option value="کیلوگرم">کیلوگرم</option>
+                    <option value="عدد">عدد</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="form-label dynamic-wage-label">اجرت به ازای هر یک مثقال</span>
+                <input type="text" class="form-control ojrat-input" value="۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">مبلغ فعلی</span>
+                <input type="text" class="form-control var-default-price" value="۵۲۰،۰۰۰" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ITEM 2: پسته احمدآقایی برشته زعفرانی ممتاز (closed) ── -->
+      <div class="accordion-item" draggable="false" data-id="102" data-type="variable">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">پسته احمدآقایی برشته زعفرانی ممتاز</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+                <div class="form-group">
+                  <span class="form-label">نام متغیر</span>
+                  <input type="text" class="form-control var-name-input" value="پسته احمدآقایی برشته زعفرانی ممتاز" />
+              </div>
+              <div class="form-group english-id-group">
+                <span class="form-label">شناسه انگلیسی </span>
+                <input type="text" class="form-control english-id-input" value="var2" placeholder="مثلاً var2" />
+              </div>
+              <div class="form-group quantity-symbol-group" style="display: none;">
+                <span class="form-label">نشانه متغیر تعداد</span>
+                <input type="text" class="form-control quantity-symbol-input" value="b" placeholder="b" readonly />
+              </div>
+              <div class="form-group">
+                  <span class="form-label">حداقل قیمت</span>
+                  <input type="text" class="form-control var-min-price" value="۸۵۰،۰۰۰" />
+                </div>
+                <div class="form-group">
+                  <span class="form-label">واحد شمارش</span>
+                  <div class="select-wrap">
+                    <select class="form-control unit-select">
+                      <option value="کیلوگرم" selected>کیلوگرم</option>
+                      <option value="گرم">گرم</option>
+                      <option value="مثقال">مثقال</option>
+                      <option value="عدد">عدد</option>
+                    </select>
+                    <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                  </div>
+                </div>
+              <div class="form-group">
+                <span class="form-label dynamic-wage-label">اجرت به ازای هر یک کیلوگرم</span>
+                <input type="text" class="form-control ojrat-input" value="۰" />
+              </div>
+                <div class="form-group">
+                  <span class="form-label">مبلغ فعلی</span>
+                  <input type="text" class="form-control var-default-price" value="۹۲۰،۰۰۰" />
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ITEM 3: بسته‌بندی شیشه‌ای 10*10*7 لوکس (closed) ── -->
+      <div class="accordion-item" draggable="false" data-id="103" data-type="variable">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">بسته‌بندی شیشه‌ای 10*10*7 لوکس</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف متغیر">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام متغیر</span>
+                <input type="text" class="form-control var-name-input" value="بسته‌بندی شیشه‌ای 10*10*7 لوکس" />
+              </div>
+              <div class="form-group english-id-group">
+              <span class="form-label">شناسه انگلیسی </span>
+              <input type="text" class="form-control english-id-input" value="var3" placeholder="مثلاً var3" />
+            </div>
+              <div class="form-group quantity-symbol-group" style="display: none;">
+              <span class="form-label">نشانه متغیر تعداد</span>
+              <input type="text" class="form-control quantity-symbol-input" value="c" placeholder="c" readonly />
+            </div>
+              <div class="form-group">
+                <span class="form-label">حداقل قیمت</span>
+                <input type="text" class="form-control var-min-price" value="۴۵،۰۰۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">واحد شمارش</span>
+                <div class="select-wrap">
+                  <select class="form-control unit-select">
+                    <option value="عدد" selected>عدد</option>
+                    <option value="بسته">بسته</option>
+                    <option value="کارتن">کارتن</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="form-label dynamic-wage-label">اجرت به ازای هر یک عدد</span>
+                <input type="text" class="form-control ojrat-input" value="۰" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">مبلغ فعلی</span>
+                <input type="text" class="form-control var-default-price" value="۵۵،۰۰۰" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══════════ بخش تعریف ثابت‌ها ═══════════ -->
+    <h1 class="section-title" id="constants-section">تعریف ثابت‌ها</h1>
+
+    <!-- ردیف بالای ثابت‌های درصدی -->
+    <div class="header-row">
+      <span class="header-text">لیست ثابت‌های درصدی</span>
+      <button class="btn-more" id="addConstantBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        ایجاد ثابت
+      </button>
+    </div>
+
+    <!-- لیست آکاردئون های ثابت درصدی -->
+    <div class="accordion-list" id="constantsList">
+
+      <!-- ثابت نمونه ۱: سود کارگاه و فروشگاه (۷٪) -->
+      <div class="accordion-item" draggable="false" data-id="201" data-type="constant">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">سود کارگاه و فروشگاه</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-constant-btn" title="حذف ثابت">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام ثابت</span>
+                <input type="text" class="form-control var-name-input" value="سود کارگاه و فروشگاه" />
+              </div>
+              <div class="form-group english-id-group">
+                <span class="form-label">شناسه انگلیسی </span>
+                <input type="text" class="form-control english-id-input" value="const1" placeholder="مثلاً const1" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">درصد (%)</span>
+                <input type="number" class="form-control percent-input-field" value="7" min="0" max="100" step="0.1" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ثابت نمونه ۲: مالیات بر ارزش افزوده (۹٪) -->
+      <div class="accordion-item" draggable="false" data-id="202" data-type="constant">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">مالیات بر ارزش افزوده</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-constant-btn" title="حذف ثابت">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام ثابت</span>
+                <input type="text" class="form-control var-name-input" value="مالیات بر ارزش افزوده" />
+              </div>
+              <div class="form-group english-id-group">
+              <span class="form-label">شناسه انگلیسی </span>
+              <input type="text" class="form-control english-id-input" value="const2" placeholder="مثلاً const2" />
+            </div>
+              <div class="form-group">
+                <span class="form-label">درصد (%)</span>
+                <input type="number" class="form-control percent-input-field" value="9" min="0" max="100" step="0.1" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ بخش تنظیمات رُندسازی ═══════════ -->
+    <h1 class="section-title" id="rounding-section">تنظیمات رُندسازی</h1>
+
+    <!-- ردیف بالای مکانیزم‌های رندسازی -->
+    <div class="header-row">
+      <span class="header-text">مکانیزم‌های رُندسازی</span>
+      <button class="btn-more" id="addRoundingBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        ایجاد الگوریتم رُندسازی
+      </button>
+    </div>
+
+    <!-- لیست آکاردئون‌های رندسازی قیمت -->
+    <div class="accordion-list" id="roundingList">
+
+      <!-- مکانیزم پیش فرض رندسازی عمومی -->
+      <div class="accordion-item" draggable="false" data-id="301" data-type="algorithm">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">رُند کردن چهار رقم آخر</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف مکانیزم">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid">
+              <div class="form-group">
+                <span class="form-label">نام الگوریتم</span>
+                <input type="text" class="form-control var-name-input" value="رُند کردن چهار رقم آخر" />
+              </div>
+              <div class="form-group english-id-group">
+              <span class="form-label">شناسه انگلیسی </span>
+              <input type="text" class="form-control english-id-input" value="round1" placeholder="مثلاً round1" />
+            </div>
+              <div class="form-group">
+                <span class="form-label">تعداد ارقام تحت تاثیر</span>
+                <div class="select-wrap">
+                  <select class="form-control rounding-max-select">
+                    <option value="3">سه رقم اول</option>
+                    <option value="4" selected>چهار رقم اول</option>
+                    <option value="5">پنج رقم اول</option>
+                    <option value="6">شش رقم اول</option>
+                    <option value="7">هفت رقم اول</option>
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="form-label">نوع رُندسازی</span>
+                <div class="select-wrap">
+                  <select class="form-control rounding-type-select">
+                    <!-- با جاوااسکریپت به صورت پویا ساخته می‌شود -->
+                  </select>
+                  <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="form-label">تست الگوریتم رُندسازی</span>
+                <input type="text" class="form-control rounding-test-input" placeholder="یک قیمت فرضی را وارد کنید..." value="1,234,567" />
+              </div>
+              <div class="form-group">
+                <span class="form-label">خروجی الگوریتم</span>
+                <input type="text" class="form-control rounding-output-val" readonly value="—" />
+              </div>
+              <div class="form-group rounding-guard-group">
+                <span class="form-label"></span>
+                <label class="rounding-guard-label">
+                  <input type="checkbox" class="rounding-guard-check rounding-prevent-zero hojreh-checkbox-input" />
+                  <span>اگر رُندسازی قیمت را صفر کند، قیمت اصلی برگردانده شود</span>
+                </label>
+              </div>
+              <div class="form-group rounding-guard-group">
+                <span class="form-label"></span>
+                <label class="rounding-guard-label">
+                  <input type="checkbox" class="rounding-guard-check rounding-prevent-increase hojreh-checkbox-input" />
+                  <span>اگر رُندسازی قیمت را افزایش دهد، رُندسازی اعمال نشود</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ بخش تعریف الگوهای قیمت‌گذاری ═══════════ -->
+    <h1 class="section-title" id="pricing-patterns-section">تعریف الگوهای قیمت‌گذاری</h1>
+
+    <div class="header-row">
+      <span class="header-text">لیست الگوها</span>
+      <button class="btn-more" id="addPatternBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        ایجاد الگو
+      </button>
+    </div>
+
+    <!-- لیست آکاردئون‌های الگوهای قیمت‌گذاری -->
+    <div class="accordion-list" id="pricingPatternsList">
+
+      <!-- الگوی قیمت‌گذاری اصلی و بازسازی شده ۱ -->
+      <div class="accordion-item" draggable="false" data-id="401" data-type="pattern">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">الگوی ترکیب محصول و بسته‌بندی لوکس کادویی</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف الگو">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+
+            <div class="acc-toggle-group">
+              <!-- ترتیب DOM مهم است: در RTL، اولین فرزندِ فلکس در لبه‌ی
+                   راستِ گروه می‌نشیند و آخرین فرزند در لبه‌ی چپ. چون
+                   chevron باید همیشه ثابت روی لبه‌ی چپ بماند، باید آخرین
+                   فرزند باشد؛ دکمه‌ی فول‌اسکرین (که عرضش بین 0 و 56px
+                   انیمیشن می‌شود) باید اول بیاید. -->
+              <button class="acc-fullscreen-btn" type="button" aria-label="نمایش تمام‌صفحه الگو" title="نمایش تمام‌صفحه">
+                <span class="fs-icon fs-icon-expand">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 4H5a1 1 0 0 0-1 1v4"/>
+                    <path d="M15 4h4a1 1 0 0 1 1 1v4"/>
+                    <path d="M9 20H5a1 1 0 0 1-1-1v-4"/>
+                    <path d="M15 20h4a1 1 0 0 0 1-1v-4"/>
+                  </svg>
+                </span>
+                <span class="fs-icon fs-icon-collapse">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 9h4a1 1 0 0 0 1-1V4"/>
+                    <path d="M20 9h-4a1 1 0 0 1-1-1V4"/>
+                    <path d="M4 15h4a1 1 0 0 1 1 1v4"/>
+                    <path d="M20 15h-4a1 1 0 0 0-1 1v4"/>
+                  </svg>
+                </span>
+              </button>
+
+              <button class="acc-toggle-btn" aria-label="باز/بسته کردن" title="باز/بسته کردن">
+                <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            
+            <!-- چیدمان تعاملی ۲ ستونه -->
+            <div class="pattern-interactive-box">
+              
+              <!-- ستون سمت چپ: چیدمان فرمول بصری (70 درصد) -->
+              <div class="pattern-content-pane formula-drop-zone" id="formulaDropZone">
+                
+                <!-- حالت Empty State اولیه چیدمان -->
+                <div class="formula-empty-state" id="formulaEmptyState">
+                  <svg viewBox="0 0 416 400" fill="currentColor" class="formula-svg">
+                    <path d="M0,0v32v32h32V32h32V0H32H0z M96,0v32h48V0H96z M176,0v32h48V0H176z M256,0v32h32v32h32V0H256z M0,96v64h32V96H0z M288,96v48H96v16v240h320V144h-96V96H288z M128,176h256v192H128V176z M0,192v32v32h64v-32H32v-32H0z"/>
+                    <rect x="240" y="222.214" width="32" height="99.571"/>
+                    <rect x="206.214" y="256" width="99.571" height="32"/>
+                  </svg>
+                  <div class="formula-empty-title">اجزای قیمت‌گذاری را اضافه کنید.</div>
+                  <div class="formula-empty-desc">
+                   از ستون سمت چپ، آیتم های تاثیرگذار بر الگوی قیمت‌گذاری را اضافه کنید؛ پیشنهاد می‌کنیم آموزش افزونه را حتما مشاهده کنید.
+                  </div>
+                  <button class="btn-formula-tutorial" id="formulaTutorialBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                      مشاهده آموزش
+                  </button>
+                </div>
+
+                <!-- حالت خطا برای فرمول نامعتبر -->
+                <div class="formula-error-state" id="formulaErrorState">
+                  <svg svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 460" class="formula-svg formula-error-icon"><path d="M230,0C103.17,0,0,103.18,0,230S103.17,460,230,460,460,356.82,460,230,356.83,0,230,0ZM50,230A178.751,178.751,0,0,1,86.5,121.85L338.15,373.5A178.751,178.751,0,0,1,230,410C130.75,410,50,329.25,50,230ZM373.5,338.15,121.85,86.5A178.751,178.751,0,0,1,230,50c99.25,0,180,80.75,180,180A178.751,178.751,0,0,1,373.5,338.15Z" fill="currentColor"/></svg>
+                  <div class="formula-empty-title formula-error-title">فرمول نامعتبر است</div>
+                  <div class="formula-empty-desc">
+                    شناسه‌های استفاده شده در فرمول باید با شناسه‌های متغیرها، ثابت‌ها و رُندسازی‌های تعریف‌شده مطابقت داشته باشند و ساختار ریاضی فرمول صحیح باشد.
+                  </div>
+                </div>
+
+                <!-- کانتینر آیتم‌های فرمول‌ساز چیده شده -->
+                <div class="formula-items-container" id="formulaItemsContainer"></div>
+
+              </div>
+
+              <!-- ستون سمت راست: کنترل بار دکمه‌ها (30 درصد) -->
+              <div class="pattern-control-pane">
+                
+                <!-- فیلد نام الگو در بالاترین بخش ستون کنترل -->
+                <div class="form-group pattern-name-group">
+                  <span class="pattern-control-title">نام الگو</span>
+                  <input type="text" class="form-control var-name-input pattern-name-input" value="الگوی ترکیب محصول و بسته‌بندی لوکس کادویی" />
+                </div>
+
+                <span class="pattern-control-title pattern-components-title">اجزای قیمت‌گذاری</span>
+                
+                <!-- دکمه گروه محاسباتی (پرانتزگذار) در بالاترین نقطه دکمه‌ها -->
+                <button class="btn-control-action btn-more" id="btnGroupAdd">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  افزودن گروه محاسباتی (به عنوان پرانتز)
+                </button>
+
+                <button class="btn-control-action btn-more" id="btnApiVariableAdd">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  افزودن متغیر وابسته به API
+                </button>
+
+                <button class="btn-control-action btn-more" id="btnIndependentAdd">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  افزودن متغیر مستقل
+                </button>
+
+                <button class="btn-control-action btn-more" id="btnConstantAdd">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  افزودن ثابت درصدی
+                </button>
+
+                <button class="btn-control-action btn-more" id="btnRoundingAdd">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  افزودن مکانیزم رُندسازی
+                </button>
+
+                <!-- چک باکس ویرایش دستی فرمول در انتهای ستون راست -->
+                <div class="manual-formula-container">
+                  <label class="manual-formula-label">
+                    <input type="checkbox" class="manual-formula-toggle hojreh-checkbox-input" />
+                    <span>ویرایش دستی فرمول</span>
+                  </label>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- کادر پیش‌نمایش فرمول نهایی داینامیک — با بسته‌بندی برای دکمه تست -->
+            <div class="formula-preview-wrapper" id="formulaPreviewWrapper">
+              <div class="formula-preview-large-box" id="formulaPreviewLarge" spellcheck="false" autocomplete="off">
+                برای نمایش فرمول، آیتم‌ها را به باکس بالا اضافه کنید.
+              </div>
+              <button class="btn-test-formula" id="btnTestFormula" type="button">
+                تست کردن فرمول
+              </button>
+            </div>
+
+            <!-- بخش شبیه‌ساز (مخفی — داده‌ها در مودال نمایش داده می‌شوند) -->
+            <span class="form-label test-section-label" id="testSectionLabel" style="display:none;">تست کردن الگو</span>
+            <div class="test-inputs-grid" id="testInputsGrid" aria-hidden="true">
+              <!-- فیلدهای شبیه‌ساز داینامیک — از مودال استفاده می‌شود -->
+            </div>
+
+            <div class="final-calculation-summary hidden" id="finalCalculationSummary" aria-hidden="true">
+              <span>قیمت نهایی:</span>
+              <span id="finalCalculationValue">۰ تومان</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ بخش شاگرد حجره ═══════════ -->
+    <h1 class="section-title" id="apprentice-section">شاگرد حجره</h1>
+
+    <div class="header-row">
+      <span class="header-text">لیست شاگردهای حجره</span>
+      <button class="btn-more" id="addApprenticeBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        افزودن شاگرد حجره
+      </button>
+    </div>
+
+    <div class="accordion-list" id="apprenticeList">
+
+      <div class="accordion-item" draggable="false" data-id="501" data-type="apprentice">
+        <div class="accordion-header">
+          <div class="acc-drag-handle" title="جابجایی">
+            <svg viewBox="0 0 16 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4" cy="4" r="2"/>
+              <circle cx="12" cy="4" r="2"/>
+              <circle cx="4" cy="12" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="4" cy="20" r="2"/>
+              <circle cx="12" cy="20" r="2"/>
+            </svg>
+          </div>
+          <label class="acc-switch" title="فعال/غیرفعال">
+            <input type="checkbox" checked />
+            <span class="acc-switch-inner"></span>
+          </label>
+          <div class="acc-title-area">
+            <span class="acc-name">علی احمدی</span>
+          </div>
+
+          <div class="acc-left-actions">
+            <button class="acc-action-btn acc-delete-btn" title="حذف شاگرد">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+                <g class="icon-trash-lid">
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                </g>
+              </svg>
+            </button>
+            <button class="acc-toggle-btn" title="بستن/بازکردن" aria-label="بستن/بازکردن">
+              <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <div class="form-grid apprentice-form-grid">
+              <div class="form-group">
+                <label class="form-label">نام کاربر</label>
+                <input type="text" class="form-control apprentice-first-name-input" value="علی" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">نام خانوادگی</label>
+                <input type="text" class="form-control apprentice-last-name-input" value="احمدی" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">ایمیل کاربر</label>
+                <input type="email" class="form-control apprentice-email-input" value="ali@example.com" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">رمز عبور کاربر</label>
+                <div class="password-input-wrapper">
+                  <input type="password" class="form-control apprentice-password-input" value="password123" />
+                  <button type="button" class="password-eye-btn" aria-label="نمایش/پنهان رمز عبور" title="نمایش/پنهان رمز عبور">
+                    <!-- آیکون چشم باز — حالت پیش‌فرض (رمز پنهان) -->
+                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <!-- آیکون چشم بسته — حالت نمایش رمز -->
+                    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group apprentice-access-group"></div>
+            <div class="form-group">
+              <label class="form-label">کلید حجره</label>
+              <input type="text" class="form-control" style="text-align: left;" value="site.com/hojreh-plugin" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════ MODAL CONFIRMATION ═══════════ -->
+<div class="confirm-modal-overlay" id="confirmModal">
+  <div class="confirm-modal-box">
+    <div class="confirm-title" id="confirmTitle">حذف متغیر</div>
+    <div class="confirm-desc" id="confirmDesc">این کار باعث حذف متغیر خواهد شد. آیا مطمئن هستید؟</div>
+    <div class="confirm-actions">
+      <button class="btn-confirm-cancel" id="btnConfirmCancel">انصراف</button>
+      <button class="btn-confirm-delete" id="btnConfirmDelete">حذفش کن</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-pill-wrap">
+    <div class="footer-pill-btns">
+      <!-- سمت راست: دکمه تغییر تم (ماه در حالت روشن، خورشید در حالت تاریک) -->
+      <button class="pill-icon-btn" data-theme-action="toggle" aria-label="تغییر حالت نمایش" title="تغییر حالت نمایش">
+        <!-- ماه — در حالت روشن نمایش داده می‌شود -->
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <!-- خورشید — در حالت تاریک نمایش داده می‌شود -->
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <!-- سمت چپ: دکمه رفتن به بالا -->
+      <button class="pill-icon-btn" data-action="scroll-top" aria-label="برگشت به بالا" title="برگشت به بالا">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  طراحی و توسعه توسط تیم برنامه‌نویسی کیان‌افراز
+</footer>
+
+<!-- ═══════════ API MODAL ═══════════ -->
+<div class="api-modal-overlay" id="apiModal">
+  <div class="api-modal-content">
+
+    <!-- هدر مودال -->
+    <div class="api-modal-header">
+      <div class="api-modal-title-wrap">
+        <span class="api-modal-title api-modal-title-main">انتخاب متغیر API</span>
+        <span class="api-modal-title api-modal-title-back" id="apiBackBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+          بازگشت
+        </span>
+        <input type="text" id="apiSearchInput" class="api-modal-search-inline" placeholder="جستجو در متغیرهای API..." autocomplete="off" />
+      </div>
+      <div class="api-modal-header-actions">
+        <button class="api-modal-search-btn" id="apiSearchBtn" aria-label="جستجو">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10" cy="10" r="6.5"/>
+            <line x1="19" y1="19" x2="14.85" y2="14.85"/>
+          </svg>
+        </button>
+        <button class="api-modal-close" id="closeApiModalBtn" aria-label="بستن">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- اسلایدر دو پنله -->
+    <div class="api-modal-slider-wrap">
+      <div class="api-modal-slider" id="apiSlider">
+
+        <!-- پنل ۱: دسته‌بندی‌ها -->
+        <div class="api-pane" id="paneCategories">
+          <!-- با JS پر می‌شود -->
+        </div>
+
+        <!-- پنل ۲: آیتم‌های دسته -->
+        <div class="api-pane" id="paneItems">
+          <div id="itemsContainer">
+            <!-- با JS پر می‌شود -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ FORMULA TEST MODAL ═══════════ -->
+<div class="formula-test-modal-overlay" id="formulaTestModalOverlay"></div>
+<div class="formula-test-modal" id="formulaTestModal" role="dialog" aria-modal="true">
+  <!-- دستگیره کشیدن برای بستن -->
+  <div class="ftm-drag-handle" id="ftmDragHandle" aria-hidden="true">
+    <div class="ftm-drag-handle-bar"></div>
+  </div>
+  <!-- فیلدهای ورودی — با JS پر می‌شود -->
+  <div class="ftm-body" id="ftmBody"></div>
+  <!-- نوار قیمت نهایی -->
+  <div class="ftm-summary" id="ftmSummary">
+    <span>قیمت نهایی:</span>
+    <span class="ftm-summary-value" id="ftmSummaryValue">۰ تومان</span>
+  </div>
+</div>
+
+<script type="module" src="assets/js/checkbox.js"></script>
+<script type="module" src="assets/js/settings-page.js" onerror="document.getElementById('hojrehPreloader')?.remove();document.getElementById('hojrehPreloaderBar')?.remove();"></script>
+
+<script>
+/* ─── منطق تغییر "منبع قیمت" در آکاردئون‌های متغیر وابسته به API ─── */
+(function () {
+  /**
+   * وقتی "ورود دستی" انتخاب شود:
+   *  - فیلدهای api-only-field مخفی می‌شوند (و از dirty tracking حذف می‌شوند)
+   *  - فیلد manual-only-field (مبلغ فعلی) نمایش داده می‌شود
+   * وقتی "دریافت خودکار" انتخاب شود:
+   *  - عکس حالت بالا
+   */
+  function applyPriceSourceMode(accordionItem, isManual) {
+    accordionItem.querySelectorAll('.api-only-field').forEach(function (el) {
+      el.style.display = isManual ? 'none' : '';
+      /* جلوگیری از ثبت فیلدهای مخفی در dirty tracking */
+      el.querySelectorAll('input, select, textarea').forEach(function (ctrl) {
+        if (isManual) {
+          ctrl.setAttribute('data-hojreh-no-dirty', 'true');
+        } else {
+          ctrl.removeAttribute('data-hojreh-no-dirty');
+          /* اگر dirty tracking از قبل اجرا شده، snapshot مجدد بگیر */
+          if (ctrl.dataset.hojrehDirtyReady === 'true') {
+            var val = ctrl.type === 'checkbox' ? (ctrl.checked ? '1' : '0') : (ctrl.value ?? '');
+            ctrl.dataset.hojrehOriginalValue = val;
+            ctrl.classList.remove('hojreh-dirty-field');
+          }
+        }
+      });
+    });
+
+    accordionItem.querySelectorAll('.manual-only-field').forEach(function (el) {
+      el.style.display = isManual ? '' : 'none';
+      el.querySelectorAll('input, select, textarea').forEach(function (ctrl) {
+        if (!isManual) {
+          ctrl.setAttribute('data-hojreh-no-dirty', 'true');
+        } else {
+          ctrl.removeAttribute('data-hojreh-no-dirty');
+          if (ctrl.dataset.hojrehDirtyReady === 'true') {
+            var val = ctrl.type === 'checkbox' ? (ctrl.checked ? '1' : '0') : (ctrl.value ?? '');
+            ctrl.dataset.hojrehOriginalValue = val;
+            ctrl.classList.remove('hojreh-dirty-field');
+          }
+        }
+      });
+    });
+  }
+
+  function attachPriceSourceListener(selectEl) {
+    var accordionItem = selectEl.closest('.accordion-item[data-type="api-variable"]');
+    if (!accordionItem) return;
+    function isManualSource() {
+      return selectEl.value === 'manual' || selectEl.value === 'ورود دستی';
+    }
+    /* اعمال وضعیت اولیه */
+    applyPriceSourceMode(accordionItem, isManualSource());
+    selectEl.addEventListener('change', function () {
+      applyPriceSourceMode(accordionItem, isManualSource());
+      window._hojrehRefreshSettingsDot?.();
+    });
+  }
+
+  /* ─── اعمال روی آکاردئون‌های موجود ─── */
+  document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"] .api-price-source-select').forEach(attachPriceSourceListener);
+
+  /* ─── اعمال روی آکاردئون‌های جدیدی که بعداً اضافه می‌شوند ─── */
+  var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (node) {
+        if (node.nodeType !== 1) return;
+        /* آکاردئون جدید خودش */
+        if (node.matches && node.matches('.accordion-item[data-type="api-variable"]')) {
+          var sel = node.querySelector('.api-price-source-select');
+          if (sel) attachPriceSourceListener(sel);
+        }
+        /* یا فرزندان داخلش */
+        node.querySelectorAll && node.querySelectorAll('.accordion-item[data-type="api-variable"] .api-price-source-select').forEach(attachPriceSourceListener);
+      });
+    });
+  });
+
+  var apiList = document.getElementById('apiVariablesList');
+  if (apiList) observer.observe(apiList, { childList: true, subtree: true });
+})();
+</script>
+
+</body>
+</html>
