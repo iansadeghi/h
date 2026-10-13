@@ -77,18 +77,18 @@
 }
 
 .access-choice-panel {
-  width: min(920px, 100%);
+  width: min(960px, 100%);
 }
 
 .access-choice-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .access-choice-card {
   position: relative;
-  min-height: 330px;
+  min-height: 264px;
   background: var(--gray-100);
   color: var(--black);
   text-decoration: none;
@@ -97,7 +97,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 34px 44px 30px;
+  padding: 24px 26px 24px;
   overflow: hidden;
   outline: 0 solid transparent;
   transition: background .22s ease, transform .28s cubic-bezier(.22,1,.36,1), outline-color .2s;
@@ -126,21 +126,22 @@
 .access-choice-card:focus-visible { outline: 2px solid var(--green-dark); outline-offset: 3px; }
 
 .access-card-icon {
-  width: 150px;
-  height: 132px;
+  width: 156px;
+  height: 156px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--black);
-  margin-bottom: 24px;
+  margin: -14px 0 4px;
   transition: transform .35s cubic-bezier(.22,1,.36,1), color .2s;
 }
 
-.access-card-icon .access-illustration { width: 100%; height: 100%; }
+.access-card-icon .access-illustration,
+.access-card-icon svg { width: 100%; height: 100%; display: block; }
 .access-choice-card:hover .access-card-icon { transform: translateY(-4px) scale(1.025); color: var(--green-dark); }
 
 .access-card-content h2 {
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--black);
 }
@@ -323,6 +324,13 @@
 [data-theme="dark"] .product-list-item,
 [data-theme="dark"] .products-empty-state { background: var(--gray-100); }
 
+@media (min-width: 721px) and (max-width: 1000px) {
+  .access-choice-card { padding: 20px 14px; min-height: 240px; }
+  .access-card-icon { width: 124px; height: 124px; margin-top: -10px; }
+  .access-card-content h2 { font-size: 16px; }
+  .access-card-content p { font-size: 12px; }
+}
+
 @media (max-width: 720px) {
   .standalone-header { padding: 20px 16px 4px; }
   .standalone-header .logo-wrap .logo-svg { width: 145px; }
@@ -332,7 +340,6 @@
   .standalone-title-wrap p { font-size: 13px; }
   .access-choice-grid { grid-template-columns: 1fr; gap: 10px; }
   .access-choice-card { min-height: 230px; padding: 24px 32px 26px; }
-  .access-card-icon { width: 112px; height: 100px; margin-bottom: 14px; }
   .access-card-content h2 { font-size: 18px; }
   .access-card-content p { font-size: 12px; }
   .product-list-item { min-height: 78px; gap: 12px; padding: 10px 12px; padding-inline-end: 48px; }
@@ -445,10 +452,10 @@
   }
 
   .access-card-icon {
-    width: 78px;
-    height: 70px;
-    flex: 0 0 78px;
-    margin-bottom: 0;
+    width: 84px;
+    height: 84px;
+    flex: 0 0 84px;
+    margin: -8px 0;
   }
 
   .access-card-content {

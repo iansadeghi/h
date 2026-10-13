@@ -91,7 +91,7 @@ h1,h2,h3,.hndle{font-weight:600;}
 .menu-top i{width:16px; text-align:center; font-size:15px;}
 .menu-top:hover, a.menu-top:hover{background:var(--accent); color:#fff; text-decoration:none;}
 .menu-top.current, .menu-top.wp-has-current-submenu{
-  background:var(--bg); color:var(--text); border-right:4px solid var(--accent);
+  background:var(--white); color:var(--text); border-right:4px solid var(--accent);
 }
 .submenu{background:#0a0a0a; /* مشکیِ تیره‌تر از پایه، بر همون اساس */ display:flex; flex-direction:column;}
 .submenu a{
