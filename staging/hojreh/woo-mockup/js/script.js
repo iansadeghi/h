@@ -7,10 +7,6 @@ function showTab(e, id){
   return false;
 }
 
-/* Switch between "محصول ساده" (simple) and "محصول متغیر" (variable).
-   Toggles the .variable-active class on the product-data box, which drives
-   (via CSS) hiding the "همگانی" pricing tab + showing the "متغیر‌ها" tab
-   and the per-attribute "استفاده برای متغیر‌ها" checkboxes. */
 function setProductType(e, type){
   e.preventDefault();
   var box = document.getElementById('product-data-box');
@@ -27,11 +23,9 @@ function setProductType(e, type){
   var activeKey = activeTab ? activeTab.getAttribute('data-tab') : null;
 
   if(isVariable && activeKey === 'general'){
-    // "همگانی" no longer exists for variable products, jump to "متغیر‌ها"
     var variationsLink = box.querySelector('.tab-item[data-tab="variations"] a');
     if(variationsLink){ showTab({preventDefault:function(){}, target:variationsLink}, 'variations'); }
   } else if(!isVariable && activeKey === 'variations'){
-    // going back to simple: "متغیر‌ها" no longer exists, jump back to "همگانی"
     var generalLink = box.querySelector('.tab-item[data-tab="general"] a');
     if(generalLink){ showTab({preventDefault:function(){}, target:generalLink}, 'general'); }
   }
@@ -39,7 +33,6 @@ function setProductType(e, type){
   return false;
 }
 
-/* Expand/collapse a single variation row inside the "متغیر‌ها" tab */
 function toggleVariation(e){
   e.preventDefault();
   var item = e.target.closest('.variation-item');
@@ -50,9 +43,6 @@ function toggleVariation(e){
   return false;
 }
 
-/* On mobile, each panel moves inside its own tab-item so the tab list becomes
-   an accordion (header immediately followed by its own content). On desktop
-   the panels move back into the shared .wc-panels area for the classic tab layout. */
 function setupProductTabsLayout(){
   var tabsList = document.querySelector('.product_data_tabs');
   var panelsContainer = document.querySelector('.wc-panels');

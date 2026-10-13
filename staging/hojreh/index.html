@@ -2,30 +2,23 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<!-- مقداردهی تم پیش از رندر برای جلوگیری از FOUC -->
 <script>(function(){try{var t=localStorage.getItem('hojreh-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>انتخاب بخش ‹ پنل مدیریت</title>
 <link rel="icon" type="image/webp" href="hojreh/assets/img/faw.webp">
 
-<!-- Font Awesome لوکال -->
 <link rel="stylesheet" href="woo-mockup/fontawesome/css/all.min.css">
 
-<!-- قاب وردپرس (همان استایل موکاپ ووکامرس) -->
 <link rel="stylesheet" href="woo-mockup/css/style.css">
 
-<!-- استایل اسکوپ‌شدهٔ صفحهٔ «انتخاب بخش» حجره داخل قاب وردپرس -->
 <link rel="stylesheet" href="woo-mockup/css/hojreh-access.css">
 
-<!-- انیمیشن هاور آیکون‌ها (فوتر و ...) — در همهٔ صفحات پروژه -->
 <link rel="stylesheet" href="hojreh/assets/css/icon-hover-anim.css">
 
-<!-- پری‌لودر لوگو (همان پری‌لودر سایر صفحات) -->
 <link rel="stylesheet" href="hojreh/assets/css/preloader.css">
 </head>
 <body>
 
-<!-- ═══════════ PRELOADER ═══════════ -->
 <div id="hojrehPreloaderBar"><div class="preloader-bar-fill"></div></div>
 <div id="hojrehPreloader">
   <svg class="preloader-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1735.93 449.264" aria-label="حجره" shape-rendering="geometricPrecision">
@@ -56,7 +49,6 @@
   </svg>
 </div>
 
-<!-- ===== TOP ADMIN BAR ===== -->
 <div id="wp-adminbar">
   <button class="menu-toggle adminbar-toggle" type="button" aria-label="باز کردن منو"><i class="fa-solid fa-bars"></i></button>
   <a href="#" class="wpadmin-back"><i class="fa-solid fa-arrow-right"></i> <span>بازگشت به فروشگاه حجره</span></a>
@@ -67,7 +59,6 @@
 <button id="menu-close" type="button" aria-label="بستن منو"><i class="fa-solid fa-xmark"></i></button>
 
 <div id="wp-wrap">
-  <!-- ===== SIDEBAR ===== -->
   <nav id="adminmenu">
     <a class="menu-top" href="#"><i class="fa-solid fa-table-cells-large"></i> پیشخوان</a>
     <a class="menu-top" href="#"><i class="fa-solid fa-thumbtack"></i> نوشته‌ها</a>
@@ -77,7 +68,6 @@
     <a class="menu-top" href="#"><i class="fa-solid fa-cart-shopping"></i> ووکامرس</a>
     <a class="menu-top" href="#"><i class="fa-solid fa-box"></i> محصولات</a>
 
-    <!-- منوی افزونهٔ حجره (صفحهٔ فعلی) -->
     <a class="menu-top current" href="./" aria-current="page"><svg class="menu-hojreh-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><path fill="currentColor" d="M0,500c276.1,0,500-223.9,500-500c0,276.1,223.9,500,500,500c-276.1,0-500,223.9-500,500C500,723.92,276.1,500,0,500z"/></svg> حجره</a>
 
     <a class="menu-top" href="#"><i class="fa-regular fa-credit-card"></i> پرداخت‌ها</a>
@@ -90,9 +80,7 @@
     <a class="menu-top" href="#"><i class="fa-solid fa-gear"></i> تنظیمات</a>
   </nav>
 
-  <!-- ===== MAIN BODY ===== -->
   <div id="wpbody" class="hojreh-wpbody">
-    <!-- صفحهٔ «انتخاب بخش» حجره (محتوا از hojreh/access-selector.html) -->
     <div class="hojreh-access">
       <div class="logo-wrap"><svg aria-label="حجره" class="logo-svg" shape-rendering="geometricPrecision" viewBox="0 0 1735.93 449.264" xmlns="http://www.w3.org/2000/svg">
 <g fill="currentColor">
@@ -147,7 +135,6 @@
       <footer>
         <div class="footer-pill-wrap">
           <div class="footer-pill-btns">
-            <!-- تغییر تم (ماه در حالت روشن، خورشید در حالت تاریک) -->
             <button class="pill-icon-btn" data-theme-action="toggle" type="button" aria-label="تغییر حالت نمایش" title="تغییر حالت نمایش">
               <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
               <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -168,7 +155,6 @@
 <script src="hojreh/assets/js/lottie-card-data.js"></script>
 <script src="hojreh/assets/js/access-card-lottie.js"></script>
 
-<!-- اینترو اولین بازدید: هسته (قابل استفادهٔ مجدد) + محتوای همین صفحه -->
 <script src="hojreh/assets/js/intro-core.js"></script>
 <script src="hojreh/assets/js/intro-access.js"></script>
 </body>

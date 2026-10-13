@@ -2,7 +2,7 @@
   font-family:'YekanBakh';
   src: url('../fonts/YekanBakhFaNum-VF.woff2') format('woff2-variations'),
        url('../fonts/YekanBakhFaNum-VF.woff2') format('woff2');
-  font-weight: 100 900; /* فونت وریبل - کل بازه ضخامت فعال باشه */
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -12,11 +12,11 @@
   --accent-light:#e6efee;
   --border:#c3c4c7;
   --border-light:#dcdcde;
-  --text:#111111; /* مشکی پایه پروژه */
-  --text-light:#454545; /* مشکی روشن‌تر، براساس --text */
+  --text:#111111;
+  --text-light:#454545;
   --bg:#f0f0f1;
   --white:#fff;
-  --admin-dark-2:#1f1f1f; /* مشکی روشن‌تر از پایه، برای پس‌زمینهٔ منو */
+  --admin-dark-2:#1f1f1f;
   --radius:0;
 }
 *{box-sizing:border-box;}
@@ -38,10 +38,8 @@ input,select,textarea,button{border-radius:var(--radius); font-family:inherit;}
 .fa-solid,.fa-regular,.fa-brands{width:1em; text-align:center;}
 h1,h2,h3,.hndle{font-weight:600;}
 
-/* ===== LAYOUT ===== */
 #wp-wrap{display:flex; min-height:calc(100vh - 40px);}
 
-/* ===== TOP ADMIN BAR ===== */
 #wp-adminbar{
   display:flex; align-items:stretch; justify-content:space-between;
   height:40px; background:var(--admin-dark-2); font-size:13px;
@@ -56,7 +54,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 }
 #wp-adminbar .wpadmin-buy-btn:hover{background:var(--accent-dark); text-decoration:none; color:#fff;}
 
-/* Hamburger toggle inside the top admin bar (mobile only) */
 #wp-adminbar .adminbar-toggle{
   display:none; align-items:center; justify-content:center;
   width:44px; height:100%; background:transparent; border:none; box-shadow:none;
@@ -64,7 +61,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 }
 #wp-adminbar .adminbar-toggle:hover{color:#fff;}
 
-/* Overlay + close button for the mobile sidebar */
 #menu-overlay{
   display:none; position:fixed; inset:40px 0 0 0; background:rgba(0,0,0,.75);
   z-index:890;
@@ -78,7 +74,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 }
 #menu-close.open{display:flex;}
 
-/* ===== SIDEBAR ===== */
 #adminmenu{
   width:190px; flex-shrink:0;
   background:var(--admin-dark-2);
@@ -93,7 +88,7 @@ h1,h2,h3,.hndle{font-weight:600;}
 .menu-top.current, .menu-top.wp-has-current-submenu{
   background:var(--white); color:var(--text); border-right:4px solid var(--accent);
 }
-.submenu{background:#0a0a0a; /* مشکیِ تیره‌تر از پایه، بر همون اساس */ display:flex; flex-direction:column;}
+.submenu{background:#0a0a0a;  display:flex; flex-direction:column;}
 .submenu a{
   padding:7px 16px 7px 12px; color:#b4b9be; font-size:13px; border-right:4px solid transparent;
 }
@@ -103,7 +98,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 }
 .wp-has-current-submenu .submenu{display:flex;}
 
-/* ===== MAIN ===== */
 #wpbody{flex:1; min-width:0; padding:20px 20px 60px;}
 
 #poststuff{display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;}
@@ -120,7 +114,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 .postbox .inside{padding:14px;}
 .postbox .inside.no-pad{padding:0;}
 
-/* Title field */
 #titlewrap input{
   width:100%; font-size:22px; padding:10px 12px; border:1px solid var(--border);
   border-radius:var(--radius); background:#fff; color:var(--text);
@@ -128,23 +121,22 @@ h1,h2,h3,.hndle{font-weight:600;}
 #titlewrap input::placeholder{color:#8c8f94;}
 #titlewrap input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 1px var(--accent);}
 
-/* Editor toolbar */
 .editor-wrap{border:1px solid var(--border-light); border-radius:var(--radius);}
 .editor-toolbar{
   display:flex; align-items:center; flex-wrap:nowrap; gap:2px; padding:6px 8px;
   border-bottom:1px solid var(--border-light); background:#fafafa;
-  overflow-x:auto; /* روی صفحه‌های خیلی باریک اسکرول افقی بخوره ولی هدر نشکنه */
+  overflow-x:auto;
 }
 .editor-toolbar .btn{
   width:28px; height:28px; display:flex; align-items:center; justify-content:center;
-  border:none; background:transparent; cursor:pointer; color:#333333; border-radius:var(--radius); padding:0; font-size:13px; /* مشکیِ روشن‌تر از پایه */
+  border:none; background:transparent; cursor:pointer; color:#333333; border-radius:var(--radius); padding:0; font-size:13px;
 }
 .editor-toolbar .btn:hover{background:var(--accent-light); color:var(--accent-dark);}
 .editor-select{
   border:1px solid var(--border-light); background:#fff; padding:3px 8px; font-size:12px; color:var(--text-light);
 }
 .editor-toolbar .media-btn{
-  margin-inline-start:auto; /* همیشه توی همون ردیف هدر، چسبیده به سمت چپ */
+  margin-inline-start:auto;
   flex-shrink:0;
   width:auto; padding:0 10px; gap:6px; font-size:12px; color:var(--text-light); border:1px solid var(--border-light); background:#fff;
 }
@@ -157,14 +149,12 @@ h1,h2,h3,.hndle{font-weight:600;}
   display:flex; justify-content:flex-end; padding:6px 10px; font-size:12px; color:var(--text-light); border-top:1px solid var(--border-light);
 }
 
-/* ===== WooCommerce product data box ===== */
 .wc-header{
   padding:10px 14px; border-bottom:1px solid var(--border-light);
   display:flex; align-items:center; justify-content:space-between; flex-wrap:nowrap; gap:8px;
 }
 .wc-header h2{margin:0; font-size:14px; font-weight:600;}
 
-/* Product type switch (simple / variable) */
 .product-type-switch{
   list-style:none; margin:0; display:flex;
   border-radius:50px; overflow:hidden;
@@ -180,7 +170,6 @@ h1,h2,h3,.hndle{font-weight:600;}
 .product-type-switch li.active a{background:var(--accent); color:#fff;}
 .product-type-switch li.active a:hover{background:var(--accent-dark);}
 
-/* Hide/show tabs & panels driven by the selected product type */
 .product-data-box .tab-item.variable-only,
 .product-data-box .wc-panel.variable-only,
 .product-data-box .wc-checkbox-row.variable-only{display:none;}
@@ -264,7 +253,6 @@ input[type=checkbox], input[type=radio]{
 .attribute-box-body{padding:12px 14px; display:flex; flex-direction:column; gap:8px;}
 .attribute-box-body .wc-field{margin-bottom:0;}
 
-/* ===== Variations tab ===== */
 .variations-defaults{
   display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding-bottom:14px;
   margin-bottom:14px; border-bottom:1px solid var(--border-light); font-size:13px;
@@ -286,7 +274,6 @@ input[type=checkbox], input[type=radio]{
 .variation-item-body{padding:14px; border-top:1px solid var(--border-light);}
 .variation-item-body.hidden{display:none;}
 
-/* ===== Right column boxes ===== */
 .pub-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:13px;}
 .pub-list li{display:flex; align-items:center; gap:7px;}
 .pub-list li i{color:var(--text-light); width:14px; text-align:center;}
@@ -296,7 +283,6 @@ input[type=checkbox], input[type=radio]{
   margin-top:12px; background:var(--accent); color:#fff; border:1px solid var(--accent);
   padding:8px 20px; font-size:13px; cursor:pointer; width:100%;
   display:flex; align-items:center; justify-content:space-between; gap:8px;
-  /* در RTL، justify-content:space-between یعنی «انتشار» سمت راست و آیکون موشک سمت چپ دکمه */
 }
 .pub-publish:hover{background:var(--accent-dark);}
 
@@ -322,7 +308,6 @@ input[type=checkbox], input[type=radio]{
   background:#fff; border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:15px;
 }
 
-/* Responsive */
 @media (max-width: 1024px){
   #poststuff{flex-direction:column;}
   #postbox-container-1{width:100%;}
@@ -330,7 +315,6 @@ input[type=checkbox], input[type=radio]{
 }
 @media (max-width: 782px){
   #adminmenu{position:fixed; inset-inline-start:-220px; top:40px; bottom:0; z-index:900; transition:.2s; box-shadow:2px 0 8px rgba(0,0,0,.2); overflow-y:auto;}
-  /* Prevent any product-data child from creating a fixed/intrinsic width on narrow screens. */
   #poststuff,
   #post-body,
   #postbox-container-1,
@@ -354,15 +338,12 @@ input[type=checkbox], input[type=radio]{
   #wp-wrap{min-height:calc(100vh - 40px);}
   #wpbody{padding:14px; max-width:100vw; overflow-x:hidden;}
 
-  /* Top bar: hide the "back to store" link, show the hamburger instead */
   #wp-adminbar .wpadmin-back{display:none;}
   #wp-adminbar .adminbar-toggle{display:flex;}
 
-  /* Rich-text editor toolbar: never wrap — clip whatever doesn't fit on one line */
   .editor-toolbar{flex-wrap:nowrap; overflow:hidden;}
   .editor-toolbar .media-btn{display:none;}
 
-  /* Product data panel → accordion */
   .panel-wrap{flex-direction:column;}
   .product_data_tabs{width:100%; flex-direction:column; border-inline-end:none; border-bottom:none;}
   .product_data_tabs .tab-item{border-bottom:1px solid var(--border-light);}
@@ -374,7 +355,7 @@ input[type=checkbox], input[type=radio]{
   .product_data_tabs .tab-item .wc-panel{
     border-top:1px solid var(--border-light); background:#fff;
   }
-  .wc-panels{display:none;} /* panels live inside their accordion item on mobile; this wrapper stays empty */
+  .wc-panels{display:none;}
 
   .wc-panel{padding:14px;}
   .wc-field{flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:14px;}
