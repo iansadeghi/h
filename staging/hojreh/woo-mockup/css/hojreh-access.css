@@ -1,33 +1,10 @@
-/* ═══════════════════════════════════════════════════════════════
-   hojreh-access.css
-   ───────────────────────────────────────────────────────────────
-   استایل صفحهٔ «انتخاب بخش» حجره، وقتی داخل قاب وردپرس (index.html
-   در روت پروژه) نمایش داده می‌شود.
-
-   قواعد از hojreh/assets/css/access-pages.css و general.css گرفته
-   شده‌اند (مقادیر یکسان) ولی همه زیر کلاس `.hojreh-access` اسکوپ
-   شده‌اند، چون general.css ریست سراسری (* / html / body / header /
-   footer) دارد و نباید مستقیم کنار style.css وردپرس لینک شود —
-   همان رویکرد hojreh-formula.css.
-
-   توکن‌ها (رنگ/فونت) هم روی خود `.hojreh-access` تعریف شده‌اند و
-   به :root نشت نمی‌کنند. قاب وردپرس (ادمین‌بار و منو) همیشه همان ظاهر
-   خودش را دارد؛ ولی ناحیهٔ محتوا (#wpbody) با دکمهٔ تم فوتر بین روشن و
-   تاریک سوییچ می‌شود (dark-mode.js روی <html> ویژگی data-theme می‌گذارد).
-   ═══════════════════════════════════════════════════════════════ */
-
-@font-face {
+﻿@font-face {
   font-family: 'Gramophone';
   src: url('../../hojreh/assets/font/GramophoneFaNum-VF.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
-
-/* ── توکن‌های رنگ پری‌لودر ──
-   پری‌لودر (preloader.css) خارج از `.hojreh-access` است و از متغیرهای
-   --white/--black/--green-* استفاده می‌کند؛ چون این توکن‌ها اینجا روی :root
-   تعریف نمی‌شوند، فقط برای خودِ پری‌لودر و نوار پیشرفتش تعریف می‌کنیم. */
 #hojrehPreloader,
 #hojrehPreloaderBar {
   --green-dark: #00584D;
@@ -35,7 +12,6 @@
   --black: #111111;
   --white: #ffffff;
 }
-
 [data-theme="dark"] #hojrehPreloader,
 [data-theme="dark"] #hojrehPreloaderBar {
   --green-dark: #06917D;
@@ -43,33 +19,23 @@
   --black: #eeeeee;
   --white: #111111;
 }
-
-/* ── آیکون منوی حجره در ساید‌بار وردپرس ── */
 #adminmenu .menu-hojreh-icon {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
   display: block;
-  color: #000111; /* رنگ اصلی آیکون (fill از currentColor می‌آید) */
+  color: #000111; 
   transition: color .3s ease;
 }
-
-/* ── لینک فعالِ حجره در ساید‌بار: همگام با تم محتوا ──
-   در تم روشن سفید (از style.css)، در تم تاریک هم‌رنگ ناحیهٔ محتوا (#111111).
-   آیکون هم در تم تاریک سفید می‌شود تا روی پس‌زمینهٔ مشکی دیده شود. */
 #adminmenu .menu-top.current {
   transition: background-color .3s ease, color .3s ease, border-color .3s ease;
 }
-
 [data-theme="dark"] #adminmenu .menu-top.current {
   background: #111111;
   color: #eeeeee;
   border-right-color: #06917D;
 }
-
 [data-theme="dark"] #adminmenu .menu-top.current .menu-hojreh-icon { color: #ffffff; }
-
-/* هاور (پس‌زمینهٔ سبز): آیکون سفید، در هر دو تم */
 #adminmenu .menu-top.current:hover,
 [data-theme="dark"] #adminmenu .menu-top.current:hover {
   background: var(--accent);
@@ -77,8 +43,6 @@
 }
 #adminmenu .menu-top.current:hover .menu-hojreh-icon,
 [data-theme="dark"] #adminmenu .menu-top.current:hover .menu-hojreh-icon { color: #fff; }
-
-/* ── ناحیهٔ محتوا: بدون حاشیه/مارجین وردپرس، سفید یکدست ── */
 #wpbody.hojreh-wpbody {
   display: flex;
   flex-direction: column;
@@ -87,10 +51,7 @@
   overflow-x: hidden;
   transition: background .3s ease;
 }
-
 [data-theme="dark"] #wpbody.hojreh-wpbody { background: #111111; }
-
-/* ── پنل اصلی ── */
 .hojreh-access {
   --green-dark: #00584D;
   --green-mid: #156b61;
@@ -103,13 +64,12 @@
   --white: #ffffff;
   --font-display: 'Gramophone', 'Tahoma', sans-serif;
   --font-body: 'YekanBakh', 'Tahoma', sans-serif;
-
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  min-height: calc(100vh - 40px); /* ادمین‌بار */
+  min-height: calc(100vh - 40px); 
   padding: 30px 24px 0;
   background: var(--white);
   color: var(--black);
@@ -118,8 +78,6 @@
   font-variation-settings: "DOTS" 1;
   transition: background .3s ease, color .3s ease;
 }
-
-/* ── تم تاریک (همان توکن‌های general.css) ── */
 [data-theme="dark"] .hojreh-access {
   --gray-100: #1e1e1e;
   --gray-200: #272727;
@@ -132,19 +90,15 @@
   --green-mid: #08b49a;
   color-scheme: dark;
 }
-
 .hojreh-access h1,
 .hojreh-access h2,
 .hojreh-access p { margin: 0; }
-
-/* ── لوگو ── */
 .hojreh-access .logo-wrap {
   margin-top: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .hojreh-access .logo-svg {
   width: 200px;
   height: auto;
@@ -152,31 +106,24 @@
   shape-rendering: geometricPrecision;
   transition: color .3s ease;
 }
-
 [data-theme="dark"] .hojreh-access .logo-svg { color: #ffffff; }
-
 .hojreh-access .logo-bg-rect { fill: var(--green-dark); transition: fill .3s ease; }
-
-/* ── عنوان ── */
 .hojreh-access .access-choice-panel {
   width: min(960px, 100%);
-  margin-block: auto;      /* لوگو بالا، کارت‌ها وسطِ فضای باقی‌مانده، فوتر پایین */
+  margin-block: auto;      
   padding-bottom: 8px;
 }
-
 .hojreh-access .standalone-title-wrap {
   text-align: center;
   margin: 0 auto 22px;
   max-width: 640px;
 }
-
 .hojreh-access .standalone-title-wrap h1 {
   font-size: clamp(28px, 4vw, 38px);
   font-weight: 850;
   color: var(--black);
   line-height: 1.35;
 }
-
 .hojreh-access .standalone-title-wrap p {
   margin-top: 7px;
   font-family: var(--font-body);
@@ -187,14 +134,11 @@
   color: var(--gray-600);
   line-height: 1.9;
 }
-
-/* ── کارت‌های انتخاب ── */
 .hojreh-access .access-choice-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
-
 .hojreh-access a.access-choice-card {
   position: relative;
   min-height: 264px;
@@ -211,22 +155,16 @@
   outline: 0 solid transparent;
   transition: background .22s ease, outline-color .2s;
 }
-
-/* ── گردی گوشه‌ها (صفحه RTL است؛ کارت اول سمت راست قرار می‌گیرد) ──
-   ترتیب مقادیر: بالا-چپ | بالا-راست | پایین-راست | پایین-چپ */
-.hojreh-access a.access-choice-card:nth-child(1) { border-radius: 15px 200px 200px 15px; }  /* سمت راست */
-.hojreh-access a.access-choice-card:nth-child(2) { border-radius: 15px; }                   /* وسط */
-.hojreh-access a.access-choice-card:nth-child(3) { border-radius: 200px 15px 15px 200px; }  /* سمت چپ */
-
+.hojreh-access a.access-choice-card:nth-child(1) { border-radius: 15px 200px 200px 15px; }  
+.hojreh-access a.access-choice-card:nth-child(2) { border-radius: 15px; }                   
+.hojreh-access a.access-choice-card:nth-child(3) { border-radius: 200px 15px 15px 200px; }  
 .hojreh-access a.access-choice-card:hover,
 .hojreh-access a.access-choice-card:focus-visible {
   background: var(--gray-200);
   color: var(--black);
   text-decoration: none;
 }
-
 .hojreh-access a.access-choice-card:focus-visible { outline: 2px solid var(--green-dark); outline-offset: 3px; }
-
 .hojreh-access .access-card-icon {
   width: 156px;
   height: 156px;
@@ -234,31 +172,24 @@
   align-items: center;
   justify-content: center;
   color: var(--black);
-  margin: -14px 0 4px;     /* بوم لاتی ۷۵۰×۷۵۰ حاشیهٔ خالی دارد؛ جبرانش می‌کنیم */
+  margin: -14px 0 4px;     
   transition: color .2s ease;
 }
-
 .hojreh-access .access-card-icon svg { width: 100%; height: 100%; display: block; }
-
 .hojreh-access .access-card-content h2 {
   font-size: 19px;
   font-weight: 800;
   color: var(--black);
   transition: color .2s ease;
 }
-
-/* هاورِ کارت: آیکون و عنوانِ همان کارت مشکی می‌شود */
 .hojreh-access a.access-choice-card:hover .access-card-icon,
 .hojreh-access a.access-choice-card:focus-visible .access-card-icon,
 .hojreh-access a.access-choice-card:hover .access-card-content h2,
 .hojreh-access a.access-choice-card:focus-visible .access-card-content h2 { color: var(--black); }
-
-/* وقتی یک کارت هاور است، آیکون و عنوانِ بقیه gray-300 می‌شود */
 .hojreh-access .access-choice-grid:has(a.access-choice-card:hover, a.access-choice-card:focus-visible)
   a.access-choice-card:not(:hover):not(:focus-visible) .access-card-icon,
 .hojreh-access .access-choice-grid:has(a.access-choice-card:hover, a.access-choice-card:focus-visible)
   a.access-choice-card:not(:hover):not(:focus-visible) .access-card-content h2 { color: var(--gray-300); }
-
 .hojreh-access .access-card-content p {
   margin-top: 7px;
   font-family: var(--font-body);
@@ -269,9 +200,6 @@
   line-height: 1.85;
   font-weight: 500;
 }
-
-/* ── زیرنویس به‌صورت تولتیپ روی هاور (فقط دستگاه‌هایی که هاور دارند) ──
-   در دستگاه‌های لمسی هاور وجود ندارد، پس همان زیرنویسِ درون‌کارت می‌ماند. */
 @media (hover: hover) {
   .hojreh-access a.access-choice-card .access-card-content p {
     position: absolute;
@@ -279,7 +207,7 @@
     inset-inline: 0;
     margin: 0 auto;
     width: max-content;
-    max-width: 100%;         /* هیچ‌وقت از عرض کارت بیرون نمی‌زند (برش در لبه‌ها) */
+    max-width: 100%;         
     padding: 8px 14px;
     border-radius: 100px;
     background: var(--black);
@@ -293,7 +221,6 @@
     visibility: hidden;
     transition: opacity .18s ease, visibility .18s ease;
   }
-
   .hojreh-access a.access-choice-card .access-card-content p::before {
     content: '';
     position: absolute;
@@ -305,15 +232,12 @@
     background: var(--black);
     transform: rotate(45deg);
   }
-
   .hojreh-access a.access-choice-card:hover .access-card-content p,
   .hojreh-access a.access-choice-card:focus-visible .access-card-content p {
     opacity: 1;
     visibility: visible;
   }
 }
-
-/* ── فوتر (پیل تم / بازگشت به بالا) — نسخهٔ اسکوپ‌شدهٔ general.css ── */
 .hojreh-access footer {
   width: 100%;
   margin-top: auto;
@@ -326,13 +250,11 @@
   font-size: 13px;
   font-weight: 600;
 }
-
 .hojreh-access .footer-pill-wrap {
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
 }
-
 .hojreh-access .footer-pill-btns {
   display: inline-flex;
   align-items: center;
@@ -341,7 +263,6 @@
   border-radius: 50px;
   padding: 4px;
 }
-
 .hojreh-access .pill-icon-btn {
   width: 32px;
   height: 32px;
@@ -359,38 +280,30 @@
   user-select: none;
   -webkit-user-select: none;
 }
-
 .hojreh-access .pill-icon-btn:hover { background: var(--gray-300); color: var(--black); transform: scale(1.08); }
 .hojreh-access .pill-icon-btn:active { transform: scale(.95); }
-
 .hojreh-access .pill-icon-btn svg {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
   pointer-events: none;
 }
-
 .hojreh-access .theme-icon-sun  { display: none; }
 .hojreh-access .theme-icon-moon { display: block; }
 [data-theme="dark"] .hojreh-access .theme-icon-sun  { display: block; }
 [data-theme="dark"] .hojreh-access .theme-icon-moon { display: none; }
-
-/* ── گذار دایره‌ای تم (View Transitions API) — همان general.css ── */
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 ::view-transition-old(root) { z-index: 0; }
 ::view-transition-new(root) { z-index: 1; }
 html[data-theme-transition="to-dark"]::view-transition-old(root) { z-index: 1; }
 html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
-
 @media (prefers-reduced-motion: reduce) {
   .hojreh-access a.access-choice-card,
   .hojreh-access .access-card-icon,
   .hojreh-access .access-card-content h2,
   .hojreh-access .access-card-content p { transition: none !important; }
 }
-
-/* ── عرض‌های متوسط: همان ۳ ستون، ولی فشرده‌تر ── */
 @media (max-width: 1000px) {
   .hojreh-access { padding-inline: 16px; }
   .hojreh-access a.access-choice-card { padding: 20px 14px; min-height: 240px; }
@@ -398,26 +311,19 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   .hojreh-access .access-card-content h2 { font-size: 16px; }
   .hojreh-access .access-card-content p { font-size: 12px; }
 }
-
-/* ── موبایل ── */
 @media (max-width: 720px) {
   .hojreh-access {
     min-height: calc(100vh - 40px);
     padding: 22px 14px 0;
     gap: 12px;
   }
-
   .hojreh-access .logo-svg { width: 150px; }
-
   .hojreh-access .standalone-title-wrap { margin-bottom: 16px; }
   .hojreh-access .standalone-title-wrap h1 { font-size: 27px; }
   .hojreh-access .standalone-title-wrap p { font-size: 13px; }
-
   .hojreh-access .access-choice-grid { grid-template-columns: 1fr; gap: 10px; }
-
   .hojreh-access a.access-choice-card,
   .hojreh-access a.access-choice-card:nth-child(n) { border-radius: 15px; }
-
   .hojreh-access a.access-choice-card {
     min-height: 112px;
     flex-direction: row;
@@ -427,20 +333,17 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
     text-align: right;
     padding: 14px;
   }
-
   .hojreh-access .access-card-icon {
     width: 84px;
     height: 84px;
     flex: 0 0 84px;
     margin: -8px 0;
   }
-
   .hojreh-access .access-card-content {
     min-width: 0;
     flex: 1;
     padding-block: 3px;
   }
-
   .hojreh-access .access-card-content h2 { font-size: 16px; line-height: 1.55; }
   .hojreh-access .access-card-content p { margin-top: 5px; font-size: 11.5px; line-height: 1.7; }
 }
