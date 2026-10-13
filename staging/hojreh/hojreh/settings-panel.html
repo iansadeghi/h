@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
  <meta charset="UTF-8" />
@@ -1172,25 +1172,15 @@
 <script type="module" src="assets/js/checkbox.js"></script>
 <script type="module" src="assets/js/settings-page.js" onerror="document.getElementById('hojrehPreloader')?.remove();document.getElementById('hojrehPreloaderBar')?.remove();"></script>
 <script>
-/* ─── منطق تغییر "منبع قیمت" در آکاردئون‌های متغیر وابسته به API ─── */
 (function () {
-  /**
-   * وقتی "ورود دستی" انتخاب شود:
-   *  - فیلدهای api-only-field مخفی می‌شوند (و از dirty tracking حذف می‌شوند)
-   *  - فیلد manual-only-field (مبلغ فعلی) نمایش داده می‌شود
-   * وقتی "دریافت خودکار" انتخاب شود:
-   *  - عکس حالت بالا
-   */
   function applyPriceSourceMode(accordionItem, isManual) {
     accordionItem.querySelectorAll('.api-only-field').forEach(function (el) {
       el.style.display = isManual ? 'none' : '';
-      /* جلوگیری از ثبت فیلدهای مخفی در dirty tracking */
       el.querySelectorAll('input, select, textarea').forEach(function (ctrl) {
         if (isManual) {
           ctrl.setAttribute('data-hojreh-no-dirty', 'true');
         } else {
           ctrl.removeAttribute('data-hojreh-no-dirty');
-          /* اگر dirty tracking از قبل اجرا شده، snapshot مجدد بگیر */
           if (ctrl.dataset.hojrehDirtyReady === 'true') {
             var val = ctrl.type === 'checkbox' ? (ctrl.checked ? '1' : '0') : (ctrl.value ?? '');
             ctrl.dataset.hojrehOriginalValue = val;
@@ -1221,26 +1211,21 @@
     function isManualSource() {
       return selectEl.value === 'manual' || selectEl.value === 'ورود دستی';
     }
-    /* اعمال وضعیت اولیه */
     applyPriceSourceMode(accordionItem, isManualSource());
     selectEl.addEventListener('change', function () {
       applyPriceSourceMode(accordionItem, isManualSource());
       window._hojrehRefreshSettingsDot?.();
     });
   }
-  /* ─── اعمال روی آکاردئون‌های موجود ─── */
   document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"] .api-price-source-select').forEach(attachPriceSourceListener);
-  /* ─── اعمال روی آکاردئون‌های جدیدی که بعداً اضافه می‌شوند ─── */
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       mutation.addedNodes.forEach(function (node) {
         if (node.nodeType !== 1) return;
-        /* آکاردئون جدید خودش */
         if (node.matches && node.matches('.accordion-item[data-type="api-variable"]')) {
           var sel = node.querySelector('.api-price-source-select');
           if (sel) attachPriceSourceListener(sel);
         }
-        /* یا فرزندان داخلش */
         node.querySelectorAll && node.querySelectorAll('.accordion-item[data-type="api-variable"] .api-price-source-select').forEach(attachPriceSourceListener);
       });
     });

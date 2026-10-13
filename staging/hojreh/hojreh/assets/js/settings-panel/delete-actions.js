@@ -1,4 +1,4 @@
-﻿import { showToast } from '../general.js';
+import { showToast } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { itemHumanType, isFormulaProtectedItem } from './id-utils.js';
 import { showConfirmModal } from './confirm-modal.js';

@@ -1,4 +1,4 @@
-﻿  'use strict';
+  'use strict';
   function injectDot(buttonId) {
     var btn = document.getElementById(buttonId);
     if (!btn) return null;
@@ -13,7 +13,7 @@
     if (!btn) return;
     if (hasDirty && !stateRef.value) {
       btn.classList.remove('has-unsaved-changes');
-      void btn.offsetWidth;
+      void btn.offsetWidth; 
     }
     btn.classList.toggle('has-unsaved-changes', hasDirty);
     stateRef.value = hasDirty;

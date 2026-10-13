@@ -1,4 +1,4 @@
-﻿import { HojrehFormulaEngine, pricingPatterns } from './pricing-patterns.js';
+import { HojrehFormulaEngine, pricingPatterns } from './pricing-patterns.js';
 import { settingsPanel } from './settings-panel.js';
 import { customSelect } from './custom-select.js';
 let apiModal;
@@ -326,7 +326,7 @@ let apiModal;
   function isAlreadyAdded(id) {
     const allItems = document.querySelectorAll('#apiVariablesList .accordion-item[data-type="api-variable"]');
     for (const item of allItems) {
-      if (item.style.display === 'none') continue;
+      if (item.style.display === 'none') continue; 
       if (item.dataset.apiSymbol === id || item.dataset.id === id) return true;
       const idInput = item.querySelector('.english-id-input');
       if (idInput && idInput.value.trim() === id) return true;

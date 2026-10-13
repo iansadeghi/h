@@ -1,4 +1,4 @@
-﻿import { showToast } from '../general.js';
+import { showToast } from '../general.js';
 import { saveDirty } from '../save-dirty.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { getItemFormulaId } from './id-utils.js';
@@ -45,7 +45,7 @@ function getEntityRevisionInfo(item) {
       if (fromController !== null && fromController !== undefined) {
         const authoritative = facade.isRevisionAuthoritative
           ? facade.isRevisionAuthoritative(item)
-          : true;
+          : true; 
         return { revision: fromController, authoritative };
       }
     }

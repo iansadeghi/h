@@ -1,4 +1,4 @@
-﻿import { pricingPatterns } from '../pricing-patterns.js';
+import { pricingPatterns } from '../pricing-patterns.js';
 function normalizeEnglishIdValue(value) {
   return String(value || '')
     .trim()

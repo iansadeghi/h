@@ -1,4 +1,4 @@
-﻿html:not(.hojreh-preloading-done),
+html:not(.hojreh-preloading-done),
 html:not(.hojreh-preloading-done) body {
   overflow: hidden;
 }

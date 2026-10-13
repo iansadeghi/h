@@ -1,4 +1,4 @@
-﻿import { pricingPatterns } from '../pricing-patterns.js';
+import { pricingPatterns } from '../pricing-patterns.js';
 function toggleManualFormulaMode(isActive, patternItem) {
   if (isActive) {
     document.body.classList.add('manual-formula-active');

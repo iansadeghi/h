@@ -1,4 +1,4 @@
-﻿import {
+import {
   unitCatalog as sharedUnitCatalog, getUnitMeta as getSharedUnitMeta
 } from '../general.js';
 const HojrehFormulaEngine = (function () {
@@ -615,7 +615,7 @@ const HojrehFormulaEngine = (function () {
       throw new Error(`کاراکتر غیرمجاز یا جایگذاری نامعتبر: «${ch}»`);
     }
     function parseBracketExpression(operator, currentElements) {
-      consume();
+      consume(); 
       skipWS();
       const savedPos = pos;
       const firstId = parseIdentifier();
@@ -628,7 +628,7 @@ const HojrehFormulaEngine = (function () {
         if (currentElements.length > 0) {
           markWarning('رُندسازی فقط وقتی معادل نمایش بصری است که روی کل عبارت قبلی اعمال شده باشد');
         }
-        consume();
+        consume(); 
         const inner = parseExpression(']');
         expect(']', 'کروشه داخلی رُندسازی بسته نشده است');
         expect(']', 'کروشه بیرونی رُندسازی بسته نشده است');
@@ -780,7 +780,7 @@ const HojrehFormulaEngine = (function () {
             id: item?.id || el.selectedId,
             mode: el.operator === '*' ? 'mul' : 'add'
           });
-          combinedOnce = true;
+          combinedOnce = true; 
           return;
         } else if (el.type === 'rounding') {
           const item = getElementRegistryItem(el, options);

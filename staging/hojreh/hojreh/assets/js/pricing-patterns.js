@@ -1,4 +1,4 @@
-﻿import './formula-preview-overflow.js';
+import './formula-preview-overflow.js';
 import { HojrehFormulaEngine } from './pricing-patterns/formula-engine.js';
 import { HojrehPatternController } from './pricing-patterns/controller.js';
 import { bootstrapHojrehPricingPatterns } from './pricing-patterns/bootstrap.js';

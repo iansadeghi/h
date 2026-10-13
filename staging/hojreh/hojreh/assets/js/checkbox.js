@@ -1,4 +1,4 @@
-﻿const CHECKBOX_SELECTOR = 'input[type="checkbox"].hojreh-checkbox-input';
+const CHECKBOX_SELECTOR = 'input[type="checkbox"].hojreh-checkbox-input';
 const READY_ATTRIBUTE = 'data-hojreh-checkbox-ready';
 function createVisual() {
   const visual = document.createElement('span');

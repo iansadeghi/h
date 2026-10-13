@@ -1,4 +1,4 @@
-﻿import { HojrehPatternController } from './controller.js';
+import { HojrehPatternController } from './controller.js';
 export function bootstrapHojrehPricingPatterns() {
   'use strict';
   const pricingPatternsList = document.getElementById('pricingPatternsList');

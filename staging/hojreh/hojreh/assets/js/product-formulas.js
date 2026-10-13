@@ -1,4 +1,4 @@
-﻿import './dark-mode.js';
+import './dark-mode.js';
 const searchInput = document.getElementById('productFormulaSearch');
 const clearBtn = document.getElementById('productSearchClear');
 const list = document.getElementById('productFormulaList');

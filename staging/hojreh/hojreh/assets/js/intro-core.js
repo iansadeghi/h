@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   var KEY_PREFIX = 'hojreh-intro:';
   var DONE_CLASS = 'hojreh-preloading-done';
@@ -29,7 +29,7 @@
     '.hi-btn:focus-visible{outline:none}' +
     '@media (prefers-reduced-motion:reduce){.hi-root,.hi-spot,.hi-tip{transition:none}}';
   function storageGet(key) {
-    try { return localStorage.getItem(key); } catch (e) { return undefined; }
+    try { return localStorage.getItem(key); } catch (e) { return undefined; } 
   }
   function storageSet(key, val) {
     try { localStorage.setItem(key, val); } catch (e) {  }
@@ -140,7 +140,7 @@
     function onKey(e) {
       if (e.key === 'Escape') { e.preventDefault(); close(); }
       else if (e.key === 'ArrowLeft' || e.key === 'Enter') {
-        if (e.key === 'Enter' && document.activeElement === skipBtn) return;
+        if (e.key === 'Enter' && document.activeElement === skipBtn) return; 
         e.preventDefault(); next();
       }
       else if (e.key === 'ArrowRight' && idx > 0) { e.preventDefault(); show(idx - 1); }
@@ -164,7 +164,7 @@
         if (seen === undefined || seen === ver) return false;
       }
       whenReady(function () {
-        storageSet(key, ver);
+        storageSet(key, ver); 
         run(cfg);
       });
       return true;

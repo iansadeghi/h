@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   var MIN_DISPLAY_MS = 4000;
   var FADE_MS = 500;

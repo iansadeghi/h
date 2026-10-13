@@ -1,4 +1,4 @@
-﻿import { pricingPatterns } from '../pricing-patterns.js';
+import { pricingPatterns } from '../pricing-patterns.js';
 function attachUnitLabelSync(select) {
   if (!select) return;
   if (select.dataset.unitLabelReady === 'true') return;

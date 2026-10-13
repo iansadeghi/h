@@ -1,4 +1,4 @@
-﻿import {
+import {
   showToast, formatNumberWithCommas as formatSharedNumber,
   normalizeUnitSelects
 } from '../general.js';
@@ -69,7 +69,7 @@ const controllerDomMixin = {
   _animateOutAndRemove(box, elementId, toastMessage) {
     const startHeight = box.scrollHeight;
     box.style.maxHeight = `${startHeight}px`;
-    void box.offsetWidth;
+    void box.offsetWidth; 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         box.classList.add('collapsed-hide');
@@ -459,7 +459,7 @@ const controllerDomMixin = {
   _attachDragEvents() {
     const dom = this._dom;
     dom.itemsContainer.querySelectorAll('.acc-drag-handle').forEach(handle => {
-      handle.replaceWith(handle.cloneNode(true));
+      handle.replaceWith(handle.cloneNode(true)); 
     });
     dom.itemsContainer.querySelectorAll('.acc-drag-handle').forEach(handle => {
       const start = e => this._startDrag(e);

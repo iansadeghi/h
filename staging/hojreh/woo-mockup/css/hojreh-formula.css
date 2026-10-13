@@ -1,10 +1,64 @@
-﻿@font-face {
+/* ═══════════════════════════════════════════════════════════════
+   hojreh-formula.css
+   ───────────────────────────────────────────────────────────────
+   THIS FILE BELONGS TO THE WOOCOMMERCE-MOCKUP SIDE OF THE PROJECT,
+   NOT TO THE HOJREH PLUGIN ITSELF. It exists purely to bridge the
+   Hojreh formula-builder UI into this product-edit-page mockup:
+
+     1. CSS custom properties + @font-face copied from
+        hojreh/assets/css/general.css (verbatim values, not
+        reinvented) so the pieces below render with Hojreh's real
+        design tokens.
+     2. A handful of declaration BLOCKS copied verbatim from
+        hojreh/assets/css/settings-panel.css (.accordion-body,
+        .accordion-body-inner, .form-grid, .form-group, .form-label,
+        .form-control, .btn-more, .select-wrap, .select-arrow) and
+        re-scoped under a `.hojreh-formula-modal` ancestor class,
+        per the implementation brief: settings-panel.css itself is
+        NOT safe to <link> wholesale (unscoped bare selectors), so
+        only the specific rule blocks the formula-builder box
+        actually needs are copied here, unmodified except for the
+        added ancestor scope.
+     3. New, original styles for the pieces that don't exist
+        anywhere in hojreh yet: the "قیمت‌گذاری پویا" checkbox/button
+        that live on the product page itself, the full-screen modal
+        shell + header + close button placement, the segmented
+        control, the synced quantity-field list, and the final-price
+        display.
+
+   hojreh/assets/css/pricing-patterns.css, custom-select.css and
+   toast.css are linked DIRECTLY from index.html (they are
+   self-scoped / component-only per the brief) and are NOT
+   duplicated here.
+
+   NOTE ON CSS CUSTOM PROPERTIES: unlike the declaration blocks
+   above, the `:root` custom properties below are deliberately left
+   UNSCOPED (not nested under `.hojreh-formula-modal`). This is
+   required, not an oversight: custom-select.js portals its open
+   dropdown panel directly onto <body> (outside any container we
+   control) to escape overflow:hidden ancestors, and pricing-
+   patterns.css / custom-select.css reference these variables from
+   that portaled markup too. Declaring bare custom properties at
+   `:root` has no visual side effect on the rest of the page unless
+   something references them by name, and none of style.css's own
+   variables share these names (checked against
+   woo-mockup/css/style.css: --accent/--accent-dark/--accent-light/
+   --border/--border-light/--text/--text-light/--bg/--white/
+   --admin-dark-2/--radius — no collisions except --white, which
+   already carries the identical #ffffff value in both projects).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1) Hojreh fonts + design-token custom properties (verbatim
+   values from hojreh/assets/css/general.css) ──────────────────── */
+
+@font-face {
   font-family: 'Gramophone';
   src: url('../../hojreh/assets/font/GramophoneFaNum-VF.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: 'YekanBakh';
   src: url('../../hojreh/assets/font/YekanBakhFaNum-VF.woff2') format('woff2');
@@ -12,9 +66,11 @@
   font-style: normal;
   font-display: swap;
 }
+
 :root {
   --font-display: 'Gramophone', 'Tahoma', sans-serif;
   --font-body:    'YekanBakh',  'Tahoma', sans-serif;
+
   --green-dark: #00584D;
   --green-mid: #156b61;
   --black: #111111;
@@ -29,26 +85,35 @@
   --red-danger: #d9383a;
   --red-danger-hover: #b82c2e;
 }
+
+/* ── 2) Verbatim declaration blocks from settings-panel.css,
+   re-scoped under .hojreh-formula-modal ─────────────────────────
+   (source: hojreh/assets/css/settings-panel.css) */
+
 .hojreh-formula-modal .accordion-body {
   overflow: hidden;
   max-height: 0;
   transition: max-height .3s cubic-bezier(.4,0,.2,1);
 }
+
 .hojreh-formula-modal .accordion-body-inner {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+
 .hojreh-formula-modal .form-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px 14px;
 }
+
 .hojreh-formula-modal .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
+
 .hojreh-formula-modal .form-label {
   font-size: 15px;
   font-weight: 600;
@@ -61,6 +126,7 @@
   text-overflow: ellipsis;
   display: block;
 }
+
 .hojreh-formula-modal .form-control {
   background: var(--gray-300);
   border: none;
@@ -75,12 +141,30 @@
   font-feature-settings: normal;
   font-variation-settings: normal;
 }
+
 .hojreh-formula-modal .form-control:focus { background: var(--gray-200); }
 .hojreh-formula-modal .form-control:disabled {
   background: var(--gray-200);
   color: var(--gray-600);
   cursor: not-allowed;
 }
+
+/* NOTE ON font-size/font-weight: deliberately NOT set here (unlike the
+   settings-panel.css original), even though the settings-panel.css source
+   block *does* declare font-size:16px/font-weight:700. Reason: on the real
+   settings-panel.html, .btn-more (0,0,1,0 specificity, loaded from
+   settings-panel.css BEFORE pricing-patterns.css) TIES in specificity with
+   .btn-control-action (0,0,1,0, from pricing-patterns.css) -- and since
+   pricing-patterns.css loads AFTER settings-panel.css there, the cascade's
+   source-order tiebreak makes .btn-control-action's font-size:15px/
+   font-weight:600 win in practice. Scoping this selector under
+   .hojreh-formula-modal bumps it to (0,0,2,0), which would make it beat
+   .btn-control-action outright regardless of link order -- rendering these
+   buttons visibly bigger/bolder than every other .btn-control-action.btn-more
+   button in the real product (this was the actual cause of the "buttons'
+   font looks messed up" bug, not a missing font-feature-settings rule).
+   Omitting them here lets pricing-patterns.css's .btn-control-action govern
+   size/weight exactly as it does on the canonical page. */
 .hojreh-formula-modal .btn-more {
   display: flex;
   align-items: center;
@@ -97,6 +181,14 @@
 }
 .hojreh-formula-modal .btn-more:hover { background: var(--black-hover); }
 .hojreh-formula-modal .btn-more svg { width: 18px; height: 18px; }
+
+/* ── .acc-drag-handle (verbatim from settings-panel.css §"acc-drag-handle")
+   -- needed here because settings-panel.css itself is not linked on this
+   page, but HojrehPatternController's DOM renderer (controller-dom.js,
+   shared unmodified with the real plugin) creates
+   <div class="acc-drag-handle"> for every formula item row regardless of
+   which page it's running on. Without this block the drag handle has no
+   width/height/flex/cursor at all. ─────────────────────────────────── */
 .hojreh-formula-modal .acc-drag-handle {
   width: 32px;
   height: 56px;
@@ -112,7 +204,15 @@
 .hojreh-formula-modal .acc-drag-handle:active { cursor: grabbing; }
 .hojreh-formula-modal .acc-drag-handle:hover { color: var(--gray-600); }
 .hojreh-formula-modal .acc-drag-handle svg { width: 16px; height: 16px; }
+
+/* ── .pattern-item-delete-btn svg sizing — not declared anywhere in the
+   hojreh CSS bundle (pricing-patterns.css only sizes the 20×20 BUTTON, not
+   its inline <svg> child), so it was falling back to the browser's default
+   replaced-element sizing instead of a deliberate icon size. Matches the
+   trash icon's actual rendered size in settings-panel.html, where
+   .acc-action-btn svg is sized 20×20 (settings-panel.css). */
 .hojreh-formula-modal .pattern-item-delete-btn svg { width: 20px; height: 20px; }
+
 .hojreh-formula-modal .select-wrap { position: relative; }
 .hojreh-formula-modal .select-wrap select {
   appearance: none;
@@ -129,22 +229,32 @@
   padding: 10px;
 }
 .hojreh-formula-modal .select-arrow { display: none; }
+
 @media (max-width: 1100px) {
   .hojreh-formula-modal .form-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
   .hojreh-formula-modal .form-grid { grid-template-columns: 1fr; }
 }
+
+/* ── 3) New UI, original to this integration ─────────────────────
+   Base font: YekanBakh for body text/fields, Gramophone reserved
+   for headers/buttons/short labels — matches the split documented
+   in hojreh/assets/css/general.css. */
+
 .hojreh-formula-modal {
   font-family: var(--font-body);
   color: var(--black);
   direction: rtl;
 }
+
+/* ─── The checkbox that lives directly on the product page ─────── */
 .wc-field.hojreh-dynamic-pricing-mount {
   display: block;
   width: 100%;
   margin-bottom: 0;
 }
+
 .wc-field.hojreh-sale-price-transition {
   transition:
     height .4s cubic-bezier(.16, 1, .3, 1),
@@ -154,6 +264,7 @@
     filter .28s ease;
   will-change: height, margin-bottom, opacity, transform, filter;
 }
+
 .wc-field.hojreh-sale-price-is-leaving,
 .wc-field.hojreh-sale-price-is-entering {
   opacity: 0;
@@ -161,6 +272,7 @@
   filter: blur(4px);
   pointer-events: none;
 }
+
 .hojreh-dynamic-pricing-row {
   display: flex;
   align-items: center;
@@ -168,6 +280,7 @@
   margin: 40px 0 2px;
   width: 100%;
 }
+
 .hojreh-dynamic-pricing-row label {
   display: flex;
   align-items: center;
@@ -182,13 +295,17 @@
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
 .hojreh-dynamic-pricing-row input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: #00584D;
   cursor: pointer;
 }
+
+/* ─── "تنظیم فرمول محصول" button on the page itself ─────────────── */
 .hojreh-set-formula-wrap { width: 100%; }
+
 .hojreh-set-formula-btn {
   display: flex;
   align-items: center;
@@ -208,17 +325,20 @@
   margin: 0;
   transition: background .2s ease, color .2s ease;
 }
+
 .hojreh-set-formula-btn:hover { background: var(--black-hover); }
 .hojreh-set-formula-btn:focus-visible {
   outline: 2px solid var(--green-dark);
   outline-offset: -2px;
 }
+
 .hojreh-set-formula-btn .hojreh-set-formula-star {
   width: 23px;
   height: 23px;
   flex: 0 0 30px;
   fill: var(--white);
 }
+
 .hojreh-set-formula-btn .hojreh-set-formula-arrow {
   width: 26px;
   height: 26px;
@@ -231,9 +351,11 @@
   transform: translateX(-6px);
   transition: transform .28s cubic-bezier(.22, 1, .36, 1);
 }
+
 .hojreh-set-formula-btn:hover .hojreh-set-formula-arrow {
   transform: translateX(-10px);
 }
+
 @media (max-width: 860px) {
   .hojreh-set-formula-btn {
     padding: 14px 16px;
@@ -246,6 +368,7 @@
     flex-basis: 26px;
   }
 }
+
 @media (max-width: 600px) {
   .hojreh-set-formula-btn {
     gap: 5px;
@@ -265,11 +388,14 @@
     flex-basis: 27px;
   }
 }
+
+/* ─── On-page pricing safeguards (shared by simple + variations) ── */
 .hojreh-page-formula-panel {
   width: 100%;
   box-sizing: border-box;
   margin-top: 25px;
 }
+
 @keyframes hojreh-page-section-reveal {
   from {
     opacity: 0;
@@ -282,11 +408,13 @@
     filter: blur(0);
   }
 }
+
 .hojreh-page-section-enter {
   animation: hojreh-page-section-reveal .58s cubic-bezier(.16, 1, .3, 1) both;
   animation-delay: var(--hojreh-section-enter-delay, 0ms);
   will-change: opacity, transform, filter;
 }
+
 .hojreh-page-pricing-options {
   width: 100%;
   box-sizing: border-box;
@@ -336,11 +464,16 @@
     flex-basis: auto;
   }
 }
+
+/* ─── On-page synced quantity fields (shown below the button, same
+   markup/classes as the in-modal copy — see §5.1.4 of the brief) ── */
 .hojreh-quantity-fields-wrap {
   background: transparent;
   padding: 16px;
   margin-top: 50px;
 }
+
+/* Adapted from settings-panel's section-title component. */
 .hojreh-page-formula-panel .hojreh-page-section-title {
   position: relative;
   display: flex;
@@ -357,6 +490,7 @@
   font-feature-settings: "ss01" on, "ss02" on;
   font-variation-settings: "DOTS" 1;
 }
+
 .hojreh-page-formula-panel .hojreh-page-section-title::before,
 .hojreh-page-formula-panel .hojreh-page-section-title::after {
   content: "";
@@ -365,6 +499,7 @@
   height: 1px;
   background: var(--gray-200);
 }
+
 @media (max-width: 860px) {
   .hojreh-page-formula-panel .hojreh-page-section-title {
     gap: 12px;
@@ -372,11 +507,13 @@
     font-size: 19px;
   }
 }
+
 @media (max-width: 600px) {
   .hojreh-page-pricing-options,
   .hojreh-quantity-fields-wrap {
     margin-top: 32px;
   }
+
   .hojreh-page-formula-panel .hojreh-page-section-title {
     gap: 10px;
     margin-bottom: 20px;
@@ -384,6 +521,7 @@
     white-space: normal;
   }
 }
+
 .hojreh-quantity-fields-wrap .hojreh-qty-title {
   font-size: 13px;
   font-weight: 800;
@@ -391,6 +529,7 @@
   margin-bottom: 10px;
   display: block;
 }
+
 .hojreh-quantity-fields-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -478,6 +617,7 @@
   .hojreh-page-formula-panel { padding: 0; }
   .hojreh-dynamic-pricing-row label { white-space: normal; }
 }
+
 .hojreh-final-price-bar {
   display: flex;
   justify-content: space-between;
@@ -510,12 +650,18 @@
 .hojreh-final-price-value.hojreh-price-is-updating {
   animation: hojreh-price-value-update .26s cubic-bezier(.22, 1, .36, 1);
 }
+
 .hojreh-no-formula-hint {
   font-size: 12px;
   font-weight: 400;
   color: var(--gray-600);
   text-align: center;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   FULL-SCREEN MODAL SHELL
+   ═══════════════════════════════════════════════════════════════ */
+
 .hojreh-formula-modal-overlay {
   position: fixed;
   inset: 0;
@@ -525,7 +671,9 @@
   flex-direction: column;
   direction: rtl;
 }
+
 .hojreh-formula-modal-overlay.hojreh-open { display: flex; }
+
 .hojreh-formula-modal-header {
   display: flex;
   align-items: center;
@@ -535,16 +683,19 @@
   border-bottom: 1px solid var(--gray-200);
   flex-shrink: 0;
 }
+
 .hojreh-formula-modal-header-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .hojreh-formula-modal-header-right .hojreh-plugin-icon {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
 }
+
 .hojreh-formula-modal-title {
   font-size: 17px;
   font-weight: 800;
@@ -553,6 +704,7 @@
   font-variation-settings: "DOTS" 1;
   color: var(--black);
 }
+
 .hojreh-formula-modal-close {
   background: transparent;
   border: none;
@@ -567,16 +719,20 @@
 }
 .hojreh-formula-modal-close:hover { background: var(--gray-100); }
 .hojreh-formula-modal-close svg { width: 20px; height: 20px; }
+
 .hojreh-formula-modal-body {
   flex: 1;
   overflow-y: auto;
   padding: 24px 24px 60px;
 }
+
 .hojreh-formula-modal-content {
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
+
+/* ─── Segmented control ─── */
 .hojreh-segmented-control {
   position: relative;
   display: flex;
@@ -588,6 +744,11 @@
   border: 0;
   box-shadow: none;
 }
+
+/* The sliding "سینی" (tray) — an absolutely-positioned pill that JS
+   moves/resizes (via transform + width) to sit under whichever button
+   is active. Sits behind the buttons (z-index 0) so their labels stay
+   readable as it slides underneath them. */
 .hojreh-segmented-control-tray {
   position: absolute;
   top: auto;
@@ -604,6 +765,7 @@
   pointer-events: none;
   box-shadow: none;
 }
+
 .hojreh-segmented-control button {
   position: relative;
   z-index: 1;
@@ -620,24 +782,35 @@
   border-radius: 50px;
   transition: color .25s ease, background .2s ease;
 }
+
 .hojreh-segmented-control button:not(.hojreh-active):hover {
   color: var(--gray-600);
 }
+
 .hojreh-segmented-control button.hojreh-active {
   color: var(--black);
   font-weight: 700;
 }
+
+/* ─── Sliding tab content ───
+   Panels animate independently; JS resolves the actual physical screen
+   direction with DOMRects so their motion follows the segmented tray in RTL. During a switch the outgoing panel moves in
+   the tray direction while the incoming panel enters from the opposite
+   side. The travel distance includes 20px, producing a visible white gap
+   between the two contents at the middle of the transition. */
 .hojreh-tab-panels {
   position: relative;
   overflow: hidden;
   direction: ltr;
   transition: height .4s cubic-bezier(.65, 0, .35, 1);
 }
+
 .hojreh-tab-panels-track {
   position: relative;
   width: 100%;
   direction: ltr;
 }
+
 .hojreh-tab-panel {
   position: absolute;
   inset: 0;
@@ -651,20 +824,25 @@
   transition: transform .4s cubic-bezier(.65, 0, .35, 1);
   will-change: transform;
 }
+
 .hojreh-tab-panel.hojreh-active,
 .hojreh-tab-panel.hojreh-tab-panel--leaving {
   visibility: visible;
 }
+
 .hojreh-tab-panel.hojreh-active {
   position: relative;
   pointer-events: auto;
 }
+
+/* ─── "استفاده از الگو" pattern picker list ─── */
 .hojreh-pattern-picker-list {
   display: flex;
   flex-direction: column;
   gap: 0;
   margin-bottom: 20px;
 }
+
 .hojreh-pattern-picker-item {
   display: flex;
   align-items: center;
@@ -675,9 +853,11 @@
   cursor: pointer;
   transition: border-color .15s, background .15s;
 }
+
 .hojreh-pattern-picker-item:last-child {
   border-bottom: 0;
 }
+
 .hojreh-pattern-picker-item input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
@@ -694,9 +874,11 @@
   cursor: pointer;
   transition: background .18s ease;
 }
+
 .hojreh-pattern-picker-item:hover input[type="radio"] {
   background: var(--gray-300);
 }
+
 .hojreh-pattern-picker-item input[type="radio"]::after {
   content: "";
   width: 8px;
@@ -705,13 +887,16 @@
   transform: scale(0);
   transform-origin: center;
 }
+
 .hojreh-pattern-picker-item input[type="radio"]:checked::after {
   animation: hojreh-square-jelly .42s cubic-bezier(.22, .8, .3, 1) both;
 }
+
 .hojreh-pattern-picker-item input[type="radio"]:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: 3px;
 }
+
 @keyframes hojreh-square-jelly {
   0% { transform: scale(0); }
   48% { transform: scale(1.22); }
@@ -719,6 +904,7 @@
   84% { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
+
 .hojreh-pattern-picker-item .hojreh-pattern-picker-title {
   display: block;
   min-width: 0;
@@ -729,12 +915,17 @@
   font-weight: 700;
   color: var(--black);
 }
+
 .hojreh-pattern-picker-empty {
   font-size: 13px;
   font-weight: 600;
   color: var(--gray-600);
   padding: 16px 2px;
 }
+
+/* ─── empty state غنی («هیچ الگوی فعالی وجود ندارد») ───
+   الهام‌گرفته از empty state بخش سرچ مودال API در پروژه‌ی حجره
+   (hojreh/assets/css/api-modal.css → .api-empty-state). */
 .hojreh-pattern-picker-empty-state {
   display: flex;
   flex-direction: column;
@@ -743,18 +934,21 @@
   text-align: center;
   padding: 40px 20px;
 }
+
 .hojreh-pattern-picker-empty-icon {
   width: 110px;
   height: 110px;
   fill: var(--gray-400);
   margin-bottom: 16px;
 }
+
 .hojreh-pattern-picker-empty-title {
   font-size: 17px;
   font-weight: 700;
   color: var(--gray-600);
   margin-bottom: 10px;
 }
+
 .hojreh-pattern-picker-empty-desc {
   font-size: 13px;
   font-weight: 500;
@@ -763,6 +957,7 @@
   max-width: 360px;
   font-family: var(--font-body);
 }
+
 .hojreh-pattern-picker-empty-desc a {
   color: var(--white);
   font-weight: 700;
@@ -771,19 +966,27 @@
   border-radius: 50px;
   margin: 0 2px;
 }
+
 .hojreh-pattern-picker-empty-desc a:hover {
   background: var(--black-hover);
   text-decoration: none;
 }
+
+/* Read-only preview reused from pricing-patterns.css's
+   .formula-preview-large-box.has-formula — see modal JS for how the
+   "no test button" variant is achieved (simply never appending one). */
 .hojreh-readonly-preview-wrap {
   margin-bottom: 20px;
 }
+
+/* ─── Save button, bottom of modal ─── */
 .hojreh-formula-modal-footer {
   display: flex;
   justify-content: flex-end;
   max-width: 1200px;
   margin: 8px auto 0;
 }
+
 .hojreh-save-formula-btn {
   background: var(--green-dark);
   color: var(--white);
@@ -798,15 +1001,35 @@
   transition: background .15s;
 }
 .hojreh-save-formula-btn:hover { background: var(--green-mid); }
+
 @media (max-width: 700px) {
   .hojreh-formula-modal-header { padding: 12px 16px; }
   .hojreh-formula-modal-body { padding: 16px 16px 60px; }
   .hojreh-segmented-control { width: 100%; }
   .hojreh-segmented-control button { flex: 1; padding: 9px 10px; }
 }
+
+/* ── Same z-index burial problem as custom-select.js's dropdown panel
+   (see the comment there), but for toast.js's notifications:
+   #hojreh-toast-container is a single global container (z-index:1200 from
+   toast.css) appended once to <body> and reused for every toast on the
+   page. Since .hojreh-formula-modal-overlay sits at z-index:100000, any
+   toast fired while this modal is open (e.g. the "ثابت درصدی نمی‌تواند
+   اولین آیتم باشد..." warning from controller-dom.js's addAndRender)
+   renders completely behind the modal and is invisible -- which is why
+   trying to add a constant/rounding before selecting any variable looked
+   like "nothing happens" instead of showing its explanatory toast.
+   :has() bumps the container above the modal only while it's open. */
 body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   z-index: 100001;
 }
+
+
+/* ── Canonical settings-panel parity for formula-builder controls ───────
+   The Woo mockup body uses YekanBakh, while the real Hojreh settings page
+   uses Gramophone for buttons/short UI labels. Keep the modal body in
+   YekanBakh, but make the formula-builder action buttons match the canonical
+   settings-panel rendering exactly. */
 .hojreh-formula-modal .pattern-control-pane .btn-control-action.btn-more {
   font-family: var(--font-display);
   font-size: 15px;
@@ -815,6 +1038,10 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   font-feature-settings: "ss01" on, "ss02" on;
   font-variation-settings: "DOTS" 1;
 }
+
+/* Canonical formula row delete control: 20×20 button + 20×20 icon.
+   Explicit padding/display prevents browser button defaults in the Woo shell
+   from shrinking the SVG's usable drawing area. */
 .hojreh-formula-modal .pattern-item-delete-btn {
   width: 20px;
   height: 20px;
@@ -831,6 +1058,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   min-height: 20px;
   overflow: visible;
 }
+
+/* Keep the plus icon geometry identical to settings-panel and give the
+   hover-animation stylesheet a stable box to animate inside. */
 .hojreh-formula-modal .pattern-control-pane .btn-control-action.btn-more svg {
   width: 18px;
   height: 18px;
@@ -839,6 +1069,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   flex: 0 0 18px;
   overflow: visible;
 }
+
+/* ── Final parity pass: typography, controls, section title and drag ghost ── */
+/* These short UI labels use the same display font treatment as settings-panel. */
 .hojreh-formula-modal .formula-empty-title,
 .hojreh-formula-modal .pattern-control-title,
 .hojreh-formula-modal .formula-preview-large-box:not(.has-formula) {
@@ -846,10 +1079,15 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   font-feature-settings: "ss01" on, "ss02" on;
   font-variation-settings: "DOTS" 1;
 }
+
+/* Match the actual computed size of settings-panel's black + buttons.
+   There, pricing-patterns.css wins the padding cascade: 10px 8px. */
 .hojreh-formula-modal .pattern-control-pane .btn-control-action.btn-more {
   padding: 10px 8px;
   min-height: 40px;
 }
+
+/* Exact settings-panel section-title geometry, scoped to the modal. */
 .hojreh-formula-modal .section-title.hojreh-modal-section-title {
   text-align: center;
   font-size: 26px;
@@ -872,15 +1110,28 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   height: 1px;
   background: var(--gray-200);
 }
+
+/* The controller appends its custom drag ghost to <body>, outside the modal.
+   Its canonical z-index (9999) falls behind this modal (100000), making the
+   translucent item seem to disappear during drag. Keep the canonical 0.5
+   opacity, but lift it above the modal so drag behaves like settings-panel. */
 .formula-drag-ghost {
   z-index: 100002 !important;
 }
+
+/* Header now contains the save action on the physical right and close on left. */
 .hojreh-formula-modal-header-right {
   min-width: 0;
 }
 .hojreh-formula-modal-header .hojreh-save-formula-btn {
   padding: 10px 22px;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Header-centered pricing mode + isolated modal transition pass
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Keep the overlay mounted so open/close can actually interpolate. */
 .hojreh-formula-modal-overlay {
   display: flex;
   visibility: hidden;
@@ -912,6 +1163,10 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Three equal physical columns: close = left, segmented = exact center,
+   save = right. Header itself is LTR purely for predictable grid placement;
+   each UI cluster restores RTL text flow where needed. */
 .hojreh-formula-modal-header {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -949,16 +1204,24 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   align-items: center;
   gap: 5px;
 }
+
+/* The segmented control belongs to the header now, so it must not carry the
+   old body spacing. */
 .hojreh-formula-modal-header .hojreh-segmented-control {
   margin: 0;
 }
 .hojreh-tab-label-mobile { display: none; }
+
+/* Desktop save button keeps its label; the icon is reserved for compact UI. */
 .hojreh-save-formula-icon {
   display: none;
   width: 20px;
   height: 20px;
   flex: 0 0 20px;
 }
+
+/* Tabs occupy the modal's available height. Only the horizontal slide is
+   contained; each panel retains its own natural, scrollable content. */
 .hojreh-tab-panels {
   isolation: isolate;
   flex: 1 1 auto;
@@ -981,27 +1244,33 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-tab-panel.hojreh-active { z-index: 2; }
 .hojreh-tab-panel.hojreh-tab-panel--leaving { z-index: 1; }
 .hojreh-qty-title { display: none !important; }
+
 @media (max-width: 700px) {
   .hojreh-formula-modal-header {
     height: 58px;
     padding: 9px 12px;
     column-gap: 8px;
   }
+
   .hojreh-formula-modal-header-center {
     width: 100%;
   }
+
   .hojreh-formula-modal-header .hojreh-segmented-control {
     width: 100%;
     min-width: 0;
   }
+
   .hojreh-formula-modal-header .hojreh-segmented-control button {
     flex: 1 1 50%;
     min-width: 0;
     padding: 8px 8px;
     white-space: nowrap;
   }
+
   .hojreh-tab-label-desktop { display: none; }
   .hojreh-tab-label-mobile { display: inline; }
+
   .hojreh-formula-modal-header .hojreh-save-formula-btn {
     width: 40px;
     height: 40px;
@@ -1013,10 +1282,12 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   }
   .hojreh-save-formula-label { display: none; }
   .hojreh-save-formula-icon { display: block; }
+
   .hojreh-formula-modal-close {
     width: 40px;
     height: 40px;
   }
+
   .hojreh-formula-modal .section-title.hojreh-modal-section-title {
     font-size: 20px;
     margin-top: 38px;
@@ -1024,6 +1295,7 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
     gap: 10px;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .wc-field.hojreh-sale-price-transition {
     transition-duration: .01ms !important;
@@ -1039,6 +1311,12 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
     transition-duration: .01ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Compact/tablet labels + clean panel compositing pass
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Opaque panel surfaces keep the horizontal transition visually clean. */
 .hojreh-formula-modal .hojreh-tab-panels,
 .hojreh-formula-modal .hojreh-tab-panels-track,
 .hojreh-formula-modal .hojreh-tab-panel {
@@ -1051,22 +1329,33 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   mix-blend-mode: normal;
   will-change: transform;
 }
+
+/* Both tab panels share this inset. Keeping the same geometry prevents the
+   first row and the bottom action area from jumping during the tab slide. */
 .hojreh-formula-modal .hojreh-tab-panel {
   padding: 20px 0 24px;
 }
+
+/* Tablet uses the same compact labels as mobile. The settings panel drops
+   section-title to 20px on compact screens; extend that treatment through
+   the project's tablet breakpoint as requested. */
 @media (max-width: 860px) {
   .hojreh-tab-label-desktop { display: none !important; }
   .hojreh-tab-label-mobile { display: inline !important; }
+
   .hojreh-formula-modal .section-title.hojreh-modal-section-title {
     font-size: 20px;
     margin-top: 40px;
     margin-bottom: 20px;
     gap: 10px;
   }
+
   .hojreh-save-formula-icon {
     fill: currentColor;
   }
 }
+
+/* Mobile save control: use the supplied floppy-disk artwork in white. */
 @media (max-width: 700px) {
   .hojreh-formula-modal-header .hojreh-save-formula-btn {
     color: #fff;
@@ -1079,6 +1368,13 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
     fill: currentColor;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Modal interaction + frosted header + polished icon controls
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Header has no surface of its own; this masked overlay only blurs whatever
+   passes behind it and fades the effect from top to bottom. */
 .hojreh-formula-modal-header {
   position: absolute;
   inset: 0 0 auto;
@@ -1103,6 +1399,10 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   position: relative;
   z-index: 1;
 }
+
+/* The body starts underneath the absolutely positioned header, then receives
+   enough top padding to keep its initial content clear of the controls. As it
+   scrolls, the real content passes behind the transparent blur layer. */
 .hojreh-formula-modal .hojreh-formula-modal-body {
   display: flex;
   overflow: hidden;
@@ -1115,6 +1415,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   flex-direction: column;
   min-height: 0;
 }
+
+/* Close and save use one control language. Background is visible at rest,
+   so hover is motion/color refinement rather than a box suddenly appearing. */
 .hojreh-formula-modal .hojreh-header-icon-btn {
   box-sizing: border-box;
   min-height: 42px;
@@ -1259,6 +1562,8 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   display: block;
   overflow: visible;
 }
+
+/* Preserve the close icon's original sequential line wipe. */
 .hojreh-header-close-icon svg line {
   stroke-dasharray: 17 17;
   stroke-dashoffset: 0;
@@ -1275,6 +1580,8 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-formula-modal-close:hover .hojreh-header-close-icon svg line:last-child {
   animation: hojreh-modal-x-line-wipe .6s ease-in-out .12s;
 }
+
+/* Save icon compresses toward its center, opens out, then settles. */
 .hojreh-header-save-icon svg {
   transform-origin: center;
 }
@@ -1286,9 +1593,15 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-save-formula-btn:hover .hojreh-header-save-icon svg {
   animation: hojreh-modal-save-squeeze .68s cubic-bezier(.22,1,.36,1);
 }
+
+/* Modal-only formula-builder hooks. These classes intentionally live only in
+   the WooCommerce modal markup, so the settings-panel component is untouched. */
 .hojreh-formula-modal .hojreh-modal-pattern-interactive-box {
   height: 100%;
   min-height: 0;
+  /* pricing-patterns.css gives standalone builders a 24px trailing margin.
+     In this full-height tab that margin lifts the sticky controls above the
+     pattern tab's preview, so the panel padding is the single bottom inset. */
   margin-bottom: 0;
   flex-direction: column;
   gap: 12px;
@@ -1345,6 +1658,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   position: relative;
   margin-bottom: 0;
 }
+
+/* Pattern tab: the list scrolls independently, while its formula preview
+   occupies the same bottom-aligned action area as the builder preview. */
 .hojreh-formula-modal .hojreh-tab-panel[data-panel="use-pattern"] {
   display: flex;
   flex-direction: column;
@@ -1427,6 +1743,7 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-formula-modal .hojreh-pattern-search-input:hover {
   background: var(--gray-100);
 }
+
 @media (prefers-reduced-motion: reduce) {
   .hojreh-pattern-picker-item input[type="radio"]:checked::after {
     animation: none;
@@ -1456,6 +1773,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+/* Convert-to-pattern confirmation follows the settings deletion warning's
+   compact overlay language, with an input for the new pattern name. */
 .hojreh-pattern-name-dialog {
   position: absolute;
   inset: 0;
@@ -1489,6 +1809,9 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-pattern-name-dialog-cancel { background: var(--gray-200); color: var(--black); }
 .hojreh-pattern-name-dialog-confirm { background: var(--green-dark); color: var(--white); }
 .hojreh-pattern-name-dialog-confirm:hover { background: var(--green-mid); }
+
+/* Exit confirmation mirrors the settings-page deletion warning, scoped to
+   this WooCommerce mockup because no other page consumes it. */
 .hojreh-exit-confirm-dialog {
   position: absolute;
   inset: 0;
@@ -1565,10 +1888,12 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-exit-confirm-discard:hover { background: var(--gray-300); }
 .hojreh-exit-confirm-save { background: var(--green-dark); color: var(--white); }
 .hojreh-exit-confirm-save:hover { background: var(--green-mid); }
+
 @media (max-width: 520px) {
   .hojreh-exit-confirm-actions { flex-direction: column-reverse; }
   .hojreh-exit-confirm-actions button { width: 100%; }
 }
+
 .hojreh-formula-modal .hojreh-modal-manual-formula-btn {
   position: absolute;
   top: 50%;
@@ -1598,6 +1923,7 @@ body:has(.hojreh-formula-modal-overlay.hojreh-open) #hojreh-toast-container {
 .hojreh-formula-modal .hojreh-modal-manual-formula-btn:hover {
 background: var(--gray-400) ;
 }
+
 .hojreh-formula-modal .hojreh-modal-manual-formula-btn.is-active {
   background: var(--black);
   border-color: var(--black);
@@ -1614,11 +1940,18 @@ background: var(--gray-400) ;
   left: calc(100% - 12px);
   transform: translate(-100%, -50%);
 }
+
+
 ::-webkit-scrollbar { width: 7px; }
 ::-webkit-scrollbar-track { background: var(--gray-100); }
 ::-webkit-scrollbar-thumb { background: var(--black); height: 100px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--black-hover); }
+
 [data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1a1a; }
+
+
+/* The global theme API changes html[data-theme]; these local token overrides
+   keep the WooCommerce shell untouched while fully theming the modal. */
 [data-theme="dark"] .hojreh-formula-modal {
   --gray-100: #1e1e1e;
   --gray-200: #272727;
@@ -1646,6 +1979,8 @@ background: var(--gray-400) ;
 [data-theme="dark"] .hojreh-formula-modal .hojreh-header-icon-btn:hover {
   background: #ccc;
 }
+
+/* Required by the radial View Transitions API used by dark-mode.js. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -1655,6 +1990,7 @@ background: var(--gray-400) ;
 ::view-transition-new(root) { z-index: 1; }
 html[data-theme-transition="to-dark"]::view-transition-old(root) { z-index: 1; }
 html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
+
 @media (max-width: 700px) {
   .hojreh-modal-settings-menu { display: none; }
   .hojreh-formula-modal .hojreh-mobile-header-action { display: inline-flex; }
@@ -1672,6 +2008,7 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
     flex-grow: 0;
   }
 }
+
 @media (max-width: 700px) {
   .hojreh-formula-modal .hojreh-formula-modal-body { padding-top: 64px; }
   .hojreh-formula-modal .hojreh-header-icon-btn,
@@ -1686,12 +2023,18 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   }
   .hojreh-header-save-icon { display: inline-flex; }
   .hojreh-save-formula-icon { display: none !important; }
+
+  /* Only the compact, icon-only save action uses the project's primary green. */
   .hojreh-formula-modal-header .hojreh-save-formula-btn {
     background: var(--green-dark);
   }
   .hojreh-formula-modal-header .hojreh-save-formula-btn:hover {
     background: var(--green-mid);
   }
+
+  /* The generic dark header-button rule is intentionally white, but the
+     mobile save action stays semantic green. These are the same brighter
+     dark-theme greens used by settings-panel and price-editor. */
   [data-theme="dark"] .hojreh-formula-modal .hojreh-formula-modal-header .hojreh-save-formula-btn {
     background: #06917D;
   }
@@ -1701,6 +2044,10 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   [data-theme="dark"] .hojreh-formula-modal .hojreh-formula-modal-header .hojreh-save-formula-btn:hover {
     background: #08b49a;
   }
+
+  /* The desktop empty-state spacing is taller than the mobile drop-zone by a
+     few pixels. Compact it instead of disabling overflow: genuinely taller
+     formula content and unusually short viewports can still scroll. */
   .hojreh-formula-modal .hojreh-modal-formula-drop-zone > .formula-empty-state {
     padding: 10px 12px;
   }
@@ -1719,6 +2066,14 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
 .formula-preview-large-box.formula-valid {
   box-shadow: none;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL FORMULA PREVIEW — SINGLE LINE + ANIMATED IN-FIELD ACTION
+   The manual button keeps the original absolute left/transform animation.
+   JS exposes only its measured width as a CSS variable, so the text gets a
+   real safe inset without hard-coded button widths. The outer shell remains
+   a strict 58px tall, regardless of whether horizontal scrolling is present.
+   ═══════════════════════════════════════════════════════════════ */
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper {
   display: block;
   position: relative;
@@ -1733,9 +2088,13 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   background: var(--gray-100);
   box-sizing: border-box;
 }
+
 .hojreh-formula-modal .hojreh-modal-formula-preview {
   display: block;
   min-width: 0;
+  /* Give the scroller a REAL safe viewport instead of merely hiding text
+     underneath the action. 12px is the button's edge inset and 3px is the
+     requested safety gap. The measured button width is supplied by JS. */
   width: calc(100% - var(--formula-preview-action-width, 0px) - 15px);
   height: 100%;
   min-height: 0;
@@ -1743,6 +2102,8 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   margin-top: 0;
   margin-right: 0;
   margin-bottom: 0;
+  /* Empty/RTL state: the button lives on the left, so the viewport starts
+     exactly 3px after it and runs to the right edge. */
   margin-left: calc(var(--formula-preview-action-width, 0px) + 15px);
   padding: 15px 16px;
   border: 0;
@@ -1755,22 +2116,35 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
   overflow-x: auto;
   overflow-y: hidden;
 }
+
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.has-formula) .hojreh-modal-formula-preview {
+  /* Formula/LTR state: the same safe-width viewport snaps to the left while
+     the action itself performs the original smooth animation to the right. */
   margin-left: 0;
   padding: 15px 16px;
 }
+
+/* A symmetric padding value is not enough to optically centre a normal block
+   line box: the spare line-height space remains below the text. While no
+   horizontal scrollbar exists, centre the line itself with flex alignment. */
 .hojreh-formula-modal .hojreh-modal-formula-preview:not(.has-horizontal-overflow) {
   display: flex;
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
 }
+
+/* Once a real horizontal scrollbar exists, return to the proven block/padding
+   geometry so the scrollbar never crowds the text. */
 .hojreh-formula-modal .hojreh-modal-formula-preview.has-horizontal-overflow,
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.has-formula) .hojreh-modal-formula-preview.has-horizontal-overflow {
   display: block;
   padding-top: 12px;
   padding-bottom: 12px;
 }
+
+/* Restore the original smooth side-to-side motion that was lost when the
+   previous version turned the button into a non-animatable grid-area swap. */
 .hojreh-formula-modal .hojreh-modal-manual-formula-btn {
   position: absolute;
   top: 50%;
@@ -1793,10 +2167,12 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
     color .18s ease,
     border-color .18s ease;
 }
+
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.has-formula) .hojreh-modal-manual-formula-btn {
   left: calc(100% - 12px);
   transform: translate(-100%, -50%);
 }
+
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.formula-invalid) {
   background: #fff0f0;
 }
@@ -1809,6 +2185,7 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
 .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.formula-warning) .formula-preview-overflow-guard {
   --formula-preview-guard-bg: #fff8df;
 }
+
 [data-theme="dark"] .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.formula-invalid) {
   background: rgba(217, 56, 58, 0.14);
 }
@@ -1821,6 +2198,11 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) { z-index: 0; }
 [data-theme="dark"] .hojreh-formula-modal .hojreh-modal-formula-preview-wrapper:has(.formula-preview-large-box.formula-warning) .formula-preview-overflow-guard {
   --formula-preview-guard-bg: rgba(245, 158, 11, 0.14);
 }
+
+/* Same scrollbar recipe as the WooCommerce modal/page itself. Intentionally
+   only `width: 7px` is set on ::-webkit-scrollbar: this is the project's
+   proven version that keeps Chromium's horizontal end triangles/buttons away
+   and preserves the square thumb. */
 .hojreh-formula-modal .formula-preview-large-box::-webkit-scrollbar { width: 7px; }
 .hojreh-formula-modal .formula-preview-large-box::-webkit-scrollbar-track { background: var(--gray-100); }
 .hojreh-formula-modal .formula-preview-large-box::-webkit-scrollbar-thumb { background: var(--black); height: 100px; }

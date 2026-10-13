@@ -1,9 +1,9 @@
-﻿import { initNumericInputs } from '../general.js';
+import { initNumericInputs } from '../general.js';
 function wrapPriceInputsWithToman(root) {
   root = root || document;
   const priceSelectors = '.ojrat-input, .var-min-price, .var-default-price';
   root.querySelectorAll(priceSelectors).forEach(input => {
-    if (input.closest('.settings-price-wrapper')) return;
+    if (input.closest('.settings-price-wrapper')) return; 
     const wrapper = document.createElement('div');
     wrapper.className = 'settings-price-wrapper';
     input.parentNode.insertBefore(wrapper, input);

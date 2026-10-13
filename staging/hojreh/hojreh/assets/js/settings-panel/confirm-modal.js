@@ -1,4 +1,4 @@
-﻿const confirmModal = document.getElementById('confirmModal');
+const confirmModal = document.getElementById('confirmModal');
 const confirmTitle = document.getElementById('confirmTitle');
 const confirmDesc = document.getElementById('confirmDesc');
 const btnConfirmCancel = document.getElementById('btnConfirmCancel');

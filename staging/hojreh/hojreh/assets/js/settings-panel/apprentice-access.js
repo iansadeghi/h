@@ -1,4 +1,4 @@
-﻿const ACCESS_OPTIONS = [
+const ACCESS_OPTIONS = [
   { key: 'edit_variable_prices', label: 'ویرایشگر قیمت متغیرها' },
   { key: 'edit_product_pricing_formula', label: 'ویرایش فرمول قیمت‌گذاری تک‌محصول' }
 ];

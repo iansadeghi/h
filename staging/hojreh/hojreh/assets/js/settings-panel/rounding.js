@@ -1,4 +1,4 @@
-﻿import { formatNumberWithCommas as formatSharedNumber } from '../general.js';
+import { formatNumberWithCommas as formatSharedNumber } from '../general.js';
 import { customSelect } from '../custom-select.js';
 const roundingDigitNames = {
   3: "سومین",

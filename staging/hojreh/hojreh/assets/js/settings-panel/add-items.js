@@ -1,4 +1,4 @@
-﻿import { showToast } from '../general.js';
+import { showToast } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { formulaTestModal } from '../formula-test-modal.js';
 import { nextAccordionId } from './id-utils.js';

@@ -1,4 +1,4 @@
-﻿HojrehIntro.start({
+HojrehIntro.start({
   id: 'access',
   version: 1,
   steps: [

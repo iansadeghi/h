@@ -1,4 +1,4 @@
-﻿import { normalizeUnitSelects } from '../general.js';
+import { normalizeUnitSelects } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import { normalizeEnglishIdValue } from './id-utils.js';
 let formulaAffectingRefreshTimer = null;

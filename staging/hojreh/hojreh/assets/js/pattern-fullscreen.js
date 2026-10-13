@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   const list = document.getElementById('pricingPatternsList');
   if (!list) return;
@@ -86,7 +86,7 @@
     item.style.width = rect.width + 'px';
     item.style.height = rect.height + 'px';
     item.style.margin = '0';
-    void item.offsetWidth;
+    void item.offsetWidth; 
     item.classList.add('pattern-fullscreen', 'pattern-fullscreen-animating');
     requestAnimationFrame(() => {
       item.style.top = '0px';
@@ -103,7 +103,7 @@
       ['position', 'top', 'left', 'right', 'bottom', 'width', 'height', 'margin', 'zIndex'].forEach(p => { item.style[p] = ''; });
     };
     item.addEventListener('transitionend', cleanup);
-    setTimeout(() => cleanup(null), 600);
+    setTimeout(() => cleanup(null), 600); 
   }
   function exitFullscreen(item) {
     if (!item.classList.contains('pattern-fullscreen') || item.classList.contains('pattern-fullscreen-animating')) return;
@@ -119,12 +119,12 @@
       finish();
       return;
     }
-    const startRect = item.getBoundingClientRect();
+    const startRect = item.getBoundingClientRect(); 
     const endRect = placeholder ? placeholder.getBoundingClientRect() : startRect;
     item.style.position = 'fixed';
     item.style.top = startRect.top + 'px';
     item.style.left = startRect.left + 'px';
-    item.style.right = 'auto';
+    item.style.right = 'auto'; 
     item.style.bottom = 'auto';
     item.style.width = startRect.width + 'px';
     item.style.height = startRect.height + 'px';
@@ -162,7 +162,7 @@
   list.addEventListener('click', function (e) {
     const fsBtn = e.target.closest('.acc-fullscreen-btn');
     if (!fsBtn) return;
-    e.stopPropagation();
+    e.stopPropagation(); 
     e.preventDefault();
     const item = fsBtn.closest('.accordion-item[data-type="pattern"]');
     if (!item) return;
@@ -182,7 +182,7 @@
     if (!header) return;
     const item = header.closest('.accordion-item.pattern-fullscreen');
     if (!item) return;
-    if (e.target.closest('.acc-fullscreen-btn')) return;
+    if (e.target.closest('.acc-fullscreen-btn')) return; 
     e.stopImmediatePropagation();
-  }, true);
+  }, true); 
 })();

@@ -1,9 +1,9 @@
-﻿let darkMode;
+let darkMode;
 let bindThemeActions;
 (function () {
   'use strict';
   var STORAGE_KEY = 'hojreh-theme';
-  var TRANSITION_DURATION = 1000;
+  var TRANSITION_DURATION = 1000; 
   var themeTransitionSequence = 0;
   function announceThemeTransitionStart(source) {
     var id = ++themeTransitionSequence;
@@ -168,7 +168,7 @@ let bindThemeActions;
   }
   function handleThemeBtn(event) {
     var btn = event.currentTarget;
-    var action = btn.getAttribute('data-theme-action');
+    var action = btn.getAttribute('data-theme-action'); 
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     var newTheme;
     if (action === 'toggle') {

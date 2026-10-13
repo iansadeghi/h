@@ -1,4 +1,4 @@
-﻿const PREVIEW_SELECTOR = '.formula-preview-large-box';
+const PREVIEW_SELECTOR = '.formula-preview-large-box';
 const ACTION_SELECTOR = '.btn-test-formula, .hojreh-modal-manual-formula-btn';
 const SAFE_GAP = 3;
 const boundPreviews = new WeakSet();

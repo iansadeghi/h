@@ -1,4 +1,4 @@
-﻿function createIndependentVarBodyHtml() {
+function createIndependentVarBodyHtml() {
   return `
     <div class="form-grid">
       <div class="form-group">

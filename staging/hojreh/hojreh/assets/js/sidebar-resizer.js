@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   const LS_KEY_WIDTH   = 'hojreh-sidebar-width';
   const LS_KEY_VISIBLE = 'hojreh-sidebar-visible';

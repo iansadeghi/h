@@ -1,4 +1,4 @@
-﻿import { createPlaceholder } from '../general.js';
+import { createPlaceholder } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 const _savedListOrders = {};
 function getListOrder(list) {

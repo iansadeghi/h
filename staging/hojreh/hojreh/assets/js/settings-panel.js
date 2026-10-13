@@ -1,4 +1,4 @@
-﻿import { wrapPriceInputsWithToman, initPasswordToggle, initNewAccordionExtras } from './settings-panel/misc-ui.js';
+import { wrapPriceInputsWithToman, initPasswordToggle, initNewAccordionExtras } from './settings-panel/misc-ui.js';
 import {
   generateEnglishID,
   normalizeEnglishIdValue,

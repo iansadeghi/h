@@ -1,4 +1,4 @@
-﻿function initSidebarNav() {
+function initSidebarNav() {
   const sidebarLinks = document.querySelectorAll('.sidebar-menu li a');
   const sections = document.querySelectorAll('.main > h1.section-title');
   const sidebarMenu = document.querySelector('.sidebar-menu');
@@ -30,7 +30,7 @@
     const dot = link && link.querySelector('.sidebar-dot');
     if (!dot) return;
     dot.classList.remove('dot-pop');
-    void dot.offsetWidth;
+    void dot.offsetWidth; 
     dot.classList.add('dot-pop');
   }
   function setActiveSidebarLink(link) {

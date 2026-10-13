@@ -1,4 +1,4 @@
-﻿  'use strict';
+  'use strict';
   var RANGE_LABELS = {
     daily: 'روزانه',
     weekly: 'هفتگی',
@@ -130,15 +130,15 @@
     var step = RANGE_STEP_MS[range] || RANGE_STEP_MS.monthly;
     var base = 400000 + Math.floor(rand() * 200000);
     var now = Date.now();
-    var totalDriftPct = -0.16 + rand() * 0.22;
+    var totalDriftPct = -0.16 + rand() * 0.22; 
     var raw = [];
     var value = base;
     var velocity = 0;
-    var volatility = base * 0.006;
+    var volatility = base * 0.006; 
     for (var i = 0; i < count; i++) {
       var driftPerStep = (base * totalDriftPct) / count;
       velocity += (rand() - 0.5) * volatility;
-      velocity *= 0.86;
+      velocity *= 0.86; 
       value += driftPerStep + velocity;
       raw.push(value);
     }
@@ -158,11 +158,11 @@
       itemLabel: '',
       ranges: DEFAULT_RANGES,
       defaultRange: 'weekly',
-      fetchData: null,
-      onRangeLabelChange: null,
-      onChangeUpdate: null,
-      onSwitchStart: null,
-      onSwitchEnd: null
+      fetchData: null, 
+      onRangeLabelChange: null,   
+      onChangeUpdate: null,       
+      onSwitchStart: null,        
+      onSwitchEnd: null           
     }, options || {});
     this.currentRange = this.opts.ranges.indexOf(this.opts.defaultRange) !== -1
       ? this.opts.defaultRange
@@ -392,7 +392,7 @@
     this.el.statMaxVal.classList.add('hpc-skeleton');
     if (typeof this.opts.onSwitchStart === 'function') this.opts.onSwitchStart();
     return new Promise(function (resolve) {
-      setTimeout(resolve, 220);
+      setTimeout(resolve, 220); 
     }).then(function () {
       return self._fetch(self.currentRange);
     }).then(function (data) {
@@ -491,7 +491,7 @@
       var animTargets = [this.el.linePath, this.el.glowAreaPath, this.el.areaPath];
       animTargets.forEach(function (node) {
         node.classList.remove('hpc-enter');
-        void node.getBBox && node.getBBox();
+        void node.getBBox && node.getBBox(); 
         node.classList.add('hpc-enter');
       });
     }
@@ -550,7 +550,7 @@
     var ttHalf = ttWidth / 2;
     var margin = 6;
     var clampedX = pxX;
-    var translateX = -50;
+    var translateX = -50; 
     if (pxX - ttHalf < margin) {
       clampedX = margin;
       translateX = 0;

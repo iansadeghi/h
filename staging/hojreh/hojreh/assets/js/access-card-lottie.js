@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
   if (!window.lottie || !window.HOJREH_LOTTIE) return;
   var CYCLE_END = { edit: 55, settings: 50, plus: 50 };
@@ -34,7 +34,7 @@
     function start() {
       if (reduceMotion) return;
       hovering = true;
-      anim.loop = true;
+      anim.loop = true;               
       if (!playing) {
         playing = true;
         anim.playSegments([0, end], true);
@@ -42,12 +42,12 @@
     }
     function stop() {
       hovering = false;
-      anim.loop = false;
+      anim.loop = false;              
     }
     anim.addEventListener('complete', function () {
       playing = false;
-      rest();
-      if (hovering) start();
+      rest();                          
+      if (hovering) start();           
     });
     card.addEventListener('mouseenter', start);
     card.addEventListener('mouseleave', stop);

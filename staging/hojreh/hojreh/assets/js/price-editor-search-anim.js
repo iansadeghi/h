@@ -1,9 +1,9 @@
-﻿let priceEditorSearchAnim;
+let priceEditorSearchAnim;
 (function () {
   'use strict';
-  var SLIDE_OUT_DURATION = 260;
-  var SLIDE_IN_DURATION  = 320;
-  var FOCUS_DELAY        = 320;
+  var SLIDE_OUT_DURATION = 260;  
+  var SLIDE_IN_DURATION  = 320;  
+  var FOCUS_DELAY        = 320;  
   var mainHeader  = document.getElementById('mainHeader');
   var searchInput = document.getElementById('pricingSearchInput');
   if (!mainHeader) return;

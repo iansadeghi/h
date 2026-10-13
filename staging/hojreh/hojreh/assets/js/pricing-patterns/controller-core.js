@@ -1,4 +1,4 @@
-﻿import { HojrehFormulaEngine } from './formula-engine.js';
+import { HojrehFormulaEngine } from './formula-engine.js';
 class HojrehPatternController {
   constructor(patternId, targetContainer = null, options = {}) {
     if (!patternId && patternId !== 0) {
@@ -14,12 +14,12 @@ class HojrehPatternController {
       elements: HojrehPatternController.cloneElements(options.initialElements || []),
       lastValidElements: HojrehPatternController.cloneElements(options.initialElements || []),
       elementCounter: 0,
-      status: 'empty',
+      status: 'empty',      
       errorMessage: '',
       isManual: false,
       manualText: '',
-      savedFormulaText: null,
-      simulatorValues: {},
+      savedFormulaText: null, 
+      simulatorValues: {},     
       isRevisionAuthoritative: revisionInfo.authoritative
     };
     this._dom = {

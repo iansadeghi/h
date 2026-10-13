@@ -1,4 +1,4 @@
-﻿import { showToast, normalizeUnitSelects } from '../general.js';
+import { showToast, normalizeUnitSelects } from '../general.js';
 import { pricingPatterns } from '../pricing-patterns.js';
 import {
   normalizeEnglishIdValue,

@@ -1,4 +1,21 @@
-﻿import {
+/* ═══════════════════════════════════════════════════════════════
+   hojreh-formula-modal.js
+   ───────────────────────────────────────────────────────────────
+   One factory, `createHojrehFormulaField(config)`, that wires up a
+   single "دینامیک‌سازی قیمت با حجره" field: the checkbox + button
+   that live inline on the product-edit page, and the full-screen
+   modal (segmented "ساخت فرمول" / "استفاده از الگو" control) that
+   opens from it.
+
+   Everything that touches a formula — adding/removing elements,
+   validating, evaluating, computing dependencies — goes through the
+   real engine imported unmodified from the hojreh project:
+     HojrehPatternController  (../../hojreh/assets/js/pricing-patterns.js)
+     HojrehFormulaEngine
+   Nothing here reimplements formula parsing/evaluation logic.
+   ═══════════════════════════════════════════════════════════════ */
+
+import {
   HojrehFormulaEngine,
   HojrehPatternController
 } from '../../hojreh/assets/js/pricing-patterns.js';
@@ -8,8 +25,41 @@ import {
   attachNumericInput
 } from '../../hojreh/assets/js/general.js';
 import { bindThemeActions } from '../../hojreh/assets/js/dark-mode.js';
+/* Side-effect import only: custom-select.js is a self-bootstrapping
+   module (see its own file header) — importing it once anywhere on
+   the page runs its initAll() + observeDom() MutationObserver, which
+   then auto-upgrades every <select> that appears anywhere in
+   document.body from then on, including ones our modal creates
+   later on click. This is a DIFFERENT, unrelated system from
+   general.js's initCustomSelects()/createCustomSelect() (that one
+   only touches <select class="custom-select">, which is not what
+   the formula-builder's item-picker <select> elements use — those
+   are bare <select>s that THIS module hides and replaces with the
+   portal-rendered `.custom-select-wrapper` dropdown). Both exist in
+   the real hojreh codebase; picking the wrong one is why newly added
+   formula items were rendering as empty drag-handle+trash rows with
+   an invisible native <select> in between. */
 import { customSelect } from '../../hojreh/assets/js/custom-select.js';
+
 let modalSeq = 0;
+
+/* ── The trimmed "formula-builder box" markup ─────────────────────
+   Verbatim copy of the `.accordion-body-inner` → `.pattern-interactive-box`
+   structure from hojreh/settings-panel.html's own pattern accordion
+   (see /mnt/user-data/uploads extraction notes), with three
+   deliberate removals per §5.1.3 of the brief:
+     - `.pattern-name-group` (this formula belongs to one product
+       field, not a named reusable pattern — there's nothing to name)
+     - the "تست کردن فرمول" button (this page always shows the
+       quantity fields live, right below/inside the field itself —
+       there's no separate "test" step to trigger)
+     - `.test-section-label` / `.test-inputs-grid` /
+       `.final-calculation-summary` (same reason — replaced by our
+       own always-visible quantity-field list + final-price bar,
+       built in renderQuantityFields() below using the same engine
+       calls formula-test-modal.js itself uses)
+   All ids are suffixed with the field's unique `suffix` so multiple
+   instances (one per variation) can coexist as valid markup. */
 function buildFormulaBuilderBoxHTML(suffix) {
   return `
     <div class="pattern-interactive-box hojreh-modal-pattern-interactive-box">
@@ -34,6 +84,7 @@ function buildFormulaBuilderBoxHTML(suffix) {
         </div>
         <div class="formula-items-container" id="formulaItemsContainer_${suffix}"></div>
       </div>
+
       <div class="formula-preview-wrapper hojreh-modal-formula-preview-wrapper" id="formulaPreviewWrapper_${suffix}">
         <button class="hojreh-modal-manual-formula-btn" type="button" aria-pressed="false">
           <span>نوشتن دستی فرمول</span>
@@ -43,31 +94,37 @@ function buildFormulaBuilderBoxHTML(suffix) {
           برای نمایش فرمول، آیتم‌ها را به باکس بالا اضافه کنید.
         </div>
       </div>
+
       <div class="pattern-control-pane hojreh-modal-pattern-control-pane">
+
         <button class="btn-control-action btn-more" id="btnGroupAdd_${suffix}" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           افزودن گروه محاسباتی (به عنوان پرانتز)
         </button>
+
         <button class="btn-control-action btn-more" id="btnApiVariableAdd_${suffix}" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           افزودن متغیر وابسته به API
         </button>
+
         <button class="btn-control-action btn-more" id="btnIndependentAdd_${suffix}" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           افزودن متغیر مستقل
         </button>
+
         <button class="btn-control-action btn-more" id="btnConstantAdd_${suffix}" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           افزودن ثابت درصدی
         </button>
+
         <button class="btn-control-action btn-more" id="btnRoundingAdd_${suffix}" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
@@ -78,10 +135,17 @@ function buildFormulaBuilderBoxHTML(suffix) {
     </div>
   `;
 }
+
+/* ── Helpers shared by both tabs ─────────────────────────────────── */
+
 function getRegistryItem(id) {
   const registry = HojrehFormulaEngine.getRegisteredItems({ activeOnly: false });
   return registry.variables.find(v => v.id === id) || null;
 }
+
+/** Resolves the controller currently "in effect" for this field
+ *  instance: either the live build-tab controller, or whichever
+ *  saved pattern the admin picked in "استفاده از الگو". */
 function getActiveController(instance) {
   if (instance.mode === 'use-pattern') {
     return instance.selectedPatternId
@@ -90,6 +154,7 @@ function getActiveController(instance) {
   }
   return instance.buildController || null;
 }
+
 function animatePageSection(element, delay = 0) {
   if (!element) return;
   const animationId = `${Date.now()}_${Math.random()}`;
@@ -111,12 +176,14 @@ function animatePageSection(element, delay = 0) {
   };
   element.addEventListener('animationend', handleAnimationEnd);
 }
+
 function animatePageSectionGroups(groups) {
   groups.filter(Boolean).forEach((group, index) => {
     const elements = Array.isArray(group) ? group : [group];
     elements.forEach(element => animatePageSection(element, index * 120));
   });
 }
+
 function playPendingPageQuantityEntrance(instance) {
   if (
     !instance._pendingPageQtyEntrance ||
@@ -124,16 +191,21 @@ function playPendingPageQuantityEntrance(instance) {
     !instance.dynamicPricingCheckbox?.checked ||
     !instance.activeDependencyIds?.length
   ) return;
+
   instance._pendingPageQtyEntrance = false;
   instance._pageQtyHasEntered = true;
   animatePageSection(instance.pageQtySectionEl);
 }
+
+/** Rebuilds the quantity-field skeleton on the product page (only when the
+ *  set of variable dependencies actually changed), then refreshes its price. */
 function syncDependentUI(instance) {
   const controller = getActiveController(instance);
   const depIds = controller
     ? HojrehFormulaEngine.collectDependencies(controller.state.elements).variables
     : [];
   const key = `${instance.mode}:${instance.selectedPatternId || ''}:${depIds.join('|')}::${controller ? '1' : '0'}`;
+
   if (key !== instance._lastDepsKey) {
     const hadDependencies = Boolean(instance.activeDependencyIds?.length);
     instance._lastDepsKey = key;
@@ -147,10 +219,12 @@ function syncDependentUI(instance) {
   }
   updateFinalPriceDisplays(instance);
 }
+
 function renderQuantitySkeleton(container, instance) {
   const rebuild = () => {
     container.innerHTML = '';
     const ids = instance.activeDependencyIds || [];
+
     if (!ids.length) {
       const hint = document.createElement('div');
       hint.className = 'hojreh-no-formula-hint';
@@ -159,20 +233,27 @@ function renderQuantitySkeleton(container, instance) {
         : 'با افزودن اجزای قیمت‌گذاری، مقادیر مورد نیاز برای محاسبه اینجا نمایش داده می‌شود.';
       container.appendChild(hint);
     } else {
+
       const grid = document.createElement('div');
       grid.className = 'hojreh-quantity-fields-grid';
+
       ids.forEach(id => {
         const item = getRegistryItem(id);
         const fullLabel = HojrehFormulaEngine.getQuantityFieldLabel(item?.name, item?.unit);
+        // On-page inputs already show their unit as a suffix, so repeating it
+        // in parentheses in the title adds noise. Keep the modal label intact.
         const label = container === instance.pageQtyContainer
           ? fullLabel.replace(/\s*\([^()]*\)\s*$/, '')
           : fullLabel;
         const unit = String(item?.unit || 'واحد').trim();
+
         const group = document.createElement('div');
         group.className = 'form-group';
+
         const labelEl = document.createElement('label');
         labelEl.className = 'form-label';
         labelEl.textContent = label;
+
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'form-control';
@@ -183,13 +264,16 @@ function renderQuantitySkeleton(container, instance) {
           updateFinalPriceDisplays(instance);
         });
         attachNumericInput(input);
+
         group.appendChild(labelEl);
         if (container === instance.pageQtyContainer) {
           const inputWrap = document.createElement('div');
           inputWrap.className = 'hojreh-page-input-wrapper';
+
           const unitEl = document.createElement('span');
           unitEl.className = 'hojreh-page-input-unit';
           unitEl.textContent = unit;
+
           inputWrap.appendChild(input);
           inputWrap.appendChild(unitEl);
           group.appendChild(inputWrap);
@@ -198,7 +282,12 @@ function renderQuantitySkeleton(container, instance) {
         }
         grid.appendChild(group);
       });
+
       container.appendChild(grid);
+
+      // The product page owns a permanent final-price bar so the minimum-price
+      // controls can sit between the quantity fields and the total. Modal
+      // quantity fields keep their self-contained total as before.
       if (container !== instance.pageQtyContainer) {
         const priceBar = document.createElement('div');
         priceBar.className = 'hojreh-final-price-bar';
@@ -206,18 +295,22 @@ function renderQuantitySkeleton(container, instance) {
         container.appendChild(priceBar);
       }
     }
+
     container.classList.remove('hojreh-qty-is-leaving');
     container.classList.add('hojreh-qty-is-entering');
     requestAnimationFrame(() => container.classList.remove('hojreh-qty-is-entering'));
   };
+
   clearTimeout(container._hojrehQtyTransitionTimer);
   if (!container.hasChildNodes()) {
     rebuild();
     return;
   }
+
   container.classList.add('hojreh-qty-is-leaving');
   container._hojrehQtyTransitionTimer = setTimeout(rebuild, 150);
 }
+
 function computeFinalPrice(instance) {
   const controller = getActiveController(instance);
   if (!controller) return 0;
@@ -227,6 +320,7 @@ function computeFinalPrice(instance) {
   });
   return controller.evaluate(values);
 }
+
 function clearSalePriceTransition(field) {
   field.classList.remove('hojreh-sale-price-transition', 'hojreh-sale-price-is-leaving', 'hojreh-sale-price-is-entering');
   field.style.removeProperty('height');
@@ -234,9 +328,11 @@ function clearSalePriceTransition(field) {
   field.style.removeProperty('overflow');
   field.style.removeProperty('box-sizing');
 }
+
 function hideSalePriceField(instance, field) {
   if (field.classList.contains('hojreh-sale-price-is-leaving')) return;
   clearTimeout(instance._salePriceTransitionTimer);
+
   const startHeight = field.getBoundingClientRect().height;
   instance._salePriceNaturalMargin = getComputedStyle(field).marginBottom;
   field.classList.add('hojreh-sale-price-transition');
@@ -244,9 +340,11 @@ function hideSalePriceField(instance, field) {
   field.style.overflow = 'hidden';
   field.style.boxSizing = 'border-box';
   void field.offsetHeight;
+
   field.classList.add('hojreh-sale-price-is-leaving');
   field.style.height = '0px';
   field.style.marginBottom = '0px';
+
   const transitionDuration = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 0 : 420;
   instance._salePriceTransitionTimer = setTimeout(() => {
     if (field.classList.contains('hojreh-sale-price-is-leaving')) field.remove();
@@ -254,17 +352,20 @@ function hideSalePriceField(instance, field) {
     instance._salePriceTransitionTimer = null;
   }, transitionDuration);
 }
+
 function showSalePriceField(instance, field) {
   clearTimeout(instance._salePriceTransitionTimer);
   const wasLeaving = field.classList.contains('hojreh-sale-price-is-leaving');
   const interruptedHeight = wasLeaving ? field.getBoundingClientRect().height : 0;
   const interruptedMargin = wasLeaving ? getComputedStyle(field).marginBottom : '';
   clearSalePriceTransition(field);
+
   if (!field.isConnected) {
     const anchor = instance.salePriceOriginalNextSibling?.isConnected
       ? instance.salePriceOriginalNextSibling
       : instance.mountEl;
     instance.priceFieldsParent?.insertBefore(field, anchor);
+
     const targetHeight = field.getBoundingClientRect().height;
     const targetMargin = getComputedStyle(field).marginBottom;
     field.classList.add('hojreh-sale-price-transition', 'hojreh-sale-price-is-entering');
@@ -279,6 +380,7 @@ function showSalePriceField(instance, field) {
       field.style.marginBottom = targetMargin;
     });
   } else if (wasLeaving) {
+    // Reversing before removal should feel continuous rather than snapping.
     const targetHeight = field.scrollHeight;
     field.classList.add('hojreh-sale-price-transition');
     field.style.height = `${interruptedHeight}px`;
@@ -293,21 +395,30 @@ function showSalePriceField(instance, field) {
   } else {
     return;
   }
+
   const transitionDuration = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 0 : 420;
   instance._salePriceTransitionTimer = setTimeout(() => {
     clearSalePriceTransition(field);
     instance._salePriceTransitionTimer = null;
   }, transitionDuration);
 }
+
 function syncSalePriceField(instance) {
   const field = instance.salePriceFieldEl;
   if (!field) return;
+
   const dynamicPricingEnabled = Boolean(instance.dynamicPricingCheckbox?.checked);
   const regularPriceIsFilled = Boolean(instance.regularPriceInput?.value.trim());
   const shouldShow = !dynamicPricingEnabled || regularPriceIsFilled;
+
   if (shouldShow) showSalePriceField(instance, field);
   else if (field.isConnected) hideSalePriceField(instance, field);
+
+  /* STAGING NOTE: this mock only controls when the sale-price field becomes
+     available. WooCommerce must remain the source of truth server-side and
+     fully reject a sale price greater than the generated regular price. */
 }
+
 function updateFinalPriceDisplays(instance) {
   const price = computeFinalPrice(instance);
   const formatted = `${formatNumberWithCommas(Math.round(price))} تومان`;
@@ -319,16 +430,26 @@ function updateFinalPriceDisplays(instance) {
     element.classList.add('hojreh-price-is-updating');
   };
   updatePriceValue(instance.pageFinalPriceEl);
+
+  // Announce the computed price into the (disabled) regular-price
+  // field, exactly as a real dynamic-pricing engine would.
   if (instance.regularPriceInput) {
     instance.regularPriceInput.value = Math.round(price) > 0 ? formatNumberWithCommas(Math.round(price)) : '';
   }
   syncSalePriceField(instance);
+
+  // Shared min-price / out-of-stock wiring for every price-bearing instance.
   if (instance.stockStatusSelectEl || instance.stockStatusInputs.length) {
     const min = HojrehFormulaEngine.parseNumberValue(instance.minPrice, 0);
     const shouldMarkOutOfStock = instance.outOfStockBelowMin && min > 0 && price < min && price > 0;
     const nextValue = shouldMarkOutOfStock ? 'ناموجود' : 'موجود';
     if (instance.stockStatusSelectEl && instance.stockStatusSelectEl.value !== nextValue) {
       instance.stockStatusSelectEl.value = nextValue;
+      // custom-select.js wraps this native <select> (see the
+      // side-effect import note at the top of this file) and only
+      // re-syncs its visible trigger text on the native 'change'
+      // event -- setting .value programmatically doesn't fire that
+      // event on its own, so we dispatch it explicitly.
       instance.stockStatusSelectEl.dispatchEvent(new Event('change', { bubbles: true }));
     }
     const nextRadio = instance.stockStatusInputs.find(input => input.value === nextValue);
@@ -338,8 +459,14 @@ function updateFinalPriceDisplays(instance) {
     }
   }
 }
+
+/* ── "استفاده از الگو" tab: list of saved patterns from the
+   #pricingPatternsList mirror ────────────────────────────────────── */
+
 function getSavedPatternList(instance) {
   const savedPatterns = Array.from(document.querySelectorAll('#pricingPatternsList .accordion-item[data-type="pattern"]'))
+    // فقط الگوهایی که در تنظیمات حجره «فعال» شده‌اند (سوییچ acc-switch روشن)
+    // قابل انتخاب هستند؛ الگوهای غیرفعال نباید در این پیکر ظاهر شوند.
     .filter(el => el.querySelector('.acc-switch input[type="checkbox"]')?.checked)
     .map(el => ({
       id: el.dataset.id,
@@ -347,14 +474,21 @@ function getSavedPatternList(instance) {
         || el.querySelector('.acc-name')?.textContent?.trim()
         || `الگوی ${el.dataset.id}`
     }));
+  // الگوهای تبدیل‌شده از فرمول فعلی محصول (instance.convertedPatterns) در
+  // #pricingPatternsList وجود ندارند و اصلاً سوییچ فعال/غیرفعال ندارند —
+  // همان لحظه‌ای که ساخته می‌شوند قابل‌استفاده‌اند، پس همیشه در لیست می‌مانند.
   return savedPatterns.concat(instance.convertedPatterns || []);
 }
+
+/* ── آیکون empty-state، عیناً همان آیکون بخش سرچ مودال API
+   (hojreh/assets/js/api-modal.js → .api-empty-icon) ──────────────── */
 const PATTERN_PICKER_EMPTY_ICON = `
   <svg class="hojreh-pattern-picker-empty-icon" viewBox="0 0 126.086 120.359" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M125.95,42.66a2.983,2.983,0,0,0-3.8-1.9l-2.2.7a60.491,60.491,0,0,1-54.1-39.5,3.037,3.037,0,0,0-5.7,2.1,66.706,66.706,0,0,0,46.9,41.6l-18.5,6.1a78.564,78.564,0,0,1-22.5-16.3v-8.2a3,3,0,0,0-6,0v8.2a81.674,81.674,0,0,1-10.4,9.1,3.011,3.011,0,0,0,3.5,4.9,73.4,73.4,0,0,0,6.9-5.6v15.3l-41.1-13.5a65.685,65.685,0,0,0,19-7.8,2.984,2.984,0,1,0-3.1-5.1,59.791,59.791,0,0,1-28.7,8.7l-2.2-.7a3,3,0,0,0-1.9,5.7l2.7.8a57.54,57.54,0,0,1,11.2,11.9,61.222,61.222,0,0,1,7.7,14.8,59.208,59.208,0,0,1,3.4,16.2,2.971,2.971,0,0,0,3,2.8h.2a3.012,3.012,0,0,0,2.8-3.2,68,68,0,0,0-3.7-17.8,66.584,66.584,0,0,0-8.5-16.3c-1-1.4-2.1-2.8-3.2-4.2l18.4,6.1a75.9,75.9,0,0,1,8.4,26.2l-23,31.7a2.953,2.953,0,0,0,.7,4.2,2.792,2.792,0,0,0,1.8.6,2.982,2.982,0,0,0,2.4-1.2l4.1-5.7h0a60.379,60.379,0,0,1,65.1.1v.1l4,5.6a2.982,2.982,0,0,0,2.4,1.2,3.226,3.226,0,0,0,1.8-.6,3.122,3.122,0,0,0,.7-4.2l-3.3-4.6v-.2a60.121,60.121,0,0,1,20.2-63.4l2.6-.8A3.235,3.235,0,0,0,125.95,42.66Zm-58.1,22.2,14.2-4.7a82.3,82.3,0,0,0-5.4,16.8Zm12.7-10.5-14.5,4.8V43.76A82.892,82.892,0,0,0,80.55,54.36Zm-36.6,5.8,17.2,5.6,10.5,14.5a83.36,83.36,0,0,0-17.3,0l4.1-5.6a3.011,3.011,0,1,0-4.9-3.5l-4.2,5.8A82.3,82.3,0,0,0,43.95,60.16Zm49.9,45.2a66.77,66.77,0,0,0-55.6-2.8l11.3-15.6a81.563,81.563,0,0,1,27,0l5.5,7.6a2.982,2.982,0,0,0,2.4,1.2,3.226,3.226,0,0,0,1.8-.6,3.122,3.122,0,0,0,.7-4.2l-5.3-7.3a78.078,78.078,0,0,1,8.4-26.2l18.5-6.1A66.829,66.829,0,0,0,93.85,105.36Z" transform="translate(-0.002 -0.001)"/>
     <path d="M47.05,24.26a3,3,0,1,0,3,3A3,3,0,0,0,47.05,24.26Z" transform="translate(-0.002 -0.001)"/>
   </svg>
 `;
+
 function renderPatternPicker(instance) {
   const list = instance.patternPickerListEl;
   list.innerHTML = '';
@@ -362,6 +496,7 @@ function renderPatternPicker(instance) {
   const patterns = getSavedPatternList(instance).filter(pattern =>
     !query || pattern.name.toLocaleLowerCase('fa-IR').includes(query)
   );
+
   if (!patterns.length) {
     if (query) {
       const empty = document.createElement('div');
@@ -370,6 +505,8 @@ function renderPatternPicker(instance) {
       list.appendChild(empty);
       return;
     }
+
+    // هیچ الگوی فعالی در تنظیمات حجره وجود ندارد (نه اینکه جستجو بی‌نتیجه بوده)
     const empty = document.createElement('div');
     empty.className = 'hojreh-pattern-picker-empty hojreh-pattern-picker-empty-state';
     empty.innerHTML = `
@@ -380,21 +517,26 @@ function renderPatternPicker(instance) {
     list.appendChild(empty);
     return;
   }
+
   patterns.forEach(p => {
     const row = document.createElement('label');
     row.className = 'hojreh-pattern-picker-item';
     if (instance.selectedPatternId === p.id) row.classList.add('hojreh-selected');
+
     const radio = document.createElement('input');
     radio.type = 'radio';
     radio.name = `hojrehPatternPicker_${instance.suffix}`;
     radio.value = p.id;
     radio.checked = instance.selectedPatternId === p.id;
+
     const span = document.createElement('span');
     span.className = 'hojreh-pattern-picker-title';
     span.textContent = p.name;
+
     row.appendChild(radio);
     row.appendChild(span);
     list.appendChild(row);
+
     radio.addEventListener('change', () => {
       instance.selectedPatternId = p.id;
       list.querySelectorAll('.hojreh-pattern-picker-item').forEach(el => el.classList.remove('hojreh-selected'));
@@ -404,10 +546,12 @@ function renderPatternPicker(instance) {
     });
   });
 }
+
 function renderReadonlyPreview(instance) {
   const wrap = instance.readonlyPreviewWrapEl;
   wrap.innerHTML = '';
   const controller = instance.selectedPatternId ? HojrehPatternController.get(instance.selectedPatternId) : null;
+
   const box = document.createElement('div');
   box.className = 'formula-preview-large-box hojreh-modal-pattern-preview';
   if (controller?.state?.elements?.length) {
@@ -418,21 +562,30 @@ function renderReadonlyPreview(instance) {
   }
   wrap.appendChild(box);
 }
+
 function validateFormulaForPatternConversion(instance, { notify = true } = {}) {
   const source = instance.buildController;
   const reject = (message) => {
     if (notify) showToast(message, 'yellow');
     return false;
   };
+
   if (!source?.state?.elements?.length) {
     return reject('ابتدا حداقل یک جزء به فرمول اضافه کنید.');
   }
+
+  // Manual edits must be committed through the engine before inspecting the
+  // visual tree; otherwise the state may still contain the previous formula.
   if (source.isManualMode?.()) {
     const manualResult = source.validateAndApplyFormula({ silent: true });
     if (manualResult.status !== 'green') {
       return reject('ابتدا فرمول دستی را کامل و معتبر کنید.');
     }
   }
+
+  // buildFormulaString intentionally skips incomplete rows. That behavior is
+  // correct for the live preview, but conversion must reject even one skipped
+  // row (including an empty group) instead of saving only the valid subset.
   const hasIncompleteElement = (elements) => (elements || []).some(element => {
     if (element.type === 'group' || element.isGroup) {
       return !element.innerElements?.length || hasIncompleteElement(element.innerElements);
@@ -442,14 +595,17 @@ function validateFormulaForPatternConversion(instance, { notify = true } = {}) {
   if (hasIncompleteElement(source.state.elements)) {
     return reject('ابتدا همه آیتم‌های فرمول را انتخاب و فرمول را کامل کنید.');
   }
+
   const canonicalFormula = source.buildFormulaText(true).trim();
   if (!canonicalFormula) {
     return reject('فرمول معتبر و قابل تبدیل ساخته نشده است.');
   }
+
   const basicValidation = HojrehFormulaEngine.validateFormula(canonicalFormula);
   if (!basicValidation.valid) {
     return reject(basicValidation.error || 'فرمول معتبر و قابل تبدیل ساخته نشده است.');
   }
+
   const parsed = HojrehFormulaEngine.parseFormulaString(
     canonicalFormula,
     source._registryOptions?.() || {}
@@ -457,11 +613,14 @@ function validateFormulaForPatternConversion(instance, { notify = true } = {}) {
   if (!parsed.valid || !parsed.renderable || !parsed.elements?.length) {
     return reject(parsed.error || parsed.warning || 'فرمول معتبر و قابل تبدیل ساخته نشده است.');
   }
+
   return true;
 }
+
 function convertFormulaToPattern(instance, overlay, name) {
   const source = instance.buildController;
   if (!validateFormulaForPatternConversion(instance)) return;
+
   const id = `woo_saved_${instance.suffix}_${++instance.convertedPatternSeq}`;
   const pattern = new HojrehPatternController(id, null, {
     patternName: name,
@@ -475,11 +634,14 @@ function convertFormulaToPattern(instance, overlay, name) {
   overlay.querySelector('.hojreh-segmented-control button[data-tab="use-pattern"]')?.click();
   showToast('فرمول محصول به یک الگو تبدیل شد.', 'green');
 }
+
 function openConvertPatternDialog(instance, overlay) {
   if (!validateFormulaForPatternConversion(instance)) return;
+
   const dialog = overlay.querySelector('.hojreh-pattern-name-dialog');
   const input = dialog?.querySelector('.hojreh-pattern-name-dialog-input');
   if (!dialog || !input) return;
+
   input.value = instance.getProductName() || '';
   dialog.hidden = false;
   requestAnimationFrame(() => {
@@ -488,6 +650,7 @@ function openConvertPatternDialog(instance, overlay) {
     input.select();
   });
 }
+
 function personalizeSelectedPattern(instance, overlay) {
   const selected = instance.selectedPatternId
     ? HojrehPatternController.get(instance.selectedPatternId)
@@ -496,16 +659,22 @@ function personalizeSelectedPattern(instance, overlay) {
     showToast('نخست یک الگو را برای شخصی‌سازی انتخاب کنید.', 'yellow');
     return;
   }
+
   instance.buildController.setElements(
     HojrehPatternController.cloneElements(selected.state.elements)
   );
+  // setElements() deliberately changes only the controller state. The build
+  // controller is DOM-bound, so explicitly let the formula engine rebuild
+  // its visual rows and preview before we expose the formula tab.
   instance.buildController.render({ syncPreview: true });
   overlay.querySelector('.hojreh-segmented-control button[data-tab="build"]')?.click();
   showToast('الگوی انتخاب‌شده برای شخصی‌سازی در بخش فرمول قرار گرفت.', 'green');
 }
+
 function clonePlainValue(value) {
   return JSON.parse(JSON.stringify(value));
 }
+
 function captureModalDraft(instance) {
   return {
     controllerState: clonePlainValue(instance.buildController.state),
@@ -516,9 +685,11 @@ function captureModalDraft(instance) {
     convertedPatternSeq: instance.convertedPatternSeq
   };
 }
+
 function syncModalTabWithoutAnimation(instance) {
   const overlay = instance.modalOverlayEl;
   if (!overlay) return;
+
   overlay.querySelectorAll('.hojreh-segmented-control button').forEach(button => {
     button.classList.toggle('hojreh-active', button.dataset.tab === instance.mode);
   });
@@ -533,13 +704,16 @@ function syncModalTabWithoutAnimation(instance) {
   });
   instance.syncSegmentedControlLayout?.(false);
 }
+
 function restoreModalDraft(instance) {
   const snapshot = instance._modalDraftSnapshot;
   if (!snapshot) return;
+
   const retainedPatternIds = new Set(snapshot.convertedPatterns.map(pattern => pattern.id));
   instance.convertedPatterns.forEach(pattern => {
     if (!retainedPatternIds.has(pattern.id)) HojrehPatternController.unregister(pattern.id);
   });
+
   instance.buildController.state = clonePlainValue(snapshot.controllerState);
   instance.buildController.refreshCounterFromElements();
   instance.buildController.render({ syncPreview: true });
@@ -548,15 +722,20 @@ function restoreModalDraft(instance) {
   instance.patternSearchQuery = snapshot.patternSearchQuery;
   instance.convertedPatterns = clonePlainValue(snapshot.convertedPatterns);
   instance.convertedPatternSeq = snapshot.convertedPatternSeq;
+
   const searchInput = instance.modalOverlayEl?.querySelector('.hojreh-pattern-search-input');
   const searchClear = instance.modalOverlayEl?.querySelector('.hojreh-pattern-search-clear');
   if (searchInput) searchInput.value = instance.patternSearchQuery;
   if (searchClear) searchClear.hidden = !instance.patternSearchQuery;
+
   renderPatternPicker(instance);
   renderReadonlyPreview(instance);
   syncModalTabWithoutAnimation(instance);
   syncDependentUI(instance);
 }
+
+/* ── Modal shell (built once per field instance, lazily) ─────────── */
+
 function buildModalShell(instance) {
   const suffix = instance.suffix;
   const overlay = document.createElement('div');
@@ -564,6 +743,7 @@ function buildModalShell(instance) {
   overlay.id = `hojrehFormulaModal_${suffix}`;
   overlay.setAttribute('role', 'dialog');
   overlay.setAttribute('aria-modal', 'true');
+
   overlay.innerHTML = `
     <div class="hojreh-formula-modal-header">
       <div class="hojreh-formula-modal-header-left">
@@ -601,6 +781,7 @@ function buildModalShell(instance) {
           <svg class="hojreh-theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
       </div>
+
       <div class="hojreh-formula-modal-header-center">
         <div class="hojreh-segmented-control" aria-label="شیوه قیمت‌گذاری">
           <span class="hojreh-segmented-control-tray"></span>
@@ -614,6 +795,7 @@ function buildModalShell(instance) {
           </button>
         </div>
       </div>
+
       <div class="hojreh-formula-modal-header-right">
         <button type="button" class="hojreh-save-formula-btn hojreh-header-icon-btn" aria-label="ذخیره و بستن" title="ذخیره و بستن">
           <span class="hojreh-header-save-icon" aria-hidden="true">
@@ -628,8 +810,10 @@ function buildModalShell(instance) {
         </button>
       </div>
     </div>
+
     <div class="hojreh-formula-modal-body">
       <div class="hojreh-formula-modal-content">
+
         <div class="hojreh-tab-panels">
           <div class="hojreh-tab-panels-track">
             <div class="hojreh-tab-panel hojreh-active" data-panel="build">
@@ -637,6 +821,7 @@ function buildModalShell(instance) {
                 ${buildFormulaBuilderBoxHTML(suffix)}
               </div>
             </div>
+
             <div class="hojreh-tab-panel" data-panel="use-pattern">
               <div class="hojreh-pattern-search-wrap">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
@@ -650,8 +835,10 @@ function buildModalShell(instance) {
             </div>
           </div>
         </div>
+
       </div>
     </div>
+
     <div class="hojreh-pattern-name-dialog" hidden aria-hidden="true">
       <div class="hojreh-pattern-name-dialog-box" role="dialog" aria-modal="true" aria-labelledby="hojrehPatternNameTitle_${suffix}">
         <div class="hojreh-pattern-name-dialog-title" id="hojrehPatternNameTitle_${suffix}">لطفا نام الگو را وارد کنید</div>
@@ -662,6 +849,7 @@ function buildModalShell(instance) {
         </div>
       </div>
     </div>
+
     <div class="hojreh-exit-confirm-dialog" hidden aria-hidden="true">
       <div class="hojreh-exit-confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="hojrehExitConfirmTitle_${suffix}" aria-describedby="hojrehExitConfirmDesc_${suffix}">
         <button type="button" class="hojreh-exit-confirm-close" aria-label="بستن پیام" title="بستن پیام">
@@ -679,9 +867,16 @@ function buildModalShell(instance) {
     </div>
   `;
   document.body.appendChild(overlay);
+  // The shell stays mounted for the close animation, but a closed modal must
+  // be completely non-interactive. `inert` also blocks focus/clicks on any
+  // descendant even during the short fade-out window.
   overlay.inert = true;
   overlay.setAttribute('aria-hidden', 'true');
+
+  // The modal is mounted after the page-level theme system has initialized,
+  // so bind its lazily-created toggle through that same View Transitions API.
   bindThemeActions(overlay);
+
   const settingsMenu = overlay.querySelector('.hojreh-modal-settings-menu');
   const settingsTrigger = overlay.querySelector('.hojreh-modal-settings-trigger');
   let settingsPointerInside = false;
@@ -708,6 +903,9 @@ function buildModalShell(instance) {
     const isOpen = settingsMenu.classList.toggle('is-open');
     settingsTrigger.setAttribute('aria-expanded', String(isOpen));
   });
+  // Clicking an action leaves keyboard focus inside the menu. The old
+  // :focus-within rule therefore kept it visible indefinitely. Pointer leave
+  // makes the whole control (trigger + flyout actions) the hover boundary.
   const trackSettingsPointerAcrossWindow = event => {
     rememberSettingsPointer(event);
     settingsPointerInside = Boolean(
@@ -715,6 +913,8 @@ function buildModalShell(instance) {
     );
     if (!settingsPointerInside) closeSettingsMenu();
   };
+  // Capture at window level: View Transition pseudo-elements can prevent the
+  // modal itself from receiving movement while the theme animation is active.
   window.addEventListener('pointermove', trackSettingsPointerAcrossWindow, true);
   document.documentElement.addEventListener('pointerleave', () => {
     settingsPointerX = -1;
@@ -745,6 +945,9 @@ function buildModalShell(instance) {
   });
   document.addEventListener('hojreh:theme-transition-end', event => {
     if (!settingsMenu?.contains(event.detail?.source)) return;
+    // View Transitions can temporarily disturb hover/pointerenter state. Wait
+    // until its pseudo-elements are gone, then inspect the real element under
+    // the last known pointer coordinates before deciding whether to close.
     requestAnimationFrame(() => requestAnimationFrame(() => {
       settingsPointerInside = isPointerActuallyInsideSettings();
       settingsThemeTransitionLocked = false;
@@ -771,6 +974,7 @@ function buildModalShell(instance) {
       closeSettingsMenu();
     });
   });
+
   const patternDialog = overlay.querySelector('.hojreh-pattern-name-dialog');
   const closePatternDialog = () => {
     if (!patternDialog) return;
@@ -794,26 +998,42 @@ function buildModalShell(instance) {
     if (event.key === 'Enter') confirmPatternDialog();
     if (event.key === 'Escape') closePatternDialog();
   });
+
+  // ── Wire the segmented control ──
+  // The tray (sliding pill) and the content track move together: the
+  // tray's transform/width follow the active button, the track's
+  // transform is just 0 (first tab) or -50% (second tab, since the
+  // track is 200% wide with each panel taking 50%). Both share the
+  // same easing/duration in CSS so they read as one motion.
   const tabButtons = Array.from(overlay.querySelectorAll('.hojreh-segmented-control button'));
   const panels = overlay.querySelectorAll('.hojreh-tab-panel');
   const tray = overlay.querySelector('.hojreh-segmented-control-tray');
+
   const positionTray = (btn, animate) => {
     if (!btn) return;
     if (!animate) tray.style.transition = 'none';
+
+    // Use physical viewport coordinates instead of offsetLeft. In an RTL
+    // flex container offsetLeft can be counter-intuitive across browsers,
+    // while DOMRects always tell us where the button actually is on screen.
     const controlRect = btn.parentElement.getBoundingClientRect();
     const btnRect = btn.getBoundingClientRect();
     const physicalLeft = btnRect.left - controlRect.left;
+
     tray.style.width = btnRect.width + 'px';
     tray.style.transform = `translateX(${physicalLeft}px)`;
     if (!animate) {
-      void tray.offsetWidth;
+      void tray.offsetWidth; // force reflow before re-enabling transition
       tray.style.transition = '';
     }
   };
+
+  // Re-sync the header tray whenever its button geometry changes.
   instance.syncSegmentedControlLayout = (animate = false) => {
     positionTray(overlay.querySelector('.hojreh-segmented-control button.hojreh-active'), animate);
   };
   window.addEventListener('resize', () => instance.syncSegmentedControlLayout(false));
+
   const resetPanelWithoutAnimation = (panel) => {
     if (!panel) return;
     const wasActive = panel.classList.contains('hojreh-active');
@@ -828,14 +1048,21 @@ function buildModalShell(instance) {
     panel.style.opacity = '';
     panel.style.visibility = '';
   };
+
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       if (btn.classList.contains('hojreh-active')) return;
+
+      // Portal-rendered select menus live under <body>; close them before a
+      // tab moves so they cannot remain over the new tab.
       customSelect.closeAll();
+
       const currentBtn = overlay.querySelector('.hojreh-segmented-control button.hojreh-active');
       const outgoingPanel = overlay.querySelector('.hojreh-tab-panel.hojreh-active');
       const incomingPanel = overlay.querySelector(`.hojreh-tab-panel[data-panel="${btn.dataset.tab}"]`);
       if (!currentBtn || !incomingPanel) return;
+
+      // Cancel any unfinished previous switch before starting a new one.
       const transitionSeq = (instance._tabTransitionSeq || 0) + 1;
       instance._tabTransitionSeq = transitionSeq;
       document.querySelectorAll('.formula-drag-ghost, .formula-drag-placeholder').forEach(el => el.remove());
@@ -844,6 +1071,10 @@ function buildModalShell(instance) {
         if (panel !== outgoingPanel) panel.classList.remove('hojreh-tab-panel--leaving');
         if (panel !== outgoingPanel) resetPanelWithoutAnimation(panel);
       });
+
+      // Preserve the already-approved physical direction: compare the actual
+      // on-screen centers, then make the incoming panel enter from the opposite
+      // side. Both panels remain fully opaque during the slide.
       const currentRect = currentBtn.getBoundingClientRect();
       const targetRect = btn.getBoundingClientRect();
       const currentCenter = currentRect.left + currentRect.width / 2;
@@ -851,8 +1082,10 @@ function buildModalShell(instance) {
       const moveSign = targetCenter > currentCenter ? -1 : 1;
       const travel = moveSign > 0 ? '100%' : '-100%';
       const incomingStart = moveSign > 0 ? '-100%' : '100%';
+
       tabButtons.forEach(b => b.classList.remove('hojreh-active'));
       btn.classList.add('hojreh-active');
+
       if (outgoingPanel) {
         outgoingPanel.classList.remove('hojreh-active');
         outgoingPanel.classList.add('hojreh-tab-panel--leaving');
@@ -860,6 +1093,7 @@ function buildModalShell(instance) {
         outgoingPanel.style.opacity = '1';
         outgoingPanel.style.zIndex = '1';
       }
+
       incomingPanel.classList.add('hojreh-active');
       incomingPanel.style.transition = 'none';
       incomingPanel.style.transform = `translateX(${incomingStart})`;
@@ -867,6 +1101,7 @@ function buildModalShell(instance) {
       incomingPanel.style.zIndex = '2';
       void incomingPanel.offsetWidth;
       incomingPanel.style.transition = '';
+
       positionTray(btn, true);
       requestAnimationFrame(() => {
         if (outgoingPanel) {
@@ -874,10 +1109,14 @@ function buildModalShell(instance) {
         }
         incomingPanel.style.transform = 'translateX(0)';
       });
+
       const finishSlide = (event) => {
         if (event && (event.target !== incomingPanel || event.propertyName !== 'transform')) return;
         if (instance._tabTransitionSeq !== transitionSeq) return;
         if (outgoingPanel) {
+          // Hide the outgoing panel before returning its transform to zero.
+          // Resetting a translated panel while transitions are enabled creates
+          // the one-frame reverse "halo" visible on mobile/tablet GPUs.
           outgoingPanel.classList.remove('hojreh-tab-panel--leaving');
           resetPanelWithoutAnimation(outgoingPanel);
         }
@@ -893,11 +1132,14 @@ function buildModalShell(instance) {
       };
       incomingPanel.addEventListener('transitionend', finishSlide);
       setTimeout(() => finishSlide(), 480);
+
       instance.mode = btn.dataset.tab;
       updateContextualPatternAction();
       syncDependentUI(instance);
     });
   });
+
+  // ── Close handlers ──
   const exitConfirmDialog = overlay.querySelector('.hojreh-exit-confirm-dialog');
   const hideExitConfirm = () => {
     exitConfirmDialog.classList.remove('is-visible');
@@ -914,6 +1156,7 @@ function buildModalShell(instance) {
       exitConfirmDialog.querySelector('.hojreh-exit-confirm-save')?.focus();
     });
   };
+
   overlay.querySelector('.hojreh-formula-modal-close').addEventListener('click', showExitConfirm);
   exitConfirmDialog.querySelector('.hojreh-exit-confirm-close').addEventListener('click', hideExitConfirm);
   exitConfirmDialog.querySelector('.hojreh-exit-confirm-save').addEventListener('click', () => {
@@ -930,12 +1173,18 @@ function buildModalShell(instance) {
     showToast('فرمول قیمت‌گذاری این محصول ذخیره شد.', 'green');
     closeModal(instance);
   });
+
+  // ── Build-tab controller ──
   const buildBoxEl = overlay.querySelector(`#hojrehBuildBox_${suffix}`);
   instance.buildController = new HojrehPatternController(`hojreh_woo_${suffix}`, buildBoxEl, {
     patternName: `فرمول محصول — ${suffix}`
   });
   HojrehPatternController.register(instance.buildController);
   instance.buildController.render({ syncPreview: true });
+
+  // The engine still owns manual-mode state through its checkbox. The modal
+  // presents that checkbox as a compact preview action instead of a control
+  // inside the right-hand component list.
   const manualToggle = buildBoxEl.querySelector('.manual-formula-toggle');
   const manualButton = buildBoxEl.querySelector('.hojreh-modal-manual-formula-btn');
   if (manualToggle && manualButton) {
@@ -948,10 +1197,18 @@ function buildModalShell(instance) {
       manualButton.setAttribute('aria-pressed', String(manualToggle.checked));
     });
   }
+
+  // Any structural change to the build box's formula (add/remove/
+  // reorder/manual-mode apply) always fully rebuilds
+  // .formula-items-container's innerHTML — watching it here is a
+  // reliable, decoupled way to know "the formula changed" without
+  // patching any engine internals.
   const itemsContainer = buildBoxEl.querySelector('.formula-items-container');
   new MutationObserver(() => {
     if (instance.mode === 'build') syncDependentUI(instance);
   }).observe(itemsContainer, { childList: true, subtree: true });
+
+  // ── Pattern-picker tab ──
   instance.patternPickerListEl = overlay.querySelector(`#hojrehPatternPicker_${suffix}`);
   instance.readonlyPreviewWrapEl = overlay.querySelector(`#hojrehReadonlyPreview_${suffix}`);
   const patternSearchInput = overlay.querySelector(`#hojrehPatternSearch_${suffix}`);
@@ -981,25 +1238,34 @@ function buildModalShell(instance) {
   renderPatternPicker(instance);
   renderReadonlyPreview(instance);
   updateContextualPatternAction();
+
   instance.modalOverlayEl = overlay;
   return overlay;
 }
+
 function openModal(instance) {
   if (!instance.modalOverlayEl) buildModalShell(instance);
   if (instance._closeTimer) {
     clearTimeout(instance._closeTimer);
     instance._closeTimer = null;
   }
+
+  // Never carry a drag artifact into a freshly opened modal.
   document.querySelectorAll('.formula-drag-ghost, .formula-drag-placeholder').forEach(el => el.remove());
   document.body.classList.remove('formula-dragging');
+
   customSelect.closeAll();
   instance._modalDraftSnapshot = captureModalDraft(instance);
   instance.modalOverlayEl.inert = false;
   instance.modalOverlayEl.removeAttribute('aria-hidden');
+  // The modal is created lazily on its first open. Flush the mounted closed
+  // state before adding the open class; otherwise both states can land in the
+  // same browser frame and the entrance transition is skipped entirely.
   void instance.modalOverlayEl.offsetWidth;
   instance.modalOverlayEl.classList.add('hojreh-open');
   document.body.style.overflow = 'hidden';
   syncDependentUI(instance);
+
   requestAnimationFrame(() => {
     if (instance.syncSegmentedControlLayout) instance.syncSegmentedControlLayout(false);
     requestAnimationFrame(() => {
@@ -1007,11 +1273,18 @@ function openModal(instance) {
     });
   });
 }
+
 function closeModal(instance) {
   if (!instance.modalOverlayEl) return;
+
+  // Defensive cleanup: a drag must never leave a translucent clone or delete
+  // icon behind while/after the modal is closing.
   document.querySelectorAll('.formula-drag-ghost, .formula-drag-placeholder').forEach(el => el.remove());
   document.body.classList.remove('formula-dragging');
   customSelect.closeAll();
+
+  // Disable interaction immediately, not after the visual fade. This fixes
+  // ghost clicks hitting modal controls after the modal looks closed.
   instance.modalOverlayEl.inert = true;
   instance.modalOverlayEl.setAttribute('aria-hidden', 'true');
   instance.modalOverlayEl.classList.remove('hojreh-open');
@@ -1025,8 +1298,25 @@ function closeModal(instance) {
     instance._closeTimer = null;
   }, closeDuration);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Public factory
+   ═══════════════════════════════════════════════════════════════ */
+
+/**
+ * @param {object} config
+ * @param {Element} config.mountEl              the empty .wc-field to inject checkbox+button+quantity-fields into
+ * @param {Element} config.regularPriceFieldEl   the "قیمت عادی" .wc-field (disabled while dynamic pricing is on)
+ * @param {Element} config.regularPriceInput     the "قیمت عادی" <input>
+ * @param {Element} config.salePriceFieldEl      the "قیمت فروش ویژه" .wc-field (shown after Hojreh produces a regular price)
+ * @param {Element} [config.stockStatusSelectEl] variation-only: "وضعیت موجودی انبار" <select>
+ * @param {Iterable<Element>} [config.stockStatusInputs] simple-product stock-status radio inputs
+ * @param {'simple'|'variable'} config.productType
+ * @param {function():string} config.getProductName
+ */
 export function createHojrehFormulaField(config) {
   const suffix = `${config.key || 'field'}_${++modalSeq}`;
+
   const instance = {
     suffix,
     productType: config.productType,
@@ -1056,6 +1346,7 @@ export function createHojrehFormulaField(config) {
     _pendingPageQtyEntrance: false,
     _pageQtyHasEntered: false
   };
+
   const row = document.createElement('div');
   row.className = 'hojreh-dynamic-pricing-row';
   row.innerHTML = `
@@ -1066,10 +1357,12 @@ export function createHojrehFormulaField(config) {
   `;
   config.mountEl.classList.add('hojreh-dynamic-pricing-mount');
   config.mountEl.appendChild(row);
+
   const pagePanel = document.createElement('div');
   pagePanel.className = 'hojreh-page-formula-panel';
   pagePanel.style.display = 'none';
   config.mountEl.appendChild(pagePanel);
+
   const setBtnWrap = document.createElement('div');
   setBtnWrap.className = 'hojreh-set-formula-wrap';
   setBtnWrap.style.display = 'none';
@@ -1085,6 +1378,7 @@ export function createHojrehFormulaField(config) {
     </button>
   `;
   pagePanel.appendChild(setBtnWrap);
+
   const qtyWrap = document.createElement('div');
   qtyWrap.className = 'hojreh-quantity-fields-wrap';
   qtyWrap.innerHTML = `
@@ -1094,6 +1388,7 @@ export function createHojrehFormulaField(config) {
   pagePanel.appendChild(qtyWrap);
   instance.pageQtySectionEl = qtyWrap;
   instance.pageQtyContainer = qtyWrap.querySelector('.hojreh-qty-container');
+
   const pricingOptionsWrap = document.createElement('div');
   pricingOptionsWrap.className = 'hojreh-page-pricing-options';
   pricingOptionsWrap.style.display = 'none';
@@ -1112,20 +1407,24 @@ export function createHojrehFormulaField(config) {
     </label>
   `;
   pagePanel.appendChild(pricingOptionsWrap);
+
   const pageFinalSectionTitle = document.createElement('h2');
   pageFinalSectionTitle.className = 'section-title hojreh-page-section-title hojreh-page-final-section-title';
   pageFinalSectionTitle.textContent = 'قیمت نهایی محاسبه‌شده';
   pagePanel.appendChild(pageFinalSectionTitle);
+
   const pageFinalPriceBar = document.createElement('div');
   pageFinalPriceBar.className = 'hojreh-final-price-bar hojreh-page-final-price-bar';
   pageFinalPriceBar.innerHTML = '<span>قیمت نهایی:</span><span class="hojreh-final-price-value">۰ تومان</span>';
   pagePanel.appendChild(pageFinalPriceBar);
   instance.pageFinalPriceEl = pageFinalPriceBar.querySelector('.hojreh-final-price-value');
+
   const checkbox = row.querySelector('.hojreh-dynamic-pricing-checkbox');
   const setBtn = setBtnWrap.querySelector('.hojreh-set-formula-btn');
   const minPriceInput = pricingOptionsWrap.querySelector(`#hojrehMinPrice_${suffix}`);
   const outOfStockInput = pricingOptionsWrap.querySelector(`#hojrehOutOfStock_${suffix}`);
   instance.dynamicPricingCheckbox = checkbox;
+
   attachNumericInput(minPriceInput);
   minPriceInput.addEventListener('input', () => {
     instance.minPrice = minPriceInput.value;
@@ -1135,6 +1434,7 @@ export function createHojrehFormulaField(config) {
     instance.outOfStockBelowMin = outOfStockInput.checked;
     updateFinalPriceDisplays(instance);
   });
+
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       config.regularPriceInput.value = '';
@@ -1167,9 +1467,15 @@ export function createHojrehFormulaField(config) {
       syncSalePriceField(instance);
     }
   });
+
   setBtn.addEventListener('click', () => openModal(instance));
+
+  // Keep the on-page quantity section's visibility following whether
+  // dynamic pricing is on at all (its content is kept in sync by
+  // syncDependentUI() regardless; this only toggles the wrapper).
   new MutationObserver(() => {
     qtyWrap.style.display = checkbox.checked ? '' : 'none';
   }).observe(instance.pageQtyContainer, { childList: true, subtree: true });
+
   return instance;
 }

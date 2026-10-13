@@ -1,5 +1,5 @@
-﻿  'use strict';
-  var DURATION = 3000;
+  'use strict';
+  var DURATION = 3000; 
   function getContainer() {
     var c = document.getElementById('hojreh-toast-container');
     if (!c) {

@@ -1,4 +1,4 @@
-﻿import { saveDirty } from './save-dirty.js';
+import { saveDirty } from './save-dirty.js';
 import { show as showToast } from './toast.js';
 import { priceEditorSearchAnim } from './price-editor-search-anim.js';
 let priceEditor;

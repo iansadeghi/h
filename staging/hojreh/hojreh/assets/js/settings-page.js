@@ -1,4 +1,4 @@
-﻿import './preloader.js';
+import './preloader.js';
 import './toast.js';
 import './save-dirty.js';
 import './general.js';

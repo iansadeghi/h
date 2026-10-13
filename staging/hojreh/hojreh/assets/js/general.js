@@ -1,4 +1,4 @@
-﻿import { show as showToastNotification } from './toast.js';
+import { show as showToastNotification } from './toast.js';
   'use strict';
   function showToast(message, typeOrDuration) {
     showToastNotification(message, typeof typeOrDuration === 'number' ? 'green' : (typeOrDuration || 'green'), typeof typeOrDuration === 'number' ? typeOrDuration : undefined);

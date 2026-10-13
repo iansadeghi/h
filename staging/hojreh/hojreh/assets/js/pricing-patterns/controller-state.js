@@ -1,4 +1,4 @@
-﻿import { HojrehFormulaEngine } from './formula-engine.js';
+import { HojrehFormulaEngine } from './formula-engine.js';
 import { HojrehPatternController } from './controller-core.js';
 const controllerStateMixin = {
   _registryOptions(extra = {}) {
@@ -47,7 +47,7 @@ const controllerStateMixin = {
     if (type !== 'group') {
       const dataType = subType || type;
       const options = HojrehFormulaEngine.getRegisteredData
-        ? null
+        ? null 
         : null;
       const registered = this._getSelectableOptions(dataType);
       if (registered.length <= 1) {

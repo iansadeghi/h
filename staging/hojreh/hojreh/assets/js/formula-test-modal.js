@@ -1,4 +1,4 @@
-﻿import { HojrehFormulaEngine, HojrehPatternController } from './pricing-patterns.js';
+import { HojrehFormulaEngine, HojrehPatternController } from './pricing-patterns.js';
 import { attachNumericInput } from './general.js';
 let formulaTestModal;
 (function initFormulaTestModal() {
@@ -67,7 +67,7 @@ let formulaTestModal;
     formulaPreviewLarge = getPatternPreview(activePattern);
     renderFields();
     var aboveFullscreen = !!(activePattern && activePattern.classList.contains('pattern-fullscreen'));
-    clearTimeout(removeAboveFullscreenTimer);
+    clearTimeout(removeAboveFullscreenTimer); 
     modal.classList.toggle('above-pattern-fullscreen', aboveFullscreen);
     modalOverlay.classList.toggle('above-pattern-fullscreen', aboveFullscreen);
     modal.classList.add('open');
@@ -114,7 +114,7 @@ let formulaTestModal;
     var dragCurrentY = 0;
     var isDragging   = false;
     var CLOSE_THRESHOLD = 0.35;
-    var VELOCITY_THRESHOLD = 0.5;
+    var VELOCITY_THRESHOLD = 0.5; 
     var dragStartTime = 0;
     function onDragStart(e) {
       if (!modal.classList.contains('open')) return;
@@ -128,7 +128,7 @@ let formulaTestModal;
     function onDragMove(e) {
       if (!isDragging) return;
       dragCurrentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-      var delta = Math.max(0, dragCurrentY - dragStartY);
+      var delta = Math.max(0, dragCurrentY - dragStartY); 
       modal.style.transform = 'translateX(-50%) translateY(' + delta + 'px)';
       var modalH = modal.offsetHeight || 400;
       var ratio  = Math.min(delta / modalH, 1);
@@ -140,7 +140,7 @@ let formulaTestModal;
       isDragging = false;
       var delta    = Math.max(0, dragCurrentY - dragStartY);
       var elapsed  = Math.max(1, Date.now() - dragStartTime);
-      var velocity = delta / elapsed;
+      var velocity = delta / elapsed; 
       var modalH   = modal.offsetHeight || 400;
       modal.classList.remove('dragging');
       modalOverlay.style.opacity = '';

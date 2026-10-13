@@ -1,4 +1,4 @@
-﻿import { priceChart } from './price-chart.js';
+import { priceChart } from './price-chart.js';
 let priceModal;
 (function () {
   'use strict';
@@ -184,7 +184,7 @@ let priceModal;
       frag.appendChild(trigger);
       if (after) frag.appendChild(document.createTextNode(after));
       node.parentNode.replaceChild(frag, node);
-      break;
+      break; 
     }
     tipContentEl.dataset.priceParenWrapped = 'true';
   }
